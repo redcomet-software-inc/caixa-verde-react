@@ -1,0 +1,9 @@
+export { default as DefaultPage } from './DefaultPage';
+export { default as Login } from './Login';
+export { default as Registration } from './Registration';
+export { default as Option } from './Option';
+export { default as ShoppingCart } from './ShoppingCart';
+export { default as Index } from './Index';
+export { default as Checkout1 } from './Checkout1';
+export { default as Kits } from './Kits';
+export { default as CardKits } from './CardKits';
