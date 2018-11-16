@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Link, Route, HashRouter, Redirect } from 'react-router-dom';
-import { createHashHistory } from 'history';
-import CurrencyInput from 'react-currency-input';
+import { Route, HashRouter, Redirect } from 'react-router-dom';
+//import CurrencyInput from 'react-currency-input';
 import axios from 'axios';
 import NavBar from '../navbar/NavBar.js';
 import Footer from '../footer/Footer.js';
@@ -50,8 +49,8 @@ class DefaultPage extends Component {
     for (var i = 0; i <= productsList.length - 1; i++) {
       products += productsList[i].quantity;
     }
-    for (var i = 0; i <= kitsList.length - 1; i++) {
-      kits += kitsList[i].quantity;
+    for (var j = 0; j <= kitsList.length - 1; j++) {
+      kits += kitsList[j].quantity;
     }
     var shoppingCartCount = products + kits; 
     this.setState({ shoppingCartCount: shoppingCartCount });
@@ -115,7 +114,7 @@ class DefaultPage extends Component {
   }
 
   renderRedirect = () => {
-      if(this.state.redirect == true) {
+      if(this.state.redirect === true) {
         this.setState({redirect: false});
         return <Redirect exact to={this.state.redirectTo} />;
       }
@@ -169,7 +168,7 @@ class DefaultPage extends Component {
 
     for (var i = 0; i <= products.length - 1; i++) {
       for (var j = 0; j <= selectedProducts.length - 1; j++) {
-        if (products[i].id == selectedProducts[j].id) {
+        if (products[i].id === selectedProducts[j].id) {
           var selectedProduct = products[i];
           var quantity = selectedProducts[j].quantity;
           var price_table_id = selectedProducts[j].price_table_id;
@@ -196,7 +195,7 @@ class DefaultPage extends Component {
 
     for (var i = 0; i <= kits.length - 1; i++) {
       for (var j = 0; j <= selectedKits.length - 1; j++) {
-        if (kits[i].id == selectedKits[j].id) {
+        if (kits[i].id === selectedKits[j].id) {
           var selectedKit = kits[i];
           var quantity = selectedKits[j].quantity;
           var price_table_id = selectedKits[j].price_table_id;
@@ -226,7 +225,7 @@ class DefaultPage extends Component {
 
   /* Add Item to the Shopping List */
   addCardCount = e => {
-    var id = parseInt(e.target.id);
+    var id = parseInt(e.target.id,10); //radix 10
 
     var priceTableId = '';
     var selectedProductsTemp = this.state.selectedProducts;
@@ -253,13 +252,13 @@ class DefaultPage extends Component {
       }
     }
     /* If the Element does not exist inside SelectedProducts, just push it */
-    if (checkExistingElement == 0) {
-      var newProduct = {
+    if (checkExistingElement === 0) {
+      var newProductZero = {
         id: id,
         quantity: 1,
         price_table_id: priceTableId,
       };
-      selectedProductsTemp.push(newProduct);
+      selectedProductsTemp.push(newProductZero);
     }
     /* UpdateState */
     this.setState({ selectedProducts: selectedProductsTemp });
@@ -268,7 +267,7 @@ class DefaultPage extends Component {
 
   /* Add Item to the Shopping List and Update State */
   subtractCardCount = e => {
-    var id = parseInt(e.target.id);
+    var id = parseInt(e.target.id, 10); //radix 10
 
     var selectedProductsTemp = this.state.selectedProducts;
     /* Get Element from Array State and Update the data in a temporary Variable */
@@ -296,7 +295,7 @@ class DefaultPage extends Component {
   /* Add Item to the Shopping List */
   addCardCountKit = e => {
   
-    var id = parseInt(e.target.id);
+    var id = parseInt(e.target.id, 10); //radix 10
 
     var priceTableId = '';
     var selectedKitsTemp = this.state.selectedKits;
@@ -323,13 +322,13 @@ class DefaultPage extends Component {
       }
     }
     /* If the Element does not exist inside SelectedProducts, just push it */
-    if (checkExistingElement == 0) {
-      var newKit = {
+    if (checkExistingElement === 0) {
+      var newKitZero = {
         id: id,
         quantity: 1,
         price_table_id: priceTableId,
       };
-      selectedKitsTemp.push(newKit);
+      selectedKitsTemp.push(newKitZero);
     }
     /* UpdateState */
     this.setState({ selectedKits: selectedKitsTemp });

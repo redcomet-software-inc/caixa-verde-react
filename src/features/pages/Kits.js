@@ -19,13 +19,13 @@ export default class Kits extends Component {
     var checkExistingElement = 0;
 
     for (var i = 0; i <= selectedKits.length - 1; i++) {
-      if (selectedKits[i].id == index) {
+      if (selectedKits[i].id === index) {
         checkExistingElement += 1;
         return selectedKits[i].quantity;
       }
     }
 
-    if (checkExistingElement == 0) {
+    if (checkExistingElement === 0) {
       return 0;
     }
   };
@@ -46,7 +46,6 @@ export default class Kits extends Component {
                 name={item.name}
                 description={item.description}
                 price={item.price}
-                setMoneyFormat={this.props.setMoneyFormat}
                 products={item.products}
                 quantity={this.getIndexReturnQtd(item.id)}
                 addCardCountKit={this.props.addCardCountKit}

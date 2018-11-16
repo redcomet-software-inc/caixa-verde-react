@@ -27,7 +27,7 @@ export default class Card extends Component {
 
 
   addBorder = (e) => {
-      if(this.state.cardCount===0 && this.state.borderClassName=='') {
+      if(this.state.cardCount===0 && this.state.borderClassName==='') {
         this.setState({ borderClass: 'card-active' });
         this.setState({ displayControlClass: '' });
         console.log("aqui");
@@ -42,7 +42,7 @@ export default class Card extends Component {
   }
 
   selectCard = (quantity) => {
-    if(quantity == 0) {
+    if(quantity === 0) {
       this.setState({borderClass:''});
     } else {
       this.setState({borderClass:this.myClass});
@@ -70,8 +70,8 @@ export default class Card extends Component {
     return (
   
 
-    <div id={this.props.id}  onClick={this.addBorder} className="card" className={'card ' + this.state.classState + ' ' + this.state.borderClass} style={{width: 60}}>
-      <img  className="card-img-top" src={stardardImage} width={200} />
+    <div id={this.props.id}  onClick={this.addBorder} className={'card card ' + this.state.classState + ' ' + this.state.borderClass} style={{width: 60}}>
+      <img alt="kit" className="card-img-top" src={stardardImage} width={200} />
       <div className="card-body">
         <p className="card-text">{this.props.name}</p>
         

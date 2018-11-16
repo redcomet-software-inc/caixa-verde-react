@@ -34,12 +34,12 @@ export class Index extends Component {
     var selectedProducts = this.props.selectedProducts;
     var checkExistingElement = 0;
     for (var i = 0; i <= selectedProducts.length - 1; i++) {
-      if (selectedProducts[i].id == index) {
+      if (selectedProducts[i].id === index) {
         checkExistingElement += 1;
         return selectedProducts[i].quantity;
       }
     }
-    if (checkExistingElement == 0) {
+    if (checkExistingElement === 0) {
       return 0;
     }
   };

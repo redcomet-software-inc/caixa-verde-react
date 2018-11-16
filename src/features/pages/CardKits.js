@@ -19,7 +19,7 @@ export default class CardKits extends Component {
   }
 
   selectCard = (quantity) => {
-    if(quantity == 0) {
+    if(quantity === 0) {
       this.setState({borderClass:''});
     } else {
       this.setState({borderClass:this.myClass});
@@ -39,7 +39,7 @@ export default class CardKits extends Component {
     return (
       <div className="pages-card-kits m-4 m-4">
         <div className="card" style={{width: 18}} >
-          <img  className="card-img-top" src={stardardImage} width={200} />
+          <img alt="produto"  className="card-img-top" src={stardardImage} width={200} />
           <div className="card-body">
             <h5 className="card-title text-center">{this.props.name}</h5>
             <p className="card-text text-center">{this.props.setMoneyFormat(this.props.price)}</p>
