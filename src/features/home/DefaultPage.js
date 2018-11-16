@@ -88,14 +88,14 @@ class DefaultPage extends Component {
   }
 
   getProducts() {
-    axios.get(`https://caixa-verde-react.herokuapp.com/api/v1/products.json`).then(res => {
+    axios.get(`https://caixa-verde.herokuapp.com/api/v1/products.json`).then(res => {
       const products = res.data;
       this.setState({ products: products });
     });
   }
 
   getKits() {
-    axios.get(`https://caixa-verde-react.herokuapp.com/api/v1/kits.json`).then(res => {
+    axios.get(`https://caixa-verde.herokuapp.com/api/v1/kits.json`).then(res => {
       const kits = res.data;
       this.setState({ kits: kits });
       console.log('KITS');
@@ -130,7 +130,7 @@ class DefaultPage extends Component {
     console.log(token);
     console.log(email);
 
-    axios.get('https://caixa-verde-react.herokuapp.com/api/v1/sessions/check.json', {
+    axios.get('https://caixa-verde.herokuapp.com/api/v1/sessions/check.json', {
       params: {
         client_email: email,
         client_token: token,
@@ -383,7 +383,7 @@ class DefaultPage extends Component {
     const rg = e.target.elements.rg.value;
     const cpf = e.target.elements.cpf.value;
 
-    axios.get(`https://caixa-verde-react.herokuapp.com/api/v1/clients`).then(res => {
+    axios.get(`https://caixa-verde.herokuapp.com/api/v1/clients.json`).then(res => {
       console.log('here');
       console.log(res);
     });
@@ -399,7 +399,7 @@ class DefaultPage extends Component {
     console.log(password);
 
     axios
-      .post(`https://caixa-verde-react.herokuapp.com/api/v1/sessions`, { email, password })
+      .post(`https://caixa-verde.herokuapp.com/api/v1/sessions.json`, { email, password })
       .then(res => {
         if (res['status'] === 201) {
           const token = res.data['authentication_token'];
