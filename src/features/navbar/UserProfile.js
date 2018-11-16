@@ -18,8 +18,6 @@ export default class UserProfile extends Component {
 
       const email = localStorage.getItem('email');
       const token = localStorage.getItem('token');
-      
-
       const deleteUrl = "http://localhost:3000/api/v1/sessions.json?client_email="+email+"&client_token="+token;
       const httpReqHeaders = {
         'Content-Type': 'application/json'
@@ -30,11 +28,14 @@ export default class UserProfile extends Component {
 
       localStorage.removeItem('email');
       localStorage.removeItem('token');
+      localStorage.removeItem('selectedProducts');
 
       axios.delete(deleteUrl, axiosConfigObject).then(res=> {
          if (res['status'] === 200) {
-             
              console.log("Session deleted");
+             var targetUrl='';
+             this.props.redirect('/');
+             this.props.changeToLoggedOut();
           } else {
             // throw error and go to catch block
             throw new Error('Error');
@@ -53,7 +54,7 @@ export default class UserProfile extends Component {
 
             <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Usuário
+                {this.props.clientName}
                 </a>
                 <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                 <a className="dropdown-item" href="/">Minha Conta</a>

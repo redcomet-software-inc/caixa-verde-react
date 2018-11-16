@@ -38,7 +38,7 @@ class NavBar extends Component {
             </form>
 
             <ul className="navbar-nav my-2 my-lg-0">
-            { this.props.authentication_token ? <UserProfile  authentication_token={this.props.authentication_token} email={this.props.email}  /> : <div> 
+            { this.props.loggedIn ? <UserProfile redirect={this.props.redirect} changeToLoggedOut={this.props.changeToLoggedOut} clientName={this.props.clientName} /> : <div> 
               <li className="nav-item"><NavLink className="nav-link" to="/login">Login</NavLink> </li>
 
             </div>}

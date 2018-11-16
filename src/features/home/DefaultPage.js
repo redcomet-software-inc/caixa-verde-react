@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, Route, HashRouter, Redirect } from 'react-router-dom';
-import { createHashHistory } from 'history'
+import { createHashHistory } from 'history';
 import CurrencyInput from 'react-currency-input';
 import axios from 'axios';
 import NavBar from '../navbar/NavBar.js';
@@ -16,13 +16,6 @@ import Registration from '../pages/Registration.js';
 import ShoppingCart from '../pages/ShoppingCart.js';
 import Checkout1 from '../pages/Checkout1.js';
 
-//created_at: "2018-11-06T10:47:32.310Z"
-
-//id: 21
-//name: "Product 1"
-//description: "Description of Product 1"
-//price: null
-
 class DefaultPage extends Component {
   constructor(props) {
     super(props);
@@ -33,12 +26,15 @@ class DefaultPage extends Component {
       shoppingCartCount: 0,
       shoppingCart: [],
       totalPrice: '0.0',
+      clientName:'',
       email: '',
       authentication_token: '',
       signInMessage: '',
       clientId: '',
       loggedIn: false,
       kits: [],
+      redirect: false,
+      redirectTo:'',
     };
     this.addCardCount = this.addCardCount.bind(this);
     this.subtractCardCount = this.subtractCardCount.bind(this);
@@ -84,44 +80,76 @@ class DefaultPage extends Component {
   }
 
   getProducts() {
-    axios.get(`http://localhost:3000/api/v1/products`).then(res => {
+    axios.get(`http://localhost:3000/api/v1/products.json`).then(res => {
       const products = res.data;
       this.setState({ products: products });
     });
   }
-  
+
   getKits() {
-    axios.get(`http://localhost:3000/api/v1/kits`).then(res => {
+    axios.get(`http://localhost:3000/api/v1/kits.json`).then(res => {
       const kits = res.data;
       this.setState({ kits: kits });
-      console.log("KITS");
+      console.log('KITS');
       console.log(res.data);
     });
   }
-  isClientLoggedIn() {
 
-    console.log("teste")
-    const email = "guilhermewn@gmail.com";
-    const token = "g5EiYut5zz821CXNemLy";
-    console.log(email);
-    console.log(token);
-
-
-    axios.get("http://localhost:3000/api/v1/clients.json", {
-        params: {
-          client_email: email,
-          client_token: token
-        }
-
-      });
-
+  changeToLoggedOut = () => {
+    this.setState({loggedIn: false});
   }
+
+  /* Redirect and Render */
+  redirect = (targetUrl) => {
+    console.log(targetUrl);
+    this.setState({redirectTo:targetUrl});
+    this.setState({redirect: true});
+  }
+
+  renderRedirect = () => {
+      if(this.state.redirect == true) {
+        this.setState({redirect: false});
+        return <Redirect exact to={this.state.redirectTo} />;
+      }
+    
+  };
+
+  /*Check if user is LoggedIn */
+  auth = () => {
+    const token = localStorage.getItem('token');
+    const email = localStorage.getItem('email');
+    console.log("Auth");
+    console.log(token);
+    console.log(email);
+
+    axios.get('http://localhost:3000/api/v1/sessions/check.json', {
+      params: {
+        client_email: email,
+        client_token: token,
+      },
+    }).then(res => {
+       if (res['status'] === 200) {
+          
+          this.setState({loggedIn: true});
+          this.setState({clientName: res.data['name']});
+          console.log("Logged");
+
+       } else {
+          this.setState({loggedIn: false});
+          throw new Error('Error');
+       }
+
+    });
+
+
+  };
 
   componentDidMount() {
     this.getLocalStorage();
     this.getProducts();
     this.getKits();
-    this.isClientLoggedIn();
+    this.auth();
+
   }
 
   getSelectedProductsInfo = () => {
@@ -257,7 +285,7 @@ class DefaultPage extends Component {
   };
 
   /* Sign In Client and Register new Token */
-  signIn = (e) => {
+  signIn = e => {
     e.preventDefault();
     const email = e.target.elements.email.value;
     const password = e.target.elements.password.value;
@@ -271,22 +299,18 @@ class DefaultPage extends Component {
         if (res['status'] === 201) {
           const token = res.data['authentication_token'];
           this.setState({ authentication_token: token });
-
           console.log(res['status']);
           this.setState({ signInMessage: 'Você está logado.' });
           this.setState({ email: email });
+          this.setState({ clientName:  res.data['name'] });
           this.setState({ clientId: res.data['id'] });
-          this.setState({ loggedIn: true});
-
+          this.setState({ loggedIn: true });
           localStorage.setItem('token', token);
           localStorage.setItem('email', email);
-
           console.log('Client ID');
           console.log(this.state.clientId);
-
-           
-         
-
+          this.setState({redirectTo:''});
+          this.setState({ redirect: true });
         } else {
           // throw error and go to catch block
           throw new Error('Error');
@@ -298,18 +322,13 @@ class DefaultPage extends Component {
       });
   };
 
-  /*Check User Authorization */
-  auth = () => {
-    const token = localStorage.getItem('token');
-    const email = localStorage.getItem('email');
-
-    
-  }
 
 
-  showComponent = (value) => {
-    this.setState({showComponent: value});
-  }
+  showComponent = value => {
+    this.setState({ showComponent: value });
+  };
+
+  
 
   render() {
     return (
@@ -318,15 +337,17 @@ class DefaultPage extends Component {
           <div className="header">
             <div className="left-margin" />
             <NavBar
-              authentication_token={this.state.authentication_token}
-              email={this.state.email}
+              loggedIn={this.state.loggedIn}
               shoppingCartCount={this.state.shoppingCartCount}
               getSelectedProductsInfo={this.getSelectedProductsInfo}
+              clientName={this.state.clientName}
+              redirect={this.redirect}
+              changeToLoggedOut={this.changeToLoggedOut}
             />
             <div className="row content">
               <div className="col-md-3">{this.state.showComponent ? <SideBar /> : null}</div>
               <div className="col-md-6">
-                
+                {this.renderRedirect(this.state.redirectTo)}
                 <Route exact path="/" component={Option} />
                 <Route
                   exact
@@ -358,7 +379,11 @@ class DefaultPage extends Component {
                 <Route
                   path="/login"
                   render={props => (
-                    <Login signIn={this.signIn} signInMessage={this.state.signInMessage} loggedIn={this.state.loggedIn} />
+                    <Login
+                      signIn={this.signIn}
+                      signInMessage={this.state.signInMessage}
+                      loggedIn={this.state.loggedIn}
+                    />
                   )}
                 />
                 <Route
@@ -391,6 +416,10 @@ class DefaultPage extends Component {
             shoppingCart={this.state.shoppingCart}
             totalPrice={this.state.totalPrice}
             setMoneyFormat={this.setMoneyFormat}
+            loggedIn={this.state.loggedIn}
+            redirect={this.redirect}
+            renderRedirect={this.renderRedirect}
+
           />
         )}
       </div>

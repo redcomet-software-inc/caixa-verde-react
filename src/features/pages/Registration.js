@@ -7,10 +7,12 @@ export default class Registration extends Component {
 
   render(props) {
     return (
-
-
-
       <div className="pages-registration">
+        <div className="alert alert-info" role="alert">
+          Para efetuar sua compra, é necessário estar cadastrado aqui no Site.
+          Preencha seus dados no formulário abaixo, é rapidinho, leva menos de 1 minuto.
+          <a href="">Já tenho uma conta</a>
+        </div>
         <h2 className="text-center title">Cadastro</h2>
         <form onSubmit={this.props.requestAPI}>
           <div className="form-row">

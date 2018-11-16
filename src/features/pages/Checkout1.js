@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 export default class Checkout1 extends Component {
   static propTypes = {
@@ -13,6 +14,23 @@ export default class Checkout1 extends Component {
   }
   componentDidMount(){
     this.props.getSelectedProductsInfo();
+    console.log("CLIENT INFORMATION");
+    console.log(this.props.clientId);
+  }
+
+  getClientInformations = (props) =>  {
+    const clientId = this.props.clientId;
+    axios.get(`http://localhost:3000/api/v1/client.json`, {
+      params:{
+        clientId: clientId,
+        //email: email,
+        //token: token
+      }
+    }).then(res => {
+      const kits = res.data;
+
+      console.log(res.data);
+    });
   }
  
   render() {

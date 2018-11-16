@@ -23,9 +23,17 @@ class ShoppingCart extends Component {
   //t.integer "client_id"
   //t.integer "address_id"
 
-  clickHandle (){
-    console.log("Click handle");
-    
+  clickHandle = (e) => {
+    e.preventDefault();
+    var targetUrl="cadastro";
+    console.log("ClickHandle");
+    if (this.props.loggedIn===false) {
+      this.props.redirect(targetUrl);
+    } else {
+      console.log("here");
+      targetUrl = "finalizar1";
+      this.props.redirect(targetUrl);
+    }
   }
 
 
@@ -83,11 +91,8 @@ class ShoppingCart extends Component {
                 Fechar
               </button>
               <HashRouter>
-              <NavLink className="btn btn-primary" onClick={this.clickHandle} to='/finalizar1' type="button">Finalizar Compra</NavLink>
+              <button className="btn btn-primary" data-dismiss="modal" onClick={this.clickHandle} type="button">Finalizar Compra</button>
               </HashRouter>
-              <NavLink className="nav-link" to="/login">Login</NavLink>
-            
-
             </div>
           </div>
         </div>
