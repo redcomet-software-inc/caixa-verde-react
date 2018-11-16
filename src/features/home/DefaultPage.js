@@ -22,9 +22,12 @@ class DefaultPage extends Component {
     this.state = {
       products: [],
       selectedProducts: [],
+      kits: [],
+      selectedKits: [],
       showComponent: false,
       shoppingCartCount: 0,
       shoppingCart: [],
+      shoppingCartKits:[],
       totalPrice: '0.0',
       clientName:'',
       email: '',
@@ -32,32 +35,38 @@ class DefaultPage extends Component {
       signInMessage: '',
       clientId: '',
       loggedIn: false,
-      kits: [],
       redirect: false,
       redirectTo:'',
     };
-    this.addCardCount = this.addCardCount.bind(this);
-    this.subtractCardCount = this.subtractCardCount.bind(this);
+    
   }
 
-  /* Get Product List from Index.js, count it, and pass it to the 'Custom' component */
-  productsList = productsList => {
-    var count = 0;
+  /* Count Products and Kits */
+  countProducts = (productsList, kitsList) => {
+    var products = 0;
+    var kits = 0;
+    console.log("countProducts");
+    console.log(kitsList);
     for (var i = 0; i <= productsList.length - 1; i++) {
-      count += productsList[i].quantity;
+      products += productsList[i].quantity;
     }
-    this.setState({ shoppingCartCount: count });
+    for (var i = 0; i <= kitsList.length - 1; i++) {
+      kits += kitsList[i].quantity;
+    }
+    var shoppingCartCount = products + kits; 
+    this.setState({ shoppingCartCount: shoppingCartCount });
   };
 
   /* Add List of Selected Products to Local Storage */
   setLocalStorage() {
-    this.productsList(this.state.selectedProducts);
+    this.countProducts(this.state.selectedProducts, this.state.selectedKits);
     localStorage.setItem('selectedProducts', JSON.stringify(this.state.selectedProducts));
+    localStorage.setItem('selectedKits', JSON.stringify(this.state.selectedKits));
   }
 
   /* Verify if a localStore key is available */
   checkLocalStorage() {
-    if (localStorage.getItem('selectedProducts') === null) {
+    if (localStorage.getItem('selectedProducts') === null || localStorage.getItem('selectedKits') === null) {
       return false;
     } else {
       return true;
@@ -69,25 +78,24 @@ class DefaultPage extends Component {
     if (this.checkLocalStorage() !== false) {
       var selectedProducts = localStorage.getItem('selectedProducts');
       this.setState({ selectedProducts: JSON.parse(selectedProducts) });
-      this.productsList(JSON.parse(selectedProducts)); //Updates NavBar
+
+      var selectedKits = localStorage.getItem('selectedKits');
+      this.setState({ selectedKits: JSON.parse(selectedKits) });
+
+
+      this.countProducts(JSON.parse(selectedProducts),JSON.parse(selectedKits)); //Updates NavBar
     }
   }
 
-  retrieveDataFromLocalStorage() {
-    var result = localStorage.getItem('selectedProducts');
-    console.log('DataRetrieved');
-    console.log(result);
-  }
-
   getProducts() {
-    axios.get(`http://localhost:3000/api/v1/products.json`).then(res => {
+    axios.get(`https://caixa-verde-react.herokuapp.com/api/v1/products.json`).then(res => {
       const products = res.data;
       this.setState({ products: products });
     });
   }
 
   getKits() {
-    axios.get(`http://localhost:3000/api/v1/kits.json`).then(res => {
+    axios.get(`https://caixa-verde-react.herokuapp.com/api/v1/kits.json`).then(res => {
       const kits = res.data;
       this.setState({ kits: kits });
       console.log('KITS');
@@ -122,7 +130,7 @@ class DefaultPage extends Component {
     console.log(token);
     console.log(email);
 
-    axios.get('http://localhost:3000/api/v1/sessions/check.json', {
+    axios.get('https://caixa-verde-react.herokuapp.com/api/v1/sessions/check.json', {
       params: {
         client_email: email,
         client_token: token,
@@ -149,14 +157,15 @@ class DefaultPage extends Component {
     this.getProducts();
     this.getKits();
     this.auth();
-
   }
+
+  
 
   getSelectedProductsInfo = () => {
     var products = this.state.products;
     var selectedProducts = this.state.selectedProducts;
     var selectedProductsInfo = [];
-    var totalPrice = 0;
+    var totalPriceProducts = 0;
 
     for (var i = 0; i <= products.length - 1; i++) {
       for (var j = 0; j <= selectedProducts.length - 1; j++) {
@@ -167,26 +176,52 @@ class DefaultPage extends Component {
           selectedProduct['quantity'] = quantity;
           selectedProduct['price_table_id'] = price_table_id;
 
-          totalPrice += parseFloat(selectedProduct['price']) * quantity;
+          totalPriceProducts += parseFloat(selectedProduct['price']) * quantity;
           selectedProductsInfo.push(selectedProduct);
         }
       }
     }
-    console.log(selectedProductsInfo);
+     
     this.setState({ shoppingCart: selectedProductsInfo });
-    this.setState({ totalPrice: totalPrice });
-
-    return selectedProductsInfo;
+    this.setState({ totalPrice: totalPriceProducts });
+    this.getSelectedKitsInfo();
+    
   };
+
+  getSelectedKitsInfo = () => {
+    var kits = this.state.kits;
+    var selectedKits = this.state.selectedKits;
+    var selectedKitsInfo = [];
+    var totalPriceKits = 0;
+
+    for (var i = 0; i <= kits.length - 1; i++) {
+      for (var j = 0; j <= selectedKits.length - 1; j++) {
+        if (kits[i].id == selectedKits[j].id) {
+          var selectedKit = kits[i];
+          var quantity = selectedKits[j].quantity;
+          var price_table_id = selectedKits[j].price_table_id;
+          selectedKit['quantity'] = quantity;
+          selectedKit['price_table_id'] = price_table_id;
+
+          totalPriceKits += parseFloat(selectedKit['price']) * quantity;
+          selectedKitsInfo.push(selectedKit);
+        }
+      }
+    }
+    console.log("Selected Kits");
+    console.log(selectedKitsInfo);
+    this.setState({ shoppingCartKits: selectedKitsInfo });
+    this.setState({ totalPrice: this.state.totalPrice + totalPriceKits });
+
+ 
+  };
+  
+
+  
 
   setMoneyFormat = price => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
     // => "R$100,000,000.00"
-  };
-
-  setShoppingCart = data => {
-    console.log('Shopping Cart');
-    console.log(data);
   };
 
   /* Add Item to the Shopping List */
@@ -258,6 +293,76 @@ class DefaultPage extends Component {
     this.setLocalStorage();
   };
 
+  /* Add Item to the Shopping List */
+  addCardCountKit = e => {
+  
+    var id = parseInt(e.target.id);
+
+    var priceTableId = '';
+    var selectedKitsTemp = this.state.selectedKits;
+    var kitsTemp = this.state.kits;
+
+    /* Get Price_table_id from clicked element 
+    for (var i = 0; i <= kitsTemp.length - 1; i++) {
+      if (kitsTemp[i].id === id) {
+        priceTableId = kitsTemp[i].price_table_id;
+      }
+    }
+    */
+    /* Get Element from Array State and Update the data in a temporary Variable */
+    var checkExistingElement = 0;
+    for (var i = 0; i <= this.state.selectedKits.length - 1; i++) {
+      if (selectedKitsTemp[i].id === id) {
+        checkExistingElement += 1;
+        var newKit = {
+          id: id,
+          quantity: selectedKitsTemp[i].quantity + 1,
+          price_table_id: selectedKitsTemp[i].price_table_id,
+        };
+        selectedKitsTemp.splice(i, 1, newKit);
+      }
+    }
+    /* If the Element does not exist inside SelectedProducts, just push it */
+    if (checkExistingElement == 0) {
+      var newKit = {
+        id: id,
+        quantity: 1,
+        price_table_id: priceTableId,
+      };
+      selectedKitsTemp.push(newKit);
+    }
+    /* UpdateState */
+    this.setState({ selectedKits: selectedKitsTemp });
+    this.setLocalStorage();
+  };
+
+  /* Add Item to the Shopping List and Update State */
+  subtractCardCountKit = e => {
+    var id = parseInt(e.target.id);
+
+    var selectedKitsTemp = this.state.selectedKits;
+    /* Get Element from Array State and Update the data in a temporary Variable */
+    for (var i = 0; i <= this.state.selectedKits.length - 1; i++) {
+      if (selectedKitsTemp[i].id === id) {
+        var newKit = {
+          id: id,
+          quantity: selectedKitsTemp[i].quantity - 1,
+          price_table_id: selectedKitsTemp[i].price_table_id,
+        };
+
+        if (newKit.quantity == 0) {
+          selectedKitsTemp.splice(i, 1);
+        } else {
+          selectedKitsTemp.splice(i, 1, newKit);
+        }
+      }
+    }
+
+    /* UpdateState */
+    this.setState({ selectedKits: selectedKitsTemp });
+    this.setLocalStorage();
+  };
+
   /* Submit Data to the API */
   requestAPI = e => {
     //name, lastname, email, password, city, state, zipcode, address, number, neighbourhood, complement, phone1, phone2, rg, cpf
@@ -278,7 +383,7 @@ class DefaultPage extends Component {
     const rg = e.target.elements.rg.value;
     const cpf = e.target.elements.cpf.value;
 
-    axios.get(`http://localhost:3000/api/v1/clients`).then(res => {
+    axios.get(`https://caixa-verde-react.herokuapp.com/api/v1/clients`).then(res => {
       console.log('here');
       console.log(res);
     });
@@ -294,7 +399,7 @@ class DefaultPage extends Component {
     console.log(password);
 
     axios
-      .post(`http://localhost:3000/api/v1/sessions`, { email, password })
+      .post(`https://caixa-verde-react.herokuapp.com/api/v1/sessions`, { email, password })
       .then(res => {
         if (res['status'] === 201) {
           const token = res.data['authentication_token'];
@@ -340,6 +445,7 @@ class DefaultPage extends Component {
               loggedIn={this.state.loggedIn}
               shoppingCartCount={this.state.shoppingCartCount}
               getSelectedProductsInfo={this.getSelectedProductsInfo}
+              getSelectedKitsInfo={this.getSelectedKitsInfo}
               clientName={this.state.clientName}
               redirect={this.redirect}
               changeToLoggedOut={this.changeToLoggedOut}
@@ -360,7 +466,6 @@ class DefaultPage extends Component {
                       selectedProducts={this.state.selectedProducts}
                       products={this.state.products}
                       onRef={ref => (this.custom = ref)}
-                      setShoppingCart={this.setShoppingCart}
                       showComponent={this.showComponent}
                     />
                   )}
@@ -370,8 +475,12 @@ class DefaultPage extends Component {
                   path="/Kits"
                   render={props => (
                     <Kits
-                      setMoneyFormat={this.setMoneyFormat}
+                      addCardCountKit={this.addCardCountKit}
+                      subtractCardCountKit={this.subtractCardCountKit}
+                      selectedKits={this.state.selectedKits}
                       kits={this.state.kits}
+                      onRef={ref => (this.custom = ref)}
+                      setMoneyFormat={this.setMoneyFormat}
                       showComponent={this.showComponent}
                     />
                   )}
@@ -397,7 +506,9 @@ class DefaultPage extends Component {
                   render={props => (
                     <Checkout1
                       getSelectedProductsInfo={this.getSelectedProductsInfo}
+                      getSelectedKitsInfo={this.getSelectedKitsInfo}
                       shoppingCart={this.state.shoppingCart}
+                      shoppingCartKits={this.state.shoppingCartKits}
                       shoppingCartCount={this.state.shoppingCartCount}
                       totalPrice={this.state.totalPrice}
                       setMoneyFormat={this.setMoneyFormat}
@@ -414,6 +525,7 @@ class DefaultPage extends Component {
         {this.state.shoppingCartCount > 0 && (
           <ShoppingCart
             shoppingCart={this.state.shoppingCart}
+            shoppingCartKits={this.state.shoppingCartKits}
             totalPrice={this.state.totalPrice}
             setMoneyFormat={this.setMoneyFormat}
             loggedIn={this.state.loggedIn}

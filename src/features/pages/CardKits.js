@@ -18,9 +18,21 @@ export default class CardKits extends Component {
     };
   }
 
-  componentDidMount(){
-    console.log("products");
-    console.log(this.props.products);
+  selectCard = (quantity) => {
+    if(quantity == 0) {
+      this.setState({borderClass:''});
+    } else {
+      this.setState({borderClass:this.myClass});
+    }
+  }
+
+   componentDidMount(){
+    this.setState({cardCount: this.props.quantity});
+    this.selectCard(this.props.quantity);
+  }
+  componentWillReceiveProps(props) {
+    this.setState({cardCount: props.quantity});
+    this.selectCard(props.quantity);
   }
 
   render() {
@@ -39,10 +51,10 @@ export default class CardKits extends Component {
           </ul>
           <div id={this.props.id} className="card-text card-footer">
             <div id={this.props.id} className={this.state.displayControlClass}>
-              <div id={this.props.id} onClick={this.props.addCardCount} className="btn btn-success">
+              <div id={this.props.id} onClick={this.props.addCardCountKit} className="btn btn-success">
                 +
               </div>
-              <div id={this.props.id} onClick={this.props.subtractCardCount} className="btn btn-danger">
+              <div id={this.props.id} onClick={this.props.subtractCardCountKit} className="btn btn-danger">
                 -
               </div>
               <div id={this.props.id} className="badge badge-info">{this.state.cardCount}</div>

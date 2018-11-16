@@ -32,6 +32,13 @@ export default class Checkout1 extends Component {
       console.log(res.data);
     });
   }
+
+  renderQuantity = (quantity) => {
+    if(quantity>1) {
+      return "("+quantity+")";
+    }
+  }
+
  
   render() {
     return (
@@ -45,19 +52,24 @@ export default class Checkout1 extends Component {
           </h4>
          
           <ul className="list-group mb-3">
-
-           {this.props.shoppingCart.map((item, index)=><div> 
-
-           
-
+          {this.props.shoppingCartKits.map((item, index)=><div> 
             <li className="list-group-item d-flex justify-content-between lh-condensed">
               <div>
-                <h6 className="my-0">{ item.name }</h6>
+                <h6 className="my-0">{ item.name } {this.renderQuantity(item.quantity)}</h6>
                 <small className="text-muted">{ item.description }</small>
               </div>
-              <span className="text-muted">{ this.props.setMoneyFormat(item.price) }</span>
+              <span className="text-muted">{ this.props.setMoneyFormat(item.price * item.quantity) }</span>
             </li>
+          </div>)}
 
+           {this.props.shoppingCart.map((item, index)=><div> 
+            <li className="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 className="my-0">{ item.name } {this.renderQuantity(item.quantity)}</h6>
+                <small className="text-muted">{ item.description }</small>
+              </div>
+              <span className="text-muted">{ this.props.setMoneyFormat(item.price * item.quantity) }</span>
+            </li>
             </div>)}
 
             <li className="list-group-item d-flex justify-content-between bg-light">

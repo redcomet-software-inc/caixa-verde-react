@@ -13,6 +13,23 @@ export default class Kits extends Component {
     this.props.showComponent(false);
   }
 
+  /* Get the Product ID and return the quantity from Selected Products */
+  getIndexReturnQtd = index => {
+    var selectedKits = this.props.selectedKits;
+    var checkExistingElement = 0;
+
+    for (var i = 0; i <= selectedKits.length - 1; i++) {
+      if (selectedKits[i].id == index) {
+        checkExistingElement += 1;
+        return selectedKits[i].quantity;
+      }
+    }
+
+    if (checkExistingElement == 0) {
+      return 0;
+    }
+  };
+
 
   render() {
     return (
@@ -31,8 +48,9 @@ export default class Kits extends Component {
                 price={item.price}
                 setMoneyFormat={this.props.setMoneyFormat}
                 products={item.products}
-                addCardCount={this.props.addCardCount}
-                subtractCardCount={this.props.subtractCardCount}
+                quantity={this.getIndexReturnQtd(item.id)}
+                addCardCountKit={this.props.addCardCountKit}
+                subtractCardCountKit={this.props.subtractCardCountKit}
                 ref={instance => {
                   this.card = instance;
                 }}

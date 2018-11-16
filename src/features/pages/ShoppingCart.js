@@ -71,6 +71,17 @@ class ShoppingCart extends Component {
                   </tr>
                 </thead>
                 <tbody>
+                 {this.props.shoppingCartKits.map(item => (
+                    <tr>
+                      <td />
+                      <td className="text-right">{item.name}</td>
+                      <td className="text-center">{item.quantity}</td>
+                      <td className="text-center">{this.props.setMoneyFormat(item.price)}</td>
+                      <td className="text-center">
+                        {this.props.setMoneyFormat(item.quantity * item.price)}
+                      </td>
+                    </tr>
+                  ))}
                   {this.props.shoppingCart.map(item => (
                     <tr>
                       <td />
@@ -83,6 +94,7 @@ class ShoppingCart extends Component {
                     </tr>
                   ))}
                 </tbody>
+                
               </div>
             </div>
             <div class="modal-footer">
