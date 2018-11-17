@@ -56,7 +56,7 @@ class DefaultPage extends Component {
     this.setState({ shoppingCartCount: shoppingCartCount });
   };
 
-  /* Add List of Selected Products to Local Storage */
+  /* Add List of Selected Products and Kits to Local Storage */
   setLocalStorage() {
     this.countProducts(this.state.selectedProducts, this.state.selectedKits);
     localStorage.setItem('selectedProducts', JSON.stringify(this.state.selectedProducts));
@@ -97,8 +97,6 @@ class DefaultPage extends Component {
     axios.get(`https://caixa-verde.herokuapp.com/api/v1/kits.json`).then(res => {
       const kits = res.data;
       this.setState({ kits: kits });
-      console.log('KITS');
-      console.log(res.data);
     });
   }
 
@@ -214,9 +212,6 @@ class DefaultPage extends Component {
 
  
   };
-  
-
-  
 
   setMoneyFormat = price => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
@@ -224,143 +219,64 @@ class DefaultPage extends Component {
   };
 
   /* Add Item to the Shopping List */
-  addCardCount = e => {
-    var id = parseInt(e.target.id,10); //radix 10
-
-    var priceTableId = '';
-    var selectedProductsTemp = this.state.selectedProducts;
-    var productsTemp = this.state.products;
+  addCardCount = (id, name, delta) => {
+    console.log("delta"+delta);
+    /* name variable can be either kit or product */
+    /* delta defines if the value increase or decrease */
+    /* this serves to differenciate list of kits and products */
+    if (name==="kit") {
+      console.log("--Kit")
+      var priceTableId = '';
+      var selectedItems = this.state.selectedKits;
+      var items = this.state.kits;
+    } else if (name==="product") {
+      console.log("Name is product");
+      var priceTableId = '';
+      var selectedItems = this.state.selectedProducts;
+      var items = this.state.products;
+    }
 
     /* Get Price_table_id from clicked element */
-    for (var i = 0; i <= productsTemp.length - 1; i++) {
-      if (productsTemp[i].id === id) {
-        priceTableId = productsTemp[i].price_table_id;
+    for (var i = 0; i <= items.length - 1; i++) {
+      if (items[i].id === id) {
+        priceTableId = items[i].price_table_id;
       }
     }
 
     /* Get Element from Array State and Update the data in a temporary Variable */
     var checkExistingElement = 0;
-    for (var i = 0; i <= this.state.selectedProducts.length - 1; i++) {
-      if (selectedProductsTemp[i].id === id) {
+    for (var i = 0; i <= selectedItems.length - 1; i++) {
+      if (selectedItems[i].id === id) {
         checkExistingElement += 1;
-        var newProduct = {
+        var newItem = {
           id: id,
-          quantity: selectedProductsTemp[i].quantity + 1,
-          price_table_id: selectedProductsTemp[i].price_table_id,
+          quantity: selectedItems[i].quantity + delta,
+          price_table_id: selectedItems[i].price_table_id,
         };
-        selectedProductsTemp.splice(i, 1, newProduct);
+        selectedItems.splice(i, 1, newItem);
       }
     }
     /* If the Element does not exist inside SelectedProducts, just push it */
     if (checkExistingElement === 0) {
-      var newProductZero = {
+      var newItemZero = {
         id: id,
         quantity: 1,
         price_table_id: priceTableId,
       };
-      selectedProductsTemp.push(newProductZero);
+      selectedItems.push(newItemZero);
     }
     /* UpdateState */
-    this.setState({ selectedProducts: selectedProductsTemp });
+    if (name==="kit") {
+      console.log("--Kit")
+      this.setState({ selectedKits: selectedItems });
+    } else if (name==="product") {
+      console.log("Name is product");
+      this.setState({ selectedProducts: selectedItems });
+    }
+    
     this.setLocalStorage();
   };
 
-  /* Add Item to the Shopping List and Update State */
-  subtractCardCount = e => {
-    var id = parseInt(e.target.id, 10); //radix 10
-
-    var selectedProductsTemp = this.state.selectedProducts;
-    /* Get Element from Array State and Update the data in a temporary Variable */
-    for (var i = 0; i <= this.state.selectedProducts.length - 1; i++) {
-      if (selectedProductsTemp[i].id === id) {
-        var newProduct = {
-          id: id,
-          quantity: selectedProductsTemp[i].quantity - 1,
-          price_table_id: selectedProductsTemp[i].price_table_id,
-        };
-
-        if (newProduct.quantity == 0) {
-          selectedProductsTemp.splice(i, 1);
-        } else {
-          selectedProductsTemp.splice(i, 1, newProduct);
-        }
-      }
-    }
-
-    /* UpdateState */
-    this.setState({ selectedProducts: selectedProductsTemp });
-    this.setLocalStorage();
-  };
-
-  /* Add Item to the Shopping List */
-  addCardCountKit = e => {
-  
-    var id = parseInt(e.target.id, 10); //radix 10
-
-    var priceTableId = '';
-    var selectedKitsTemp = this.state.selectedKits;
-    var kitsTemp = this.state.kits;
-
-    /* Get Price_table_id from clicked element 
-    for (var i = 0; i <= kitsTemp.length - 1; i++) {
-      if (kitsTemp[i].id === id) {
-        priceTableId = kitsTemp[i].price_table_id;
-      }
-    }
-    */
-    /* Get Element from Array State and Update the data in a temporary Variable */
-    var checkExistingElement = 0;
-    for (var i = 0; i <= this.state.selectedKits.length - 1; i++) {
-      if (selectedKitsTemp[i].id === id) {
-        checkExistingElement += 1;
-        var newKit = {
-          id: id,
-          quantity: selectedKitsTemp[i].quantity + 1,
-          price_table_id: selectedKitsTemp[i].price_table_id,
-        };
-        selectedKitsTemp.splice(i, 1, newKit);
-      }
-    }
-    /* If the Element does not exist inside SelectedProducts, just push it */
-    if (checkExistingElement === 0) {
-      var newKitZero = {
-        id: id,
-        quantity: 1,
-        price_table_id: priceTableId,
-      };
-      selectedKitsTemp.push(newKitZero);
-    }
-    /* UpdateState */
-    this.setState({ selectedKits: selectedKitsTemp });
-    this.setLocalStorage();
-  };
-
-  /* Add Item to the Shopping List and Update State */
-  subtractCardCountKit = e => {
-    var id = parseInt(e.target.id);
-
-    var selectedKitsTemp = this.state.selectedKits;
-    /* Get Element from Array State and Update the data in a temporary Variable */
-    for (var i = 0; i <= this.state.selectedKits.length - 1; i++) {
-      if (selectedKitsTemp[i].id === id) {
-        var newKit = {
-          id: id,
-          quantity: selectedKitsTemp[i].quantity - 1,
-          price_table_id: selectedKitsTemp[i].price_table_id,
-        };
-
-        if (newKit.quantity == 0) {
-          selectedKitsTemp.splice(i, 1);
-        } else {
-          selectedKitsTemp.splice(i, 1, newKit);
-        }
-      }
-    }
-
-    /* UpdateState */
-    this.setState({ selectedKits: selectedKitsTemp });
-    this.setLocalStorage();
-  };
 
   /* Submit Data to the API */
   requestAPI = e => {
@@ -474,7 +390,7 @@ class DefaultPage extends Component {
                   path="/Kits"
                   render={props => (
                     <Kits
-                      addCardCountKit={this.addCardCountKit}
+                      addCardCount={this.addCardCount}
                       subtractCardCountKit={this.subtractCardCountKit}
                       selectedKits={this.state.selectedKits}
                       kits={this.state.kits}

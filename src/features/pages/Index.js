@@ -34,7 +34,7 @@ export class Index extends Component {
     var selectedProducts = this.props.selectedProducts;
     var checkExistingElement = 0;
     for (var i = 0; i <= selectedProducts.length - 1; i++) {
-      if (selectedProducts[i].id === index) {
+      if (parseInt(selectedProducts[i].id,10) === index) {
         checkExistingElement += 1;
         return selectedProducts[i].quantity;
       }
@@ -43,13 +43,6 @@ export class Index extends Component {
       return 0;
     }
   };
-
-  //created_at: "2018-11-06T10:47:32.310Z"
-  //description: "Description of Product 1"
-  //id: 21
-  //name: "Product 1"
-  //updated_at: "2018-11-06T10:47:32.310Z"
-  //weight_per_unit: null
 
   render() {
     return (

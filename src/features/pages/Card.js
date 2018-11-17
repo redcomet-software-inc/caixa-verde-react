@@ -82,10 +82,10 @@ export default class Card extends Component {
       <div className="card-body">
         <div id={this.props.id} className="card-text">
             <div id={this.props.id} className={this.state.displayControlClass}>
-              <div id={this.props.id} onClick={this.props.addCardCount} className="btn btn-success">
+              <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"product",1)} className="btn btn-success">
                 +
               </div>
-              <div id={this.props.id} onClick={this.props.subtractCardCount} className="btn btn-danger">
+              <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"product",-1)} className="btn btn-danger">
                 -
               </div>
               <div id={this.props.id} className="badge badge-info">{this.state.cardCount}</div>

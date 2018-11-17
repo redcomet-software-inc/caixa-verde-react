@@ -8,6 +8,8 @@ export default class Kits extends Component {
 
    componentDidMount() {
     this.props.showComponent(true);
+    console.log("Kit Log");
+    console.log(this.props);
   }
   componentWillUnmount() {
     this.props.showComponent(false);
@@ -15,12 +17,16 @@ export default class Kits extends Component {
 
   /* Get the Product ID and return the quantity from Selected Products */
   getIndexReturnQtd = index => {
+    console.log("Get Quantity");
+    console.log(index);
     var selectedKits = this.props.selectedKits;
+    console.log(selectedKits);
     var checkExistingElement = 0;
 
     for (var i = 0; i <= selectedKits.length - 1; i++) {
-      if (selectedKits[i].id === index) {
+      if (parseInt(selectedKits[i].id,10) === index) {
         checkExistingElement += 1;
+        console.log("quantity:"+ selectedKits[i].quantity);
         return selectedKits[i].quantity;
       }
     }
@@ -48,7 +54,7 @@ export default class Kits extends Component {
                 price={item.price}
                 products={item.products}
                 quantity={this.getIndexReturnQtd(item.id)}
-                addCardCountKit={this.props.addCardCountKit}
+                addCardCount={this.props.addCardCount}
                 subtractCardCountKit={this.props.subtractCardCountKit}
                 ref={instance => {
                   this.card = instance;

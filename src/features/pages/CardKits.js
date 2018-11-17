@@ -51,10 +51,10 @@ export default class CardKits extends Component {
           </ul>
           <div id={this.props.id} className="card-text card-footer">
             <div id={this.props.id} className={this.state.displayControlClass}>
-              <div id={this.props.id} onClick={this.props.addCardCountKit} className="btn btn-success">
+              <div id={this.props.id} name="kit" onClick={(e) => this.props.addCardCount(e.target.id, 'kit', 1)} className="btn btn-success">
                 +
               </div>
-              <div id={this.props.id} onClick={this.props.subtractCardCountKit} className="btn btn-danger">
+              <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id, 'kit', -1)} className="btn btn-danger">
                 -
               </div>
               <div id={this.props.id} className="badge badge-info">{this.state.cardCount}</div>
