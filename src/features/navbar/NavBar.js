@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import appLogo from '../../images/caixaverde-finalizacao-weblogo.png'
+import userImage from '../../images/userImage.jpg';
 import {
   NavLink
 } from "react-router-dom";
@@ -20,7 +21,7 @@ class NavBar extends Component {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <div className="collapse navbar-collapse text-center" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
                 <NavLink className="nav-link" exact to="/">Home</NavLink>
@@ -32,13 +33,9 @@ class NavBar extends Component {
               </li>
               
             </ul>
-            <form className="form-inline mx-auto">
-              <input className="form-control mr-sm-2" type="search" placeholder="Procurar" aria-label="Search" />
-              <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Ir</button>
-            </form>
 
             <ul className="navbar-nav my-2 my-lg-0">
-            { this.props.loggedIn ? <UserProfile redirect={this.props.redirect} changeToLoggedOut={this.props.changeToLoggedOut} clientName={this.props.clientName} /> : <div> 
+            { this.props.loggedIn ?   <UserProfile redirect={this.props.redirect} changeToLoggedOut={this.props.changeToLoggedOut} clientName={this.props.clientName} /> : <div> 
               <li className="nav-item"><NavLink className="nav-link" to="/login">Login</NavLink> </li>
 
             </div>}
@@ -48,19 +45,21 @@ class NavBar extends Component {
           </div>
         </nav>
 
-        <nav className="navbar navbar-secondary navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-secondary navbar-expand-lg navbar-light bg-light text-right">
 
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            
               <ul className="nav navbar-nav ml-auto">
                 <li className="nav-item">
-                  <NavLink className="nav-link" data-toggle="modal" onClick={this.props.getSelectedProductsInfo} data-target="#shoppingCartDialog" exact to="/">Carrinho de Compras</NavLink>
+                  <NavLink className="nav-link" data-toggle="modal" onClick={this.props.updateShoppingCart} data-target="#shoppingCartDialog" exact to="/">Carrinho de Compras</NavLink>
                 
                 </li>
-                <li>
-                   <div className="badge badge-danger float-right">{ this.props.shoppingCartCount }</div>
+                <li><div className="badge badge-success float-right">
+                  
+                  { this.props.shoppingCartCount > 0  ?  <div>{this.props.shoppingCartCount}</div> : null}</div>
+                
                 </li>
               </ul>
-            </div>
+            
           </nav>
        
         

@@ -1,10 +1,16 @@
 @import '../../styles/mixins';
 
-.html, body {
+
+html, body {
+  line-height: 1;
   width: 100%;
-  margin-left: 20px;
-  padding-right: 10px;
+  margin: 0;
+  padding: 0;
   overflow-x:hidden;
+}
+
+.navbar {
+  padding: .5rem .4rem !important;
 }
 .modal-open {
   overflow:hidden;
@@ -25,7 +31,8 @@
   z-index: 100;
 }
 
-.home-default-page {
+
+.home-index {
   text-align: center;
   .app {
     text-align: center;
@@ -121,4 +128,14 @@
     border-radius: 50px;
     padding-left: 20px;
     padding-right: 20px;
+}
+
+
+
+
+.loader-hidden {
+  display: none;
+}
+.loader-active {
+  display: block;
 }

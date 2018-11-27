@@ -1,102 +1,95 @@
 import React, { Component } from 'react';
 import { Route, HashRouter, Redirect } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+import Loads from 'react-loads';
+
+import PropTypes from 'prop-types';
 //import CurrencyInput from 'react-currency-input';
 import axios from 'axios';
 import NavBar from '../navbar/NavBar.js';
 import Footer from '../footer/Footer.js';
 
+/* External Functions */
+import { setLocalStorage, checkLocalStorage } from './SetLocalStorage';
+import { countProducts } from './CountProducts';
+import { getTotalPrice } from './CountProducts';
+
 /* Pages and render components */
-import Custom from '../pages/Index.js';
+import Products from '../pages/Products.js';
 import Kits from '../pages/Kits.js';
 import Option from '../pages/Option.js';
 import SideBar from '../navbar/SideBar.js';
 import Login from '../pages/Login.js';
 import Registration from '../pages/Registration.js';
 import ShoppingCart from '../pages/ShoppingCart.js';
-import Checkout1 from '../pages/Checkout1.js';
+import Checkout from '../pages/Checkout.js';
 
-class DefaultPage extends Component {
+export class MainPage extends Component {
   constructor(props) {
     super(props);
+
+    this.getProducts();
+    this.getKits();
+    /* GetItems from LocalStorage */
+    if (checkLocalStorage() !== false) {
+      var selectedProducts = JSON.parse(localStorage.getItem('selectedProducts'));
+      var selectedKits = JSON.parse(localStorage.getItem('selectedKits')) ;
+      var authentication_token = localStorage.getItem('token');
+      var clientEmail = localStorage.getItem('email');
+      
+      var shoppingCartCount = countProducts(selectedProducts,selectedKits); //Updates NavBar
+      var totalPrice = getTotalPrice(selectedProducts, selectedKits);//Does not inclue freight
+    }
+
     this.state = {
       products: [],
-      selectedProducts: [],
+      selectedProducts: selectedProducts || [],
       kits: [],
-      selectedKits: [],
+      selectedKits: selectedKits ||  [],
       showComponent: false,
-      shoppingCartCount: 0,
-      shoppingCart: [],
+      shoppingCartCount: shoppingCartCount || 0,
+      shoppingCartProducts: [],
       shoppingCartKits:[],
       totalPrice: '0.0',
       clientName:'',
-      email: '',
-      authentication_token: '',
+      clientEmail: clientEmail || '',
+      authentication_token: authentication_token || '',
       signInMessage: '',
       clientId: '',
       loggedIn: false,
       redirect: false,
       redirectTo:'',
+      changeStateTest:'state1',
     };
     
   }
 
-  /* Count Products and Kits */
-  countProducts = (productsList, kitsList) => {
-    var products = 0;
-    var kits = 0;
-    console.log("countProducts");
-    console.log(kitsList);
-    for (var i = 0; i <= productsList.length - 1; i++) {
-      products += productsList[i].quantity;
-    }
-    for (var j = 0; j <= kitsList.length - 1; j++) {
-      kits += kitsList[j].quantity;
-    }
-    var shoppingCartCount = products + kits; 
-    this.setState({ shoppingCartCount: shoppingCartCount });
-  };
 
-  /* Add List of Selected Products and Kits to Local Storage */
-  setLocalStorage() {
-    this.countProducts(this.state.selectedProducts, this.state.selectedKits);
-    localStorage.setItem('selectedProducts', JSON.stringify(this.state.selectedProducts));
-    localStorage.setItem('selectedKits', JSON.stringify(this.state.selectedKits));
+  componentDidMount() {
+    this.auth();
   }
 
-  /* Verify if a localStore key is available */
-  checkLocalStorage() {
-    if (localStorage.getItem('selectedProducts') === null || localStorage.getItem('selectedKits') === null) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  /* Get List of Selected Products from Local Storage */
-  getLocalStorage() {
-    if (this.checkLocalStorage() !== false) {
-      var selectedProducts = localStorage.getItem('selectedProducts');
-      this.setState({ selectedProducts: JSON.parse(selectedProducts) });
-
-      var selectedKits = localStorage.getItem('selectedKits');
-      this.setState({ selectedKits: JSON.parse(selectedKits) });
-
-
-      this.countProducts(JSON.parse(selectedProducts),JSON.parse(selectedKits)); //Updates NavBar
-    }
-  }
-
-  getProducts() {
-    axios.get(`https://caixa-verde.herokuapp.com/api/v1/products.json`).then(res => {
+  getProducts = () => {
+    axios.get(`http://localhost:3000/api/v1/products.json`).then(res => {
       const products = res.data;
-      this.setState({ products: products });
-    });
+      if(res.status === 200) {
+        this.setState({ products: products });
+        this.updateShoppingCart("product",this.state.selectedProducts); 
+      }
+      
+    }).catch(error => {
+        throw error;
+      });
   }
 
   getKits() {
-    axios.get(`https://caixa-verde.herokuapp.com/api/v1/kits.json`).then(res => {
+    axios.get(`http://localhost:3000/api/v1/kits.json`).then(res => {
       const kits = res.data;
-      this.setState({ kits: kits });
+      if(res.status === 200) {
+        this.setState({ kits: kits });
+        this.updateShoppingCart("kit",this.state.selectedKits); 
+      }
     });
   }
 
@@ -106,7 +99,7 @@ class DefaultPage extends Component {
 
   /* Redirect and Render */
   redirect = (targetUrl) => {
-    console.log(targetUrl);
+    console.log("reached redirect");
     this.setState({redirectTo:targetUrl});
     this.setState({redirect: true});
   }
@@ -123,94 +116,64 @@ class DefaultPage extends Component {
   auth = () => {
     const token = localStorage.getItem('token');
     const email = localStorage.getItem('email');
-    console.log("Auth");
-    console.log(token);
-    console.log(email);
 
-    axios.get('https://caixa-verde.herokuapp.com/api/v1/sessions/check.json', {
+    axios.get('http://localhost:3000/api/v1/sessions/check.json', {
       params: {
         client_email: email,
         client_token: token,
       },
     }).then(res => {
        if (res['status'] === 200) {
-          
           this.setState({loggedIn: true});
+          this.setState({clientId: res.data['id']});
           this.setState({clientName: res.data['name']});
-          console.log("Logged");
-
        } else {
           this.setState({loggedIn: false});
           throw new Error('Error');
        }
-
     });
-
-
   };
 
-  componentDidMount() {
-    this.getLocalStorage();
-    this.getProducts();
-    this.getKits();
-    this.auth();
-  }
+  updateShoppingCart = (name, selectedItems) => {
+      var selectedItemsInfo = [];
+      var totalPriceItems = 0;
+    if (name==="kit") {
+      var items = this.state.kits;
+    } else if (name==="product") {
+      var items = this.state.products;
+    } else {
+      var items = this.state.products;
+      var selectedItems = this.state.selectedProducts;
+    }
 
-  
+    for (var i = 0; i <= items.length - 1; i++) {
+      for (var j = 0; j <= selectedItems.length - 1; j++) {
+        if (parseInt(items[i].id, 10) === parseInt(selectedItems[j].id, 10)) {
+         
+          var selectedItem = items[i];
+          var quantity = selectedItems[j].quantity;
+          var price_table_id = selectedItems[j].price_table_id;
+          selectedItem['quantity'] = quantity;
+          selectedItem['price_table_id'] = price_table_id;
+          selectedItem['unit_price'] = selectedItem['price']; //Mercado Pago Format
 
-  getSelectedProductsInfo = () => {
-    var products = this.state.products;
-    var selectedProducts = this.state.selectedProducts;
-    var selectedProductsInfo = [];
-    var totalPriceProducts = 0;
-
-    for (var i = 0; i <= products.length - 1; i++) {
-      for (var j = 0; j <= selectedProducts.length - 1; j++) {
-        if (products[i].id === selectedProducts[j].id) {
-          var selectedProduct = products[i];
-          var quantity = selectedProducts[j].quantity;
-          var price_table_id = selectedProducts[j].price_table_id;
-          selectedProduct['quantity'] = quantity;
-          selectedProduct['price_table_id'] = price_table_id;
-
-          totalPriceProducts += parseFloat(selectedProduct['price']) * quantity;
-          selectedProductsInfo.push(selectedProduct);
+          totalPriceItems += parseFloat(selectedItem['price']) * quantity;
+          selectedItemsInfo.push(selectedItem);
         }
       }
     }
-     
-    this.setState({ shoppingCart: selectedProductsInfo });
-    this.setState({ totalPrice: totalPriceProducts });
-    this.getSelectedKitsInfo();
-    
-  };
-
-  getSelectedKitsInfo = () => {
-    var kits = this.state.kits;
-    var selectedKits = this.state.selectedKits;
-    var selectedKitsInfo = [];
-    var totalPriceKits = 0;
-
-    for (var i = 0; i <= kits.length - 1; i++) {
-      for (var j = 0; j <= selectedKits.length - 1; j++) {
-        if (kits[i].id === selectedKits[j].id) {
-          var selectedKit = kits[i];
-          var quantity = selectedKits[j].quantity;
-          var price_table_id = selectedKits[j].price_table_id;
-          selectedKit['quantity'] = quantity;
-          selectedKit['price_table_id'] = price_table_id;
-
-          totalPriceKits += parseFloat(selectedKit['price']) * quantity;
-          selectedKitsInfo.push(selectedKit);
-        }
-      }
-    }
-    console.log("Selected Kits");
-    console.log(selectedKitsInfo);
-    this.setState({ shoppingCartKits: selectedKitsInfo });
-    this.setState({ totalPrice: this.state.totalPrice + totalPriceKits });
-
  
+    this.setState({ totalPrice: totalPriceItems });
+
+    /* If name is null, do another request to this funcion with name "kit" */
+    if (name==="kit") {
+      this.setState({ shoppingCartKits: selectedItemsInfo });
+    } else if (name==="product") {
+      this.setState({ shoppingCartProducts: selectedItemsInfo });
+    } else {
+      this.setState({ shoppingCartProducts: selectedItemsInfo });
+      this.updateShoppingCart("kit", this.state.selectedKits)
+    }
   };
 
   setMoneyFormat = price => {
@@ -220,17 +183,15 @@ class DefaultPage extends Component {
 
   /* Add Item to the Shopping List */
   addCardCount = (id, name, delta) => {
-    console.log("delta"+delta);
+      
     /* name variable can be either kit or product */
     /* delta defines if the value increase or decrease */
     /* this serves to differenciate list of kits and products */
     if (name==="kit") {
-      console.log("--Kit")
       var priceTableId = '';
       var selectedItems = this.state.selectedKits;
       var items = this.state.kits;
     } else if (name==="product") {
-      console.log("Name is product");
       var priceTableId = '';
       var selectedItems = this.state.selectedProducts;
       var items = this.state.products;
@@ -248,12 +209,18 @@ class DefaultPage extends Component {
     for (var i = 0; i <= selectedItems.length - 1; i++) {
       if (selectedItems[i].id === id) {
         checkExistingElement += 1;
-        var newItem = {
-          id: id,
-          quantity: selectedItems[i].quantity + delta,
-          price_table_id: selectedItems[i].price_table_id,
-        };
-        selectedItems.splice(i, 1, newItem);
+        if(selectedItems[i].quantity + delta === 0) {
+          console.log("ZERO");
+            selectedItems.splice(i,1);
+        } else { 
+          
+          var newItem = {
+            id: id,
+            quantity: selectedItems[i].quantity + delta,
+            price_table_id: selectedItems[i].price_table_id,
+          };
+          selectedItems.splice(i, 1, newItem);
+        }
       }
     }
     /* If the Element does not exist inside SelectedProducts, just push it */
@@ -267,14 +234,15 @@ class DefaultPage extends Component {
     }
     /* UpdateState */
     if (name==="kit") {
-      console.log("--Kit")
       this.setState({ selectedKits: selectedItems });
     } else if (name==="product") {
-      console.log("Name is product");
       this.setState({ selectedProducts: selectedItems });
     }
     
-    this.setLocalStorage();
+    let shoppingCartCount = countProducts(this.state.selectedProducts, this.state.selectedKits);
+    
+    this.setState({ shoppingCartCount: shoppingCartCount });
+    setLocalStorage(this.state.selectedProducts, this.state.selectedKits);
   };
 
 
@@ -298,9 +266,7 @@ class DefaultPage extends Component {
     const rg = e.target.elements.rg.value;
     const cpf = e.target.elements.cpf.value;
 
-    axios.get(`https://caixa-verde.herokuapp.com/api/v1/clients.json`).then(res => {
-      console.log('here');
-      console.log(res);
+    axios.get(`http://caixa-verde.herokuapp.com/api/v1/clients.json`).then(res => {
     });
   };
 
@@ -311,15 +277,13 @@ class DefaultPage extends Component {
     const password = e.target.elements.password.value;
     const authentication_token = '';
     const status = '';
-    console.log(password);
 
     axios
-      .post(`https://caixa-verde.herokuapp.com/api/v1/sessions.json`, { email, password })
+      .post(`http://localhost:3000/api/v1/sessions.json`, { email, password })
       .then(res => {
         if (res['status'] === 201) {
           const token = res.data['authentication_token'];
           this.setState({ authentication_token: token });
-          console.log(res['status']);
           this.setState({ signInMessage: 'Você está logado.' });
           this.setState({ email: email });
           this.setState({ clientName:  res.data['name'] });
@@ -327,8 +291,6 @@ class DefaultPage extends Component {
           this.setState({ loggedIn: true });
           localStorage.setItem('token', token);
           localStorage.setItem('email', email);
-          console.log('Client ID');
-          console.log(this.state.clientId);
           this.setState({redirectTo:''});
           this.setState({ redirect: true });
         } else {
@@ -341,17 +303,14 @@ class DefaultPage extends Component {
         this.setState({ signInMessage: 'E-mail e/ou Senha não correspondem.' });
       });
   };
-
-
-
+  
   showComponent = value => {
     this.setState({ showComponent: value });
   };
 
-  
-
   render() {
     return (
+
       <div>
         <HashRouter>
           <div className="header">
@@ -359,22 +318,23 @@ class DefaultPage extends Component {
             <NavBar
               loggedIn={this.state.loggedIn}
               shoppingCartCount={this.state.shoppingCartCount}
-              getSelectedProductsInfo={this.getSelectedProductsInfo}
-              getSelectedKitsInfo={this.getSelectedKitsInfo}
               clientName={this.state.clientName}
               redirect={this.redirect}
               changeToLoggedOut={this.changeToLoggedOut}
+              updateShoppingCart={this.updateShoppingCart}
+
             />
             <div className="row content">
-              <div className="col-md-3">{this.state.showComponent ? <SideBar /> : null}</div>
-              <div className="col-md-6">
+              <div className="col-lg-3">{this.state.showComponent ? <SideBar /> : null}</div>
+              <div className="col-lg-6">
                 {this.renderRedirect(this.state.redirectTo)}
+                
                 <Route exact path="/" component={Option} />
                 <Route
                   exact
                   path="/Personalizado"
                   render={props => (
-                    <Custom
+                    <Products
                       addCardCount={this.addCardCount}
                       setMoneyFormat={this.setMoneyFormat}
                       subtractCardCount={this.subtractCardCount}
@@ -417,17 +377,18 @@ class DefaultPage extends Component {
                   )}
                 />
                 <Route
-                  path="/finalizar1"
+                  path="/checkout"
                   render={props => (
-                    <Checkout1
-                      getSelectedProductsInfo={this.getSelectedProductsInfo}
-                      getSelectedKitsInfo={this.getSelectedKitsInfo}
-                      shoppingCart={this.state.shoppingCart}
+                    <Checkout
+                      shoppingCartProducts={this.state.shoppingCartProducts}
                       shoppingCartKits={this.state.shoppingCartKits}
                       shoppingCartCount={this.state.shoppingCartCount}
+                      updateShoppingCart={this.updateShoppingCart}
                       totalPrice={this.state.totalPrice}
                       setMoneyFormat={this.setMoneyFormat}
                       clientId={this.state.clientId}
+                      clientEmail={this.state.clientEmail}
+                      redirect={this.redirect}
                     />
                   )}
                 />
@@ -439,18 +400,17 @@ class DefaultPage extends Component {
 
         {this.state.shoppingCartCount > 0 && (
           <ShoppingCart
-            shoppingCart={this.state.shoppingCart}
+            shoppingCartProducts={this.state.shoppingCartProducts}
             shoppingCartKits={this.state.shoppingCartKits}
             totalPrice={this.state.totalPrice}
             setMoneyFormat={this.setMoneyFormat}
             loggedIn={this.state.loggedIn}
             redirect={this.redirect}
             renderRedirect={this.renderRedirect}
-
+            onRef={ref => (this.custom = ref)}
           />
         )}
       </div>
     );
   }
 }
-export default DefaultPage;

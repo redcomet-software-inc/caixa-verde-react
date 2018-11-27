@@ -8,7 +8,7 @@ export default class SideBar extends Component {
 
   render() {
     return (
-      <div className="navbar-side-bar">
+      <div className="navbar-side-bar text-center">
         <ul className="nav flex-column">
           <li className="nav-item">
             <Link className="nav-link active" to="/kits">Kits</Link>

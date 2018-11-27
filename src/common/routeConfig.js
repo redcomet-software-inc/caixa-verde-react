@@ -1,8 +1,7 @@
-import { App } from '../features/home';
+import { MainPage } from '../features/home/MainPage';
 import { PageNotFound } from '../features/common';
 import homeRoute from '../features/home/route';
 import commonRoute from '../features/common/route';
-import examplesRoute from '../features/examples/route';
 import _ from 'lodash';
 import pagesRoute from '../features/pages/route';
 import footerRoute from '../features/footer/route';
@@ -12,14 +11,13 @@ import footerRoute from '../features/footer/route';
 const childRoutes = [
   homeRoute,
   commonRoute,
-  examplesRoute,
   pagesRoute,
   footerRoute,
 ];
 
 const routes = [{
   path: '/',
-  component: App,
+  component: MainPage,
   childRoutes: [
     ...childRoutes,
     { path: '*', name: 'Page not found', component: PageNotFound },

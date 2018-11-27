@@ -1,6 +1,19 @@
 import React, { Component } from 'react';
 import stardardImage from '../../images/standard.jpg';
 
+const Image = (props) => {
+
+  let src='';
+
+  if(props.image) {
+    src = "http://localhost:3000"+ props.image;
+  } else {
+    src = stardardImage;
+  }
+
+  return (<img alt="kit" className="card-img-top" src={src} width={200} />);
+}
+
 export default class Card extends Component {
   static propTypes = {};
 
@@ -10,9 +23,9 @@ export default class Card extends Component {
 
     this.state = {
       classState: 'card-mouseout',
-      borderClass: '',
+      borderClass: 'standard',
       cardCount: 0,
-      displayControlClass: ''
+      show: 'hide',
     };
   }
 
@@ -29,7 +42,6 @@ export default class Card extends Component {
   addBorder = (e) => {
       if(this.state.cardCount===0 && this.state.borderClassName==='') {
         this.setState({ borderClass: 'card-active' });
-        this.setState({ displayControlClass: '' });
         console.log("aqui");
         console.log(this.props);
         this.setState({cardCount: this.props.quantity});
@@ -43,9 +55,11 @@ export default class Card extends Component {
 
   selectCard = (quantity) => {
     if(quantity === 0) {
-      this.setState({borderClass:''});
+      this.setState({borderClass:'standard'});
+      this.setState({show:'hide'});
     } else {
       this.setState({borderClass:this.myClass});
+      this.setState({show:'show'});
     }
   }
 
@@ -65,32 +79,39 @@ export default class Card extends Component {
 //updated_at: "2018-11-06T10:47:32.310Z"
 //weight_per_unit: null
 
-
   render() {
+   
     return (
-  
-
-    <div id={this.props.id}  onClick={this.addBorder} className={'card card ' + this.state.classState + ' ' + this.state.borderClass} style={{width: 60}}>
-      <img alt="kit" className="card-img-top" src={stardardImage} width={200} />
-      <div className="card-body">
-        <p className="card-text">{this.props.name}</p>
-        
+       
+    <div id={this.props.id}  onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto card ' + this.state.classState + ' ' + this.state.borderClass}>
+      
+      <Image image={this.props.image} />
+      
+      <div className="card-body text-center">
+        <span className="card-text">{this.props.name}</span><br/>
+        <small className="text-success">{this.props.setMoneyFormat(this.props.price)}</small>
       </div>
-      <ul className="list-group list-group-flush">
-        <li className="list-group-item">{this.props.setMoneyFormat(this.props.price)}</li>
-      </ul>
-      <div className="card-body">
-        <div id={this.props.id} className="card-text">
-            <div id={this.props.id} className={this.state.displayControlClass}>
-              <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"product",1)} className="btn btn-success">
-                +
-              </div>
-              <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"product",-1)} className="btn btn-danger">
+
+      <div className="card-body text-center">
+        <div className="row">
+          <div className="col-4">
+              <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"product",-1)} className={'btn btn-info btn-lg '+this.state.show}>
                 -
               </div>
-              <div id={this.props.id} className="badge badge-info">{this.state.cardCount}</div>
-            </div>
+              
           </div>
+          <div className="col-4">
+              <div id={this.props.id} className={'btn disabled '+this.state.show}>{this.state.cardCount}</div>
+          </div>
+          <div className="col-4">
+              <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"product",1)} className="btn btn-success btn-lg">
+                +
+              </div>
+          </div>
+             
+        </div>
+
+  
       </div>
       </div>
     

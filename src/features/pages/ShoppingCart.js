@@ -20,6 +20,8 @@ class ShoppingCart extends Component {
   }
 
 
+
+
   //t.integer "client_id"
   //t.integer "address_id"
 
@@ -30,13 +32,10 @@ class ShoppingCart extends Component {
     if (this.props.loggedIn===false) {
       this.props.redirect(targetUrl);
     } else {
-      console.log("here");
-      targetUrl = "finalizar1";
+      targetUrl = "checkout";
       this.props.redirect(targetUrl);
     }
   }
-
-
 
 
   render() {
@@ -53,7 +52,7 @@ class ShoppingCart extends Component {
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLongTitle">
-                Meu Carrinho
+                Meu Carrinho 
               </h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -71,7 +70,7 @@ class ShoppingCart extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                 {this.props.shoppingCartKits.map(item => (
+                {this.props.shoppingCartKits.map(item => (
                     <tr>
                       <td />
                       <td className="text-right">{item.name}</td>
@@ -82,7 +81,7 @@ class ShoppingCart extends Component {
                       </td>
                     </tr>
                   ))}
-                  {this.props.shoppingCart.map(item => (
+                  {this.props.shoppingCartProducts.map(item => (
                     <tr>
                       <td />
                       <td className="text-right">{item.name}</td>
@@ -93,6 +92,7 @@ class ShoppingCart extends Component {
                       </td>
                     </tr>
                   ))}
+                  
                 </tbody>
                 
               </div>

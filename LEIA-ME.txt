@@ -1,1 +1,3 @@
 * Ao subir para o Server, atualizar o Cors em config.rb
+* Ao subir para o server, verifique Rails.application.routes.default_url_options[:host] = 'localhost:3000' que
+está em development para obter endereço de imagens

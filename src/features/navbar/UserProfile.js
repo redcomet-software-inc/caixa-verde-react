@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link, Route, HashRouter } from 'react-router-dom';
+import userImage from '../../images/userImage.jpg';
 
 export default class UserProfile extends Component {
   static propTypes = {
 
   };
-
-    componentDidMount(){
-    
-        
-    }
-
      /* Sign In Client and Register new Token */
     signOut = e => {
       e.preventDefault();
@@ -29,6 +24,7 @@ export default class UserProfile extends Component {
       localStorage.removeItem('email');
       localStorage.removeItem('token');
       localStorage.removeItem('selectedProducts');
+      localStorage.removeItem('selectedKits');
 
       axios.delete(deleteUrl, axiosConfigObject).then(res=> {
          if (res['status'] === 200) {
@@ -44,19 +40,18 @@ export default class UserProfile extends Component {
       }).catch(error => {
         console.log('Error', error);
       })
-      
-
-     
     };
 
     render() {
         return (
-
+            <div>
+            
             <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {this.props.clientName}
-                </a>
-                <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src={userImage} class="image profile-image mr-2" width={50} />
+                    {this.props.clientName}
+                    </a>
+                <div className="dropdown-menu dropdown-menu-right text-center" aria-labelledby="navbarDropdown">
                 <a className="dropdown-item" href="/">Minha Conta</a>
                 <a className="dropdown-item" href="/">Opções</a>
                 <div className="dropdown-divider"></div>
@@ -64,6 +59,7 @@ export default class UserProfile extends Component {
                 <a className="dropdown-item" onClick={this.signOut} href="/">Sair</a>
                 </div>
             </li>
+            </div>
         );
     }
 }

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import Card from '../pages/Card.js';
 
-export class Index extends Component {
+export class Products extends Component {
   static propTypes = {
     pages: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
@@ -14,10 +14,6 @@ export class Index extends Component {
   constructor(props) {
     super(props);
     this.myClass = 'card-active';
-
-    this.state = {
-      shoppingCart: [],
-    };
   }
 
   componentDidMount() {
@@ -34,7 +30,7 @@ export class Index extends Component {
     var selectedProducts = this.props.selectedProducts;
     var checkExistingElement = 0;
     for (var i = 0; i <= selectedProducts.length - 1; i++) {
-      if (parseInt(selectedProducts[i].id,10) === index) {
+      if (parseInt(selectedProducts[i].id, 10) === index) {
         checkExistingElement += 1;
         return selectedProducts[i].quantity;
       }
@@ -46,10 +42,9 @@ export class Index extends Component {
 
   render() {
     return (
-      <div className="pages-index">
-        <div className="card-deck">
+      <div className="card-deck">
           {this.props.products.map((item, index) => (
-            <div>
+            <div className="m-2">
               {' '}
               <Card
                 key={item.id}
@@ -57,6 +52,7 @@ export class Index extends Component {
                 name={item.name}
                 description={item.description}
                 price={item.price}
+                image={item.image}
                 setMoneyFormat={this.props.setMoneyFormat}
                 quantity={this.getIndexReturnQtd(item.id)}
                 addCardCount={this.props.addCardCount}
@@ -67,7 +63,6 @@ export class Index extends Component {
               />
             </div>
           ))}
-        </div>
       </div>
     );
   }
@@ -90,4 +85,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Index);
+)(Products);
