@@ -27,11 +27,12 @@ export default class UserProfile extends Component {
       localStorage.removeItem('selectedKits');
 
       axios.delete(deleteUrl, axiosConfigObject).then(res=> {
-         if (res['status'] === 200) {
+         if (res.status === 200) {
              console.log("Session deleted");
              var targetUrl='';
-             this.props.redirect('/');
              this.props.changeToLoggedOut();
+             this.props.redirect('/');
+             
           } else {
             // throw error and go to catch block
             throw new Error('Error');

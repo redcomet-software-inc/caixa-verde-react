@@ -95,6 +95,7 @@ export class MainPage extends Component {
 
   changeToLoggedOut = () => {
     this.setState({loggedIn: false});
+    this.setState({signInMessage:''});
   }
 
   /* Redirect and Render */
@@ -311,7 +312,7 @@ export class MainPage extends Component {
   render() {
     return (
 
-      <div>
+      <div className='background'>
         <HashRouter>
           <div className="header">
             <div className="left-margin" />
@@ -326,7 +327,7 @@ export class MainPage extends Component {
             />
             <div className="row content">
               <div className="col-lg-3">{this.state.showComponent ? <SideBar /> : null}</div>
-              <div className="col-lg-6">
+              <div className="col-lg-6 inner-content">
                 {this.renderRedirect(this.state.redirectTo)}
                 
                 <Route exact path="/" component={Option} />
@@ -367,6 +368,7 @@ export class MainPage extends Component {
                       signIn={this.signIn}
                       signInMessage={this.state.signInMessage}
                       loggedIn={this.state.loggedIn}
+                      redirect={this.redirect}
                     />
                   )}
                 />

@@ -42,7 +42,7 @@ export class Products extends Component {
 
   render() {
     return (
-      <div className="card-deck">
+      <div className="card-deck mx-auto">
           {this.props.products.map((item, index) => (
             <div className="m-2">
               {' '}
