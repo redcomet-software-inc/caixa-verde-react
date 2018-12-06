@@ -1,98 +1,178 @@
 import React, { Component } from 'react';
+import Loading from '../common/Loading.js';
+import axios from 'axios';
+
 
 export default class Registration extends Component {
   static propTypes = {
 
   };
 
+
+  constructor(props){
+    super(props);
+    this.state = {
+      neighbourhoods: [],
+      street:'',
+      complement:'',
+      neighborhood:'',
+    }
+  }
+
+  getNeighbourhoods = () => {
+    axios.get('http://localhost:3000/api/v1/neighbourhoods.json')
+    .then(res => {
+      const neighbourhoods = res.data;
+      this.setState({neighbourhoods: neighbourhoods});
+    });
+  }
+
+  /* Get Address and Neighborhood from Correios API*/
+  getAddressAPI = (value) => {
+     axios.get('https://viacep.com.br/ws/'+value+'/json/')
+    .then(res => {
+      console.log(res.data);
+      this.setState({street: res.data.logradouro});
+      this.setState({complement: res.data.complemento});
+      this.setState({neighborhood: res.data.bairro});
+      if(res.data.localidade==="Brasília") {
+       
+        console.log("Redirect ---- ");
+      }
+    });
+  }
+
+  componentDidMount() {
+    this.getNeighbourhoods();
+    this.getAddressAPI();
+  }
+  renderCepLoading = () => {
+    return <Loading />
+  }
+
   render(props) {
     return (
       <div className="pages-registration form-spacing">
-        <div className="alert alert-info" role="alert">
-          Para efetuar sua compra, é necessário estar cadastrado aqui no Site.
-          Preencha seus dados no formulário abaixo, é rapidinho, leva menos de 1 minuto.
           <a href="">Já tenho uma conta</a>
-        </div>
+      
         <h2 className="text-center title">Cadastro</h2>
-        <form onSubmit={this.props.requestAPI}>
+        <form onSubmit={this.props.register}>
           <div className="form-row">
               <div className="col-md-6 mb-3">
-                <label for="validationDefault01">Nome</label>
-                <input type="text" className="form-control" id="name" name="name" placeholder="" />
+                <label for="inp" className="inp mb-2">
+                  <input type="text" id="name" name="name" placeholder="&nbsp;" />
+                  <span class="label">Nome</span>
+                  <span class="border"></span>
+                </label>
+              
               </div>
-              <div className="col-md-6 mb-3">
-                <label for="validationDefault02">Sobrenome</label>
-                <input type="text" className="form-control" id="lastname" name="lastname" placeholder="" />
+               <div className="col-md-6 mb-3">
+                <label for="inp" className="inp mb-2">
+                  <input type="text" id="lastname" name="lastname" placeholder="&nbsp;" />
+                  <span class="label">Sobrenome</span>
+                  <span class="border"></span>
+                </label>
               </div>
             </div>
            
             <div className="form-row">
                 <div className="col-md-6 mb-3">
-                  <label for="validationDefault03">E-mail</label>
-                  <input type="text" className="form-control" id="email" name="email" placeholder="meuemail@email.com" />
+                  <label for="inp" className="inp mb-2">
+                    <input type="email" id="email" name="email" placeholder="&nbsp;" />
+                    <span class="label">E-mail</span>
+                    <span class="border"></span>
+                  </label>
+                
                 </div>
                 <div className="col-md-6 mb-3">
-                  <label for="validationDefault03">Senha</label>
-                  <input type="password" name="password" className="form-control" id="validationDefault03" />
+                  <label for="inp" className="inp mb-2">
+                    <input type="password" id="password" name="password" placeholder="&nbsp;" />
+                    <span class="label">Senha</span>
+                    <span class="border"></span>
+                  </label>
+                
                 </div>
             </div>
           <div className="p-4">
-            <hr/>
+            
           </div>
 
           <div className="form-row">
       
-            <div className="col-md-9 mb-9">
-              <label for="validationDefault04">Região Administrativa</label>
-              <select class="form-control" name="state" id="state"><option value="">Selecione uma das regiões</option>
-              <option value="AC">Águas Claras</option>
-              <option value="AN">Asa Norte</option>
-              <option value="AS">Asa Sul</option>
-              <option value="LS">Lago Sul</option>
-              </select>
+            <div className="col-md-3 mb-12">
+              <label for="inp" className="inp mb-3">
+              
+                  <input onBlur={(e) => this.getAddressAPI(e.currentTarget.value)} type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" /> 
+                  <span class="label">CEP</span> 
+                  <span class="border"></span>
+                </label>
+               
+            </div><span className="mb-5 pl-3 mr-5">{this.renderCepLoading()}</span>
+            <div className="col-md-6 mb-12 float-right">
+              <label for="inp" className="inp mb-3">
+                  <select type="text" id="neighbourhood_id" name="neighbourhood_id" placeholder="&nbsp;" >
+                    <option disabled selected value> -- Escolha uma região -- </option>
+                    {this.state.neighbourhoods.map((item, index) => (
+                    <option value={item.id}> {item.name}</option>              
+                ))}
+                  </select> 
+                  <span class="label">Região Administrativa</span> 
+                  <span class="border"></span>
+                </label>
             </div>
 
 
-            <div className="col-md-3 mb-3">
-              <label for="validationDefault05">CEP</label>
-              <input type="text" className="form-control" id="zipcode" name="zipcode" placeholder="9999-999" />
-            </div>
           </div>
 
           <div class="form-row">
             <div className="col-md-9 mb-3">
-              <label for="validationDefault03">Endereço</label>
-              <input type="text" className="form-control" id="address" name="address" placeholder="Rua, Avenida, Alameda" />
+              <label for="inp" className="inp mb-2">
+                  <input type="text" id="address" name="address" placeholder="&nbsp;" defaultValue={this.state.street} />
+                  <span class="label">Endereço</span>
+                  <span class="border"></span>
+                </label>
+                
             </div>
             <div className="col-md-3 mb-3">
-              <label for="validationDefault03">Número</label>
-              <input type="text" className="form-control" id="number" name="number" placeholder="00" />
+              <label for="inp" className="inp mb-2">
+                    <input type="text" id="addressnumber" name="addressnumber" placeholder="&nbsp;" />
+                      <span class="label">Número</span>
+                      <span class="border"></span>
+                  </label>
             </div>
+
           </div>
 
           <div class="form-row">
             <div className="col-md-7 mb-3">
-              <label for="validationDefault03">Bairro</label>
-              <input type="text" className="form-control" id="neighbourhood" name="neighbourhood" placeholder="" />
+              <label for="inp" className="inp mb-2">
+              <input type="text" id="neighbourhood" name="neighbourhood" placeholder="&nbsp;" defaultValue={this.state.neighborhood} />
+                  <span class="label">Bairro</span>
+                  <span class="border"></span>
+              </label>
             </div>
+            
             <div className="col-md-5 mb-3">
-              <label for="validationDefault03">Complemento</label>
-              <input type="text" className="form-control" id="complement" name="complement" placeholder="" />
+              <label for="inp" className="inp mb-2">
+              <input type="text" id="complement" name="complement" placeholder="&nbsp;" defaultValue={this.state.complement} />
+                  <span class="label">Complemento</span>
+                  <span class="border"></span>
+              </label>
             </div>
           </div>
 
           <div class="form-row">
             <div className="col-md-6 mb-3">
-              <label for="validationDefault03">Celular 1</label>
-              <input type="text" className="form-control" id="phone1" name="phone1" placeholder="9999-9999" />
+              <label for="inp" className="inp mb-2">
+              <input type="text" id="cellphone" name="cellphone" placeholder="&nbsp;" />
+                  <span class="label">Celular</span>
+                  <span class="border"></span>
+              </label>
             </div>
-            <div className="col-md-6 mb-3">
-              <label for="validationDefault03">Celular 2</label>
-              <input type="text" className="form-control" id="phone2" name="phone2" placeholder="9999-9999" />
-            </div>
+            
           </div>
 
-
+          <br /><br />
 
           <div className="form-group">
             <div className="form-check">
@@ -102,9 +182,16 @@ export default class Registration extends Component {
               </label>
             </div>
           </div>
-          <p className="text-center">
-            <button className="btn btn-primary" type="submit">Cadastrar</button>
-          </p>
+  
+            <div class="row">
+              <div class="col-xs-6 mx-auto">
+                <button className="btn btn-primary" type="submit">Cadastrar </button> 
+              </div>
+              <div class="col-xs-6 text-center">
+                {this.renderCepLoading()}
+              </div>
+            </div>
+ 
         </form>
       </div>
     );

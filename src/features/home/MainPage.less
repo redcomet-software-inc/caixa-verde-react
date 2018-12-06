@@ -18,7 +18,7 @@ h2 {
 }
 .inner-content {
   background-color: #fff;
-  padding:.5rem;
+  padding:3rem;
   border-radius: 5px;
 }
 .form-spacing {
@@ -183,7 +183,7 @@ h2 {
   position: relative;
   margin: auto;
   width: 100%;
-  max-width: 280px;
+
 }
 .inp .label {
   position: absolute;
@@ -215,7 +215,7 @@ h2 {
   height: 48px;
   font-size: 16px;
   font-weight: 500;
-  border-bottom: 2px solid #c8ccd4;
+  border-bottom: 2px solid #29b56c;
   background: none;
   border-radius: 0;
   color: #223254;
@@ -231,11 +231,48 @@ h2 {
 .inp input:focus {
   background: none;
   outline: none;
+  color: #f21b3f !important;
 }
 .inp input:focus + span {
-  color: #07f;
+  color: #f21b3f;
   transform: translateY(-26px) scale(0.75);
 }
 .inp input:focus + span + .border {
+  transform: scaleX(1);
+}
+
+.inp select {
+  
+  width: 100%;
+  border: 0;
+  font-family: inherit;
+  padding: 12px 0;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+  border-bottom: 2px solid #29b56c;
+  background: none;
+  border-radius: 0;
+  color: #223254;
+  transition: all 0.15s ease;
+}
+
+.inp select:hover {
+  background: rgba(34,50,84,0.03);
+}
+.inp select:not(:placeholder-shown) + span {
+  color: #5a667f;
+  transform: translateY(-26px) scale(0.75);
+}
+.inp select:focus {
+  background: none;
+  outline: none;
+  color: #f21b3f !important;
+}
+.inp select:focus + span {
+  color: #f21b3f;
+  transform: translateY(-26px) scale(0.75);
+}
+.inp select:focus + span + .border {
   transform: scaleX(1);
 }

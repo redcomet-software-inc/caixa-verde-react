@@ -4,13 +4,38 @@ import userImage from '../../images/userImage.jpg';
 import {
   NavLink
 } from "react-router-dom";
-import UserProfile from './UserProfile.js'
+import UserProfile from './UserProfile.js';
 class NavBar extends Component {
-  static propTypes = {
+    static propTypes = {
 
-  };
+    };
+    constructor(props) {
+      super(props);
+      this.state = {
+        dialog: 'warningDialog',
+      }
+    }
 
+ 
 
+    addCardCount = (e, b, c) => {
+        console.log("confere");
+    }
+
+    changeDialog = () => {
+      if(this.props.shoppingCartCount > 0){
+        this.setState({dialog: 'shoppingCartDialog'});
+      } else {
+        this.setState({dialog: 'warningDialog'});
+      }
+    }
+
+    componentDidUpdate(prevProps) {
+      // Typical usage (don't forget to compare props):
+      if (this.props.shoppingCartCount !== prevProps.shoppingCartCount) {
+        this.changeDialog();
+      }
+    }
 
   render() {
     return (
@@ -50,7 +75,7 @@ class NavBar extends Component {
             
               <ul className="nav navbar-nav ml-auto">
                 <li className="nav-item">
-                  <NavLink className="nav-link" data-toggle="modal" onClick={this.props.updateShoppingCart} data-target="#shoppingCartDialog" exact to="/">Carrinho de Compras</NavLink>
+                  <NavLink className="nav-link" data-toggle="modal" data-target={"#"+this.state.dialog } exact to="/">Minha Caixa</NavLink>
                 
                 </li>
                 <li><div className="badge badge-success float-right">

@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import stardardImage from '../../images/standard.jpg';
+import { Icon } from 'react-icons-kit';
+import {boxAdd} from 'react-icons-kit/icomoon/boxAdd';
+import {minus} from 'react-icons-kit/icomoon/minus';
+
 
 const Image = (props) => {
 
@@ -11,7 +15,7 @@ const Image = (props) => {
     src = stardardImage;
   }
 
-  return (<img alt="kit" className="card-img-top" src={src} width={200} />);
+  return (<img alt="kit" className="card-img-top img-thumbnail" src={src} width={150} />);
 }
 
 export default class Card extends Component {
@@ -87,7 +91,7 @@ export default class Card extends Component {
       
       <Image image={this.props.image} />
       
-      <div className="card-body text-center">
+      <div className="card-body text-center pb-0">
         <span className="card-text">{this.props.name}</span><br/>
         <small className="text-success">{this.props.setMoneyFormat(this.props.price)}</small>
       </div>
@@ -95,18 +99,18 @@ export default class Card extends Component {
       <div className="card-body text-center">
         <div className="row">
           <div className="col-4">
-              <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"product",-1)} className={'btn btn-info btn-lg '+this.state.show}>
-                -
-              </div>
-              
+              <Icon icon={minus} id={this.props.id} onClick={(e) => this.props.addCardCount(e.currentTarget.id,"product",-1)} className={'btn btn-info ' + this.state.show} />
+               
           </div>
           <div className="col-4">
               <div id={this.props.id} className={'btn disabled '+this.state.show}>{this.state.cardCount}</div>
           </div>
+          
           <div className="col-4">
-              <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"product",1)} className="btn btn-success btn-lg">
-                +
-              </div>
+         
+              <Icon icon={boxAdd} id={this.props.id} onClick={(e) => this.props.addCardCount(e.currentTarget.id,"product",1)} className="btn btn-success" />
+               
+           
           </div>
              
         </div>

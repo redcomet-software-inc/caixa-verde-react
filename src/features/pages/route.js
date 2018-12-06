@@ -9,6 +9,7 @@ import {
   Kits,
   ShoppingCart,
   Checkout,
+  Orders,
 } from './';
 
 export default {
@@ -22,6 +23,7 @@ export default {
     { path: '/kits', name: 'Kits', component: Kits },
     { path: '/carrinho', name: 'Shopping cart', component: ShoppingCart },
     { path: '/checkout', name: 'Checkout', component: Checkout },
+    { path: '/orders', name: 'Orders', component: Orders },
     
   ],
 };

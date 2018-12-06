@@ -7,4 +7,4 @@ export { default as Checkout } from './Checkout';
 export { default as Kits } from './Kits';
 export { default as CardKits } from './CardKits';
 export { default as MercadoPago } from './MercadoPago';
-export { default as CheckoutPage } from './CheckoutPage';
+export { default as Orders } from './Orders';

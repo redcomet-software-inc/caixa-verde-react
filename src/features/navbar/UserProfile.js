@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Link, Route, HashRouter } from 'react-router-dom';
+import { NavLink, Link, Route, HashRouter } from 'react-router-dom';
+
+
 import userImage from '../../images/userImage.jpg';
 
 export default class UserProfile extends Component {
@@ -56,7 +58,7 @@ export default class UserProfile extends Component {
                 <a className="dropdown-item" href="/">Minha Conta</a>
                 <a className="dropdown-item" href="/">Opções</a>
                 <div className="dropdown-divider"></div>
-                <a className="dropdown-item" href="/">Histórico</a>
+                <NavLink className="dropdown-item" exact to="/orders">Histórico</NavLink>
                 <a className="dropdown-item" onClick={this.signOut} href="/">Sair</a>
                 </div>
             </li>

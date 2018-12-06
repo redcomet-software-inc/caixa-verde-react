@@ -52,27 +52,26 @@ class ShoppingCart extends Component {
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLongTitle">
-                Meu Carrinho 
+                Minha Caixa
               </h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              <div className="table table-responsive">
+
+              <table class="table table-borderless">
                 <thead>
-                  <tr className="text-center">
-                    <th />
+                  <tr>
                     <th>Item</th>
-                    <th>Quantidade</th>
+                    <th>Qtd.</th>
                     <th>Valor Unidade</th>
                     <th>Valor Quantidade</th>
                   </tr>
                 </thead>
                 <tbody>
-                {this.props.shoppingCartKits.map(item => (
+                 {this.props.shoppingCartKits.map(item => (
                     <tr>
-                      <td />
                       <td className="text-right">{item.name}</td>
                       <td className="text-center">{item.quantity}</td>
                       <td className="text-center">{this.props.setMoneyFormat(item.price)}</td>
@@ -83,7 +82,6 @@ class ShoppingCart extends Component {
                   ))}
                   {this.props.shoppingCartProducts.map(item => (
                     <tr>
-                      <td />
                       <td className="text-right">{item.name}</td>
                       <td className="text-center">{item.quantity}</td>
                       <td className="text-center">{this.props.setMoneyFormat(item.price)}</td>
@@ -92,16 +90,12 @@ class ShoppingCart extends Component {
                       </td>
                     </tr>
                   ))}
-                  
                 </tbody>
+              </table>
                 
-              </div>
             </div>
             <div class="modal-footer">
-              <span>Total: {this.props.setMoneyFormat(this.props.totalPrice)} </span>
-              <button type="button" className="btn btn-secondary" data-dismiss="modal">
-                Fechar
-              </button>
+              <span>Total: {this.props.setMoneyFormat(this.props.totalPriceKits + this.props.totalPriceProducts)} </span>
               <HashRouter>
               <button className="btn btn-primary" data-dismiss="modal" onClick={this.clickHandle} type="button">Finalizar Compra</button>
               </HashRouter>

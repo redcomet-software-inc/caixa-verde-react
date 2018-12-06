@@ -24,6 +24,11 @@ import Login from '../pages/Login.js';
 import Registration from '../pages/Registration.js';
 import ShoppingCart from '../pages/ShoppingCart.js';
 import Checkout from '../pages/Checkout.js';
+import Orders from '../pages/Orders.js';
+import Err from '../common/Err.js';
+import Warning from '../common/Warning.js';
+import Spinner from '../common/Spinner.js';
+
 
 export class MainPage extends Component {
   constructor(props) {
@@ -37,7 +42,6 @@ export class MainPage extends Component {
       var selectedKits = JSON.parse(localStorage.getItem('selectedKits')) ;
       var authentication_token = localStorage.getItem('token');
       var clientEmail = localStorage.getItem('email');
-      
       var shoppingCartCount = countProducts(selectedProducts,selectedKits); //Updates NavBar
       var totalPrice = getTotalPrice(selectedProducts, selectedKits);//Does not inclue freight
     }
@@ -51,7 +55,8 @@ export class MainPage extends Component {
       shoppingCartCount: shoppingCartCount || 0,
       shoppingCartProducts: [],
       shoppingCartKits:[],
-      totalPrice: '0.0',
+      totalPriceKits: '0.0',
+      totalPriceProducts: '0.0',
       clientName:'',
       clientEmail: clientEmail || '',
       authentication_token: authentication_token || '',
@@ -61,13 +66,21 @@ export class MainPage extends Component {
       redirect: false,
       redirectTo:'',
       changeStateTest:'state1',
+      errMessage:'',
+      serviceAvailability:true,
     };
+
+    this.redirect = this.redirect.bind(this);
+
+    
     
   }
 
 
   componentDidMount() {
     this.auth();
+    console.log("mounted");
+    console.log(this.state.products);
   }
 
   getProducts = () => {
@@ -75,7 +88,7 @@ export class MainPage extends Component {
       const products = res.data;
       if(res.status === 200) {
         this.setState({ products: products });
-        this.updateShoppingCart("product",this.state.selectedProducts); 
+        this.updateShoppingCart("product", this.state.selectedProducts);
       }
       
     }).catch(error => {
@@ -88,7 +101,7 @@ export class MainPage extends Component {
       const kits = res.data;
       if(res.status === 200) {
         this.setState({ kits: kits });
-        this.updateShoppingCart("kit",this.state.selectedKits); 
+        this.updateShoppingCart("kit", this.state.selectedKits);
       }
     });
   }
@@ -101,6 +114,7 @@ export class MainPage extends Component {
   /* Redirect and Render */
   redirect = (targetUrl) => {
     console.log("reached redirect");
+    console.log(targetUrl);
     this.setState({redirectTo:targetUrl});
     this.setState({redirect: true});
   }
@@ -110,8 +124,11 @@ export class MainPage extends Component {
         this.setState({redirect: false});
         return <Redirect exact to={this.state.redirectTo} />;
       }
-    
   };
+  renderSpinner = () => {
+    return <Spinner />;
+  }
+  
 
   /*Check if user is LoggedIn */
   auth = () => {
@@ -142,14 +159,17 @@ export class MainPage extends Component {
       var items = this.state.kits;
     } else if (name==="product") {
       var items = this.state.products;
-    } else {
-      var items = this.state.products;
-      var selectedItems = this.state.selectedProducts;
     }
+
+    console.log("part1: "+name);
+    console.log(name);
 
     for (var i = 0; i <= items.length - 1; i++) {
       for (var j = 0; j <= selectedItems.length - 1; j++) {
         if (parseInt(items[i].id, 10) === parseInt(selectedItems[j].id, 10)) {
+
+          console.log("part2:");
+          console.log("loop");
          
           var selectedItem = items[i];
           var quantity = selectedItems[j].quantity;
@@ -159,21 +179,25 @@ export class MainPage extends Component {
           selectedItem['unit_price'] = selectedItem['price']; //Mercado Pago Format
 
           totalPriceItems += parseFloat(selectedItem['price']) * quantity;
+          
           selectedItemsInfo.push(selectedItem);
         }
       }
     }
+
+    console.log("part3:");
+    console.log(totalPriceItems);
  
     this.setState({ totalPrice: totalPriceItems });
+    console.log("Total price");
+    console.log(totalPriceItems);
 
-    /* If name is null, do another request to this funcion with name "kit" */
     if (name==="kit") {
       this.setState({ shoppingCartKits: selectedItemsInfo });
+      this.setState({totalPriceKits: totalPriceItems});
     } else if (name==="product") {
-      this.setState({ shoppingCartProducts: selectedItemsInfo });
-    } else {
-      this.setState({ shoppingCartProducts: selectedItemsInfo });
-      this.updateShoppingCart("kit", this.state.selectedKits)
+      this.setState({shoppingCartProducts: selectedItemsInfo });
+      this.setState({totalPriceProducts: totalPriceItems});
     }
   };
 
@@ -185,6 +209,7 @@ export class MainPage extends Component {
   /* Add Item to the Shopping List */
   addCardCount = (id, name, delta) => {
       
+  
     /* name variable can be either kit or product */
     /* delta defines if the value increase or decrease */
     /* this serves to differenciate list of kits and products */
@@ -236,40 +261,61 @@ export class MainPage extends Component {
     /* UpdateState */
     if (name==="kit") {
       this.setState({ selectedKits: selectedItems });
+      this.updateShoppingCart("kit", selectedItems);
     } else if (name==="product") {
       this.setState({ selectedProducts: selectedItems });
+      
     }
     
     let shoppingCartCount = countProducts(this.state.selectedProducts, this.state.selectedKits);
     
+    this.updateShoppingCart(name, selectedItems);
     this.setState({ shoppingCartCount: shoppingCartCount });
     setLocalStorage(this.state.selectedProducts, this.state.selectedKits);
   };
 
 
   /* Submit Data to the API */
-  requestAPI = e => {
+  register = e => {
     //name, lastname, email, password, city, state, zipcode, address, number, neighbourhood, complement, phone1, phone2, rg, cpf
     e.preventDefault();
     const name = e.target.elements.name.value;
     const lastname = e.target.elements.lastname.value;
     const email = e.target.elements.email.value;
     const password = e.target.elements.password.value;
-    const city = e.target.elements.city.value;
-    const state = e.target.elements.state.value;
     const zipcode = e.target.elements.zipcode.value;
     const address = e.target.elements.address.value;
-    const number = e.target.elements.number.value;
+    const addressnumber = e.target.elements.addressnumber.value;
     const neighbourhood = e.target.elements.neighbourhood.value;
+    const neighbourhood_id = e.target.elements.neighbourhood_id.value;
     const complement = e.target.elements.complement.value;
-    const phone1 = e.target.elements.phone1.value;
-    const phone2 = e.target.elements.phone2.value;
-    const rg = e.target.elements.rg.value;
-    const cpf = e.target.elements.cpf.value;
+    const cellphone = e.target.elements.cellphone.value;
+    const main = true;
 
-    axios.get(`http://caixa-verde.herokuapp.com/api/v1/clients.json`).then(res => {
-    });
-  };
+     axios({ method: 'POST', url: 'http://localhost:3000/api/v1/clients.json',
+        data: { 
+          client: {
+            name: name,
+            lastname: lastname,
+            email: email,
+            password: password,
+            password_confirmation: password,
+            addresses_attributes: [{
+              main: main,
+              street: address,
+              complement: complement,
+              neighbourhood_id: 3,
+            }]
+            
+          }
+        },
+        }).then(res => {
+          if(res.status===200) {
+            this.redirect('login');
+          }
+        });
+  }
+
 
   /* Sign In Client and Register new Token */
   signIn = e => {
@@ -309,10 +355,17 @@ export class MainPage extends Component {
     this.setState({ showComponent: value });
   };
 
+  changeErrMessage = text => {
+    console.log("change Err Message");
+    console.log(text);
+    this.setState({ errMessage: text});
+  }
+
   render() {
     return (
 
       <div className='background'>
+        
         <HashRouter>
           <div className="header">
             <div className="left-margin" />
@@ -325,9 +378,12 @@ export class MainPage extends Component {
               updateShoppingCart={this.updateShoppingCart}
 
             />
+            
             <div className="row content">
               <div className="col-lg-3">{this.state.showComponent ? <SideBar /> : null}</div>
               <div className="col-lg-6 inner-content">
+
+                {this.renderSpinner()}
                 {this.renderRedirect(this.state.redirectTo)}
                 
                 <Route exact path="/" component={Option} />
@@ -375,7 +431,7 @@ export class MainPage extends Component {
                 <Route
                   path="/cadastro"
                   render={props => (
-                    <Registration requestAPI={this.requestAPI} component={Registration} />
+                    <Registration register={this.register} component={Registration} />
                   )}
                 />
                 <Route
@@ -386,25 +442,43 @@ export class MainPage extends Component {
                       shoppingCartKits={this.state.shoppingCartKits}
                       shoppingCartCount={this.state.shoppingCartCount}
                       updateShoppingCart={this.updateShoppingCart}
-                      totalPrice={this.state.totalPrice}
+                      totalPriceKits={this.state.totalPriceKits}
+                      totalPriceProducts={this.state.totalPriceProducts}
                       setMoneyFormat={this.setMoneyFormat}
                       clientId={this.state.clientId}
                       clientEmail={this.state.clientEmail}
                       redirect={this.redirect}
+                      changeErrMessage={this.changeErrMessage}
                     />
                   )}
                 />
+                <Route
+                  path="/orders"
+                  render={props => (
+                    <Orders />
+                  )} 
+                />
+                <Route
+                  path="/err"
+                  render={props => (
+                    <Err errMessage={this.state.errMessage} />
+                  )}
+                />
+
               </div>
             </div>
             <Footer />
           </div>
         </HashRouter>
 
+          <Warning />
+
         {this.state.shoppingCartCount > 0 && (
           <ShoppingCart
             shoppingCartProducts={this.state.shoppingCartProducts}
             shoppingCartKits={this.state.shoppingCartKits}
-            totalPrice={this.state.totalPrice}
+            totalPriceKits={this.state.totalPriceKits}
+            totalPriceProducts={this.state.totalPriceProducts}
             setMoneyFormat={this.setMoneyFormat}
             loggedIn={this.state.loggedIn}
             redirect={this.redirect}
