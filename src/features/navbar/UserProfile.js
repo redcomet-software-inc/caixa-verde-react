@@ -55,7 +55,7 @@ export default class UserProfile extends Component {
                     {this.props.clientName}
                     </a>
                 <div className="dropdown-menu dropdown-menu-right text-center" aria-labelledby="navbarDropdown">
-                <a className="dropdown-item" href="/">Minha Conta</a>
+                <NavLink className="dropdown-item" exact to="/minhaconta">Minha Conta</NavLink>
                 <a className="dropdown-item" href="/">Opções</a>
                 <div className="dropdown-divider"></div>
                 <NavLink className="dropdown-item" exact to="/orders">Histórico</NavLink>

@@ -24,6 +24,7 @@ import Login from '../pages/Login.js';
 import Registration from '../pages/Registration.js';
 import ShoppingCart from '../pages/ShoppingCart.js';
 import Checkout from '../pages/Checkout.js';
+import MyAccount from '../pages/MyAccount.js';
 import Orders from '../pages/Orders.js';
 import Err from '../common/Err.js';
 import Warning from '../common/Warning.js';
@@ -106,9 +107,25 @@ export class MainPage extends Component {
     });
   }
 
+  /* Reset all data and states */
   changeToLoggedOut = () => {
     this.setState({loggedIn: false});
     this.setState({signInMessage:''});
+    this.setState({selectedProducts:[]});
+    this.setState({selectedKits:[]});
+    this.setState({showComponent:false});
+    this.setState({shoppingCartCount:0});
+    this.setState({shoppingCartProducts:[]});
+    this.setState({shoppingCartKits:[]});
+    this.setState({clientName:''});
+    this.setState({clientEmail:''});
+    this.setState({authentication_token:''});
+    this.setState({clientId:''});
+    this.setState({loggedIn:false});
+    this.setState({redirectTo:''});
+    this.setState({changeStateTest:'state1'});
+    this.setState({errMessage:''});
+    this.setState({serviceAvailability:true});
   }
 
   /* Redirect and Render */
@@ -275,46 +292,7 @@ export class MainPage extends Component {
   };
 
 
-  /* Submit Data to the API */
-  register = e => {
-    //name, lastname, email, password, city, state, zipcode, address, number, neighbourhood, complement, phone1, phone2, rg, cpf
-    e.preventDefault();
-    const name = e.target.elements.name.value;
-    const lastname = e.target.elements.lastname.value;
-    const email = e.target.elements.email.value;
-    const password = e.target.elements.password.value;
-    const zipcode = e.target.elements.zipcode.value;
-    const address = e.target.elements.address.value;
-    const addressnumber = e.target.elements.addressnumber.value;
-    const neighbourhood = e.target.elements.neighbourhood.value;
-    const neighbourhood_id = e.target.elements.neighbourhood_id.value;
-    const complement = e.target.elements.complement.value;
-    const cellphone = e.target.elements.cellphone.value;
-    const main = true;
-
-     axios({ method: 'POST', url: 'http://localhost:3000/api/v1/clients.json',
-        data: { 
-          client: {
-            name: name,
-            lastname: lastname,
-            email: email,
-            password: password,
-            password_confirmation: password,
-            addresses_attributes: [{
-              main: main,
-              street: address,
-              complement: complement,
-              neighbourhood_id: 3,
-            }]
-            
-          }
-        },
-        }).then(res => {
-          if(res.status===200) {
-            this.redirect('login');
-          }
-        });
-  }
+ 
 
 
   /* Sign In Client and Register new Token */
@@ -324,6 +302,8 @@ export class MainPage extends Component {
     const password = e.target.elements.password.value;
     const authentication_token = '';
     const status = '';
+
+    this.setState({ signInMessage: '' });
 
     axios
       .post(`http://localhost:3000/api/v1/sessions.json`, { email, password })
@@ -340,14 +320,16 @@ export class MainPage extends Component {
           localStorage.setItem('email', email);
           this.setState({redirectTo:''});
           this.setState({ redirect: true });
+
         } else {
           // throw error and go to catch block
-          throw new Error('Error');
+        throw new Error('Error');
         }
       })
       .catch(error => {
         console.log('Error', error);
         this.setState({ signInMessage: 'E-mail e/ou Senha não correspondem.' });
+
       });
   };
   
@@ -431,7 +413,7 @@ export class MainPage extends Component {
                 <Route
                   path="/cadastro"
                   render={props => (
-                    <Registration register={this.register} component={Registration} />
+                    <Registration register={this.register} component={Registration} redirect={this.redirect} />
                   )}
                 />
                 <Route
@@ -457,6 +439,12 @@ export class MainPage extends Component {
                   render={props => (
                     <Orders />
                   )} 
+                />
+                <Route
+                  path="/minhaconta"
+                  render={props => (
+                    <MyAccount />
+                  )}
                 />
                 <Route
                   path="/err"

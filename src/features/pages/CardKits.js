@@ -18,10 +18,10 @@ export default class CardKits extends Component {
 
   constructor(props) {
     super(props);
-    this.myClass = 'card-active';
+    this.myClass = 'cardkits-active';
 
     this.state = {
-      classState: 'card-mouseout',
+      classState: 'cardkits-mouseout',
       borderClass: 'standard',
       cardCount: 0,
       displayControlClass: '',
@@ -64,7 +64,7 @@ export default class CardKits extends Component {
 
   render() {
     return (
-        <div id={this.props.id}  onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto card '+ this.state.borderClass +' ' + this.state.borderClass} >
+        <div id={this.props.id}  onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto cardkits '+ this.state.borderClass +' ' + this.state.borderClass} >
           
           <div className="card-body">
             <h5 className="card-title text-center">{this.props.name}</h5>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SelfBuildingSquareSpinner } from 'react-epic-spinners'
+import { PixelSpinner } from 'react-epic-spinners'
 
 export default class Loading extends Component {
   static propTypes = {
@@ -9,7 +9,7 @@ export default class Loading extends Component {
   render() {
     return (
       <div className="common-loading">
-        <SelfBuildingSquareSpinner color="#2c7957" />
+        <PixelSpinner color="#2c7957" size={30} />
       </div>
     );
   }

@@ -21,9 +21,7 @@ h2 {
   padding:3rem;
   border-radius: 5px;
 }
-.form-spacing {
-  padding: 5em;
-}
+
 
 .navbar {
   background-color: white;
@@ -158,12 +156,25 @@ h2 {
 .btn-primary {
     color: #fff;
     background-color: #f21b3f;
-    
+    min-width: 10em;
+    max-height: 2.5em;
     border-color: none;
     border-radius: 50px;
     border:0;
     padding-left: 20px;
     padding-right: 20px;
+    transition: background-color 2s;
+    left: 0;
+    transition: left .5s;
+}
+
+.absolute-center {
+ position: absolute; 
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  width: 100px; /* Need a specific value to work */
 }
 
 .btn-primary:hover {

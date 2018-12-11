@@ -55,7 +55,7 @@ export default class Checkout extends Component {
     const neighbourhood_id = e.target.elements.neighbourhood_id.value;
     const zipcode = e.target.elements.zipcode.value;
 
-    const pyamentMethod = e.target.elements.paymentMethod.value;
+    const paymentMethod = e.target.elements.paymentMethod.value;
     const cpf = e.target.elements.cpf.value;
 
     return axios({

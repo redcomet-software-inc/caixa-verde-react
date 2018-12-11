@@ -10,6 +10,7 @@ import {
   ShoppingCart,
   Checkout,
   Orders,
+  MyAccount,
 } from './';
 
 export default {
@@ -24,6 +25,7 @@ export default {
     { path: '/carrinho', name: 'Shopping cart', component: ShoppingCart },
     { path: '/checkout', name: 'Checkout', component: Checkout },
     { path: '/orders', name: 'Orders', component: Orders },
+    { path: '/minhaconta', name: 'My account', component: MyAccount },
     
   ],
 };
