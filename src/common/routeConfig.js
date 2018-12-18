@@ -1,7 +1,9 @@
 import { MainPage } from '../features/home/MainPage';
+import App from '../features/home/App.js';
 import { PageNotFound } from '../features/common';
 import homeRoute from '../features/home/route';
 import commonRoute from '../features/common/route';
+import mainPageRoute from '../features/common/route';
 import _ from 'lodash';
 import pagesRoute from '../features/pages/route';
 import footerRoute from '../features/footer/route';
@@ -10,6 +12,7 @@ import footerRoute from '../features/footer/route';
 // This is used for Rekit cmds to register routes config for new features, and remove config when remove features, etc.
 const childRoutes = [
   homeRoute,
+  mainPageRoute,
   commonRoute,
   pagesRoute,
   footerRoute,
@@ -17,7 +20,7 @@ const childRoutes = [
 
 const routes = [{
   path: '/',
-  component: MainPage,
+  component: App,
   childRoutes: [
     ...childRoutes,
     { path: '*', name: 'Page not found', component: PageNotFound },

@@ -16,8 +16,6 @@ class NavBar extends Component {
       }
     }
 
- 
-
     addCardCount = (e, b, c) => {
         console.log("confere");
     }
@@ -26,6 +24,7 @@ class NavBar extends Component {
       if(this.props.shoppingCartCount > 0){
         this.setState({dialog: 'shoppingCartDialog'});
       } else {
+        this.props.warning("Sua caixa está vazia");
         this.setState({dialog: 'warningDialog'});
       }
     }
@@ -60,7 +59,7 @@ class NavBar extends Component {
             </ul>
 
             <ul className="navbar-nav my-2 my-lg-0">
-            { this.props.loggedIn ?   <UserProfile redirect={this.props.redirect} changeToLoggedOut={this.props.changeToLoggedOut} clientName={this.props.clientName} /> : <div> 
+            { this.props.loggedIn ?   <UserProfile redirect={this.props.redirect} changeToLoggedOut={this.props.changeToLoggedOut} clientName={this.props.clientName} image={this.props.image} /> : <div> 
               <li className="nav-item"><NavLink className="nav-link" to="/login">Login</NavLink> </li>
 
             </div>}

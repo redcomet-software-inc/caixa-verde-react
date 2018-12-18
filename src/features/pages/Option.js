@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import {
   NavLink
 } from "react-router-dom";
+import customizedImage from '../../images/customized.gif';
+import kits from '../../images/kits2.png';
+import custom from '../../images/custom.png';
 
 export default class Option extends Component {
   static propTypes = {
@@ -11,21 +14,38 @@ export default class Option extends Component {
   constructor (){
     super();
     this.state = {
-      colorOption1: '#08bdbd',
-      colorOption2: '#abff4f',
+      kits_color: false,
+      custom_colr: false,
     };
   }
 
-  reset() {
-    this.setState({colorOption1: '#08bdbd', colorOption2: '#abff4f'});
+  customColor = () => {
+    if(this.state.custom_color===true) {
+      return '';
+    } else {
+      return 'greyscale';
+    }
   }
 
-  changeColorOption1 () {
-    this.setState({colorOption1:'#106d09'});
+  kitsColor = () => {
+    if(this.state.kits_color===true) {
+      return '';
+    } else {
+      return 'greyscale';
+    }
   }
 
-  changeColorOption2 () {
-    this.setState({colorOption2:'#106d09'});
+  addColorKit = () => {
+    this.setState({kits_color:true});
+  }
+  removeColorKit = () => {
+    this.setState({kits_color:false});
+  }
+  addColorCustom = () => {
+    this.setState({custom_color:true});
+  }
+  removeColorCustom= () => {
+    this.setState({custom_color:false});
   }
 
   render() {
@@ -36,26 +56,21 @@ export default class Option extends Component {
 
         <div className="card-deck">
         
-          <NavLink className="mx-auto" to="/kits">
-            <div className="card text-white mb-1 option mx-auto" onMouseOver={this.changeColorOption1.bind(this)} onMouseOut={this.reset.bind(this)}  style={{ background: this.state.colorOption1 }}>
-              <div className="card-header"></div>
-              <div className="card-body">
-                <h5 className="card-title text-center">Kits</h5>
-                <p className="card-text"></p>
-              </div>
-              <div className="card-footer text-center">10% de desconto</div>
-            </div>
-          </NavLink>
+        <div className="row mx-auto text-center">
+          <div className="col-md">
+            <h4 className="text-info">Kits</h4>
+            <NavLink className="mx-auto" to="/kits">
+              <img onMouseOver={this.addColorKit} onMouseOut={this.removeColorKit} className={"img-fluid rounded option "+this.kitsColor()} src={kits} />
+            </NavLink>
+          </div>
+          <div className="col-md">
+            <h4 className="text-info">Personalizado</h4>
+            <NavLink className="mx-auto" to="/personalizado">
+              <img onMouseOver={this.addColorCustom} onMouseOut={this.removeColorCustom} className={"img-fluid rounded option "+this.customColor()} src={custom} />
+            </NavLink>
+          </div>
+        </div>
 
-          <NavLink className="mx-auto" to="/personalizado">
-            <div className="card text-white mb-1 option" onMouseOver={this.changeColorOption2.bind(this)} onMouseOut={this.reset.bind(this)}  style={{ background: this.state.colorOption2 }}>
-              <div className="card-header"></div>
-                <div className="card-body">
-                  <h5 className="card-title text-center">Personalizado</h5>
-                  <p className="card-text"></p>
-                </div>
-              </div>
-          </NavLink>
         </div>
       </div>
     );

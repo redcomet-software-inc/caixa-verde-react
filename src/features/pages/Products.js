@@ -44,15 +44,16 @@ export class Products extends Component {
     return (
       <div className="card-deck mx-auto">
           {this.props.products.map((item, index) => (
-            <div className="m-2">
+            <div className="m-2 mx-auto">
               {' '}
               <Card
                 key={item.id}
                 id={item.id}
                 name={item.name}
                 description={item.description}
+                type={item.type}
                 price={item.price}
-                image={item.image}
+                image={item.thumb}
                 setMoneyFormat={this.props.setMoneyFormat}
                 quantity={this.getIndexReturnQtd(item.id)}
                 addCardCount={this.props.addCardCount}

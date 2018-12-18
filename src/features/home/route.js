@@ -1,15 +1,18 @@
 import {
-  MainPage,
-} from './MainPage';
+  App, MainPage,
+} from './';
 
 export default {
-  path: '/',
+  path: 'home',
   name: 'Home',
   childRoutes: [
-    { path: 'MainPage',
-      name: 'MainPage',
-      component: MainPage,
-      isIndex: true,
-    },
+    { path: '/', name: 'App', component: App,  isIndex: true },
+    { path: '/home', name: 'MainPage', component: MainPage },
   ],
 };
+
+// This is the JSON way to define React Router rules in a Rekit app.
+// Learn more from: http://rekit.js.org/docs/routing.html
+
+
+

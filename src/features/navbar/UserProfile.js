@@ -45,13 +45,22 @@ export default class UserProfile extends Component {
       })
     };
 
+    image = () => {
+      if(this.props.image) {
+        return (<img src={this.props.image} className="image profile-image mr-2 rounded-circle" width={50} />);
+      } else {
+        return (<img src={userImage} className="image profile-image mr-2 rounded-circle" width={50}  />);
+      } 
+    }
+
+
     render() {
         return (
             <div>
             
             <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src={userImage} class="image profile-image mr-2" width={50} />
+                    {this.image()}
                     {this.props.clientName}
                     </a>
                 <div className="dropdown-menu dropdown-menu-right text-center" aria-labelledby="navbarDropdown">

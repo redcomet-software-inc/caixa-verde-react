@@ -8,7 +8,7 @@ export default class Warning extends Component {
   render() {
     return (
       <div className="common-warning">
-        <div class="modal fade" id="warningDialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="warningDialog" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -18,7 +18,7 @@ export default class Warning extends Component {
                 </button>
               </div>
               <div class="modal-body">
-                A sua caixa está vazia.
+                { this.props.warningMessage }
               </div>
               <div class="modal-footer">
                 

@@ -13,7 +13,7 @@ export default class MyAccount extends Component {
 
     const email = localStorage.getItem('email');
     const token = localStorage.getItem('token');
-
+    this.props.turnOnLoading();
     this.state = {
       clientId: 0,
       name: '',
@@ -31,12 +31,16 @@ export default class MyAccount extends Component {
       adm_regions: [],
       email: email || '',
       token: token || '',
+      image:'',
       edit_address:false,
       edit_contact:false,
       edit_name:false,
       isAddressLoading:false,
       isContactLoading:false,
       isNameLoading:false,
+      selectedFile: null,
+      loadedData:false,
+      loadedImage:false
     };
 
     this.getClientInformations = this.getClientInformations.bind(this);
@@ -54,8 +58,6 @@ export default class MyAccount extends Component {
       })
       .then(res => {
         if (res.status === 200) {
-          console.log("Result My Account");
-          console.log(res);
           this.setState({ clientId: res.data.id });
           this.setState({ name: res.data.name });
           this.setState({ lastname: res.data.lastname });
@@ -69,13 +71,32 @@ export default class MyAccount extends Component {
           this.setState({ zipcode: res.data.address.zipcode });
           this.setState({ freight: res.data.freight });
           this.setState({ adm_region_id: res.data.address.adm_region_id });
-          
+          this.setState({ image: res.data.large});
+          this.loadedData();
         }
       });
   };
 
   componentDidMount() {
     this.getClientInformations();
+  }
+
+   loadedData = () => {
+    this.setState({loadedData:true});
+    console.log("LOADED DATA");
+    if(this.state.loadedImage === true) {
+      
+      this.props.turnOffLoading();
+    }
+  }
+
+  loadedImage = () => {
+    this.setState({loadedImage:true});
+    console.log("LOADED IMAGE");
+    if(this.state.loadedData === true) {
+      
+      this.props.turnOffLoading();
+    }
   }
 
   editContact = () => {
@@ -373,21 +394,50 @@ export default class MyAccount extends Component {
     this.setState({edit_contact: !this.state.edit_contact});
   }
 
+
+ fileChangedHandler = (event) => {
+    this.setState({selectedFile: event.target.files[0]})
+    let selectedFile = event.target.files[0];
+    
+    const formData = new FormData()
+    formData.append('client[image]', selectedFile, selectedFile.name);
+    formData.append('client_email', this.state.email);
+    formData.append('client_token', this.state.token);
+    axios.put('http://localhost:3000/api/v1/clients/'+this.state.clientId+'.json', formData).then(res=>{
+        this.setState({image: res.data.large});
+    });
+    
+  }
+
+ 
+
   render() {
     return (
       <div className="pages-my-account">
         <h2 className="text-center title">Minha Conta</h2>
+
+            
         
           <div class="row">
-            <div class="col-sm">
-              <img src={userImage} width={120} />
+            <div class="col-sm text-center">
+              <img className="img-fluid" onLoad={this.loadedImage.bind(this)} src={this.state.image} />
+              
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Escolha uma foto</span>
+                </div>
+                    <div class="custom-file">
+                      <input type="file" onChange={(e) => this.fileChangedHandler(e)}  class="custom-file-input" id="inputGroupFile01" />
+                      <label class="custom-file-label" for="inputGroupFile01">{ this.state.selectedFile} </label>
+                    </div>
+              </div>
+              
             </div>
-            
           </div>
 
           <div className="row">
             <div className="col p-2">
-               <div className="card float-left">
+               <div className="card card-my-account float-left">
                   <div className="card-header">Nome<a href="javascript: void(0)" className="float-right" onClick={this.handleEditName}>Editar</a></div>
                   <div className="card-body">
                       
@@ -400,8 +450,8 @@ export default class MyAccount extends Component {
 
           
           <div className="row">
-            <div className="col p-2">
-               <div className="card float-left">
+            <div className="col-md p-2">
+               <div className="card float-left card-my-account">
                   <div className="card-header">Endereço<a href="javascript: void(0)" className="float-right" onClick={this.handleEditAddress}>Editar</a></div>
                   <div className="card-body">
                       {this.editAddress()}
@@ -409,12 +459,9 @@ export default class MyAccount extends Component {
                 </div>
             </div>
             
-          </div>
-
-          <div className="row">
-            <div className="col p-2">
+            <div className="col-md p-2">
                
-               <div className="card float-left">
+               <div className="card float-left card-my-account">
                   <div className="card-header">Contato<a  href="javascript: void(0)" className="float-right" onClick={this.handleEditContact}>Editar</a></div>
                   <div className="card-body">
                     { this.editContact() }

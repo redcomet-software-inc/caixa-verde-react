@@ -1,5 +1,5 @@
 /* Count Products and Kits */
-export const countProducts = (productsList, kitsList) => {
+export const countProductsAndKits = (productsList, kitsList) => {
     var products = 0;
     var kits = 0;
 
@@ -19,3 +19,30 @@ export const getTotalPrice = (productsList, kitsList) => {
   console.log(productsList);
   console.log(kitsList);
 }
+
+export const countProducts = (productsList) => {
+  var products = 0;
+  if(productsList.length > 0) {
+    for (var i = 0; i <= productsList.length - 1; i++) {
+      products += productsList[i].quantity;
+    }
+    return products;
+  } else {
+    return 0;
+  }
+  
+};
+
+export const countKits = (kitsList) => {
+  var kits = 0;
+  if(kitsList.length > 0) {
+    for (var i = 0; i <= kitsList.length - 1; i++) {
+      kits += kitsList[i].quantity;
+    }
+    return kits;
+  } else {
+    return 0;
+  }
+  
+};
+

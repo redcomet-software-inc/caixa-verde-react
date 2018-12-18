@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FulfillingSquareSpinner } from 'react-epic-spinners'
+import ScrollLock from 'react-scrolllock';
 
 
 export default class Spinner extends Component {
@@ -7,10 +8,11 @@ export default class Spinner extends Component {
 
   };
 
+
   render() {
     return (
-      <div>
-      <FulfillingSquareSpinner color="#2c7957" />
+      <div className="spinner">
+        <FulfillingSquareSpinner className="mx-auto" color="#2c7957" />
       </div>
     );
   }
