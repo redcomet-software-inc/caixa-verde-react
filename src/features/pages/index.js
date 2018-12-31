@@ -9,3 +9,5 @@ export { default as CardKits } from './CardKits';
 export { default as MercadoPago } from './MercadoPago';
 export { default as Orders } from './Orders';
 export { default as MyAccount } from './MyAccount';
+export { default as MyOrders } from './MyOrders';
+export { default as Payment } from './Payment';

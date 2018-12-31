@@ -66,6 +66,9 @@ export default class Card extends Component {
       this.setState({show:'show'});
     }
   }
+  handleLoad = () => {
+    this.props.cardMounted();
+  }
 
   handleError = () => {
     localStorage.removeItem("productsList");
@@ -81,6 +84,7 @@ export default class Card extends Component {
   componentDidMount(){
     this.setState({cardCount: this.props.quantity});
     this.selectCard(this.props.quantity);
+    
   }
   componentWillReceiveProps(props) {
     this.setState({cardCount: props.quantity});
@@ -99,11 +103,11 @@ export default class Card extends Component {
     return (
        
     <div id={this.props.id}  onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto card ' + this.state.borderClass}>
-      <img src={this.props.image} onError={this.handleError} />
+      <img src={this.props.image} onLoad={this.handleLoad} onError={this.handleError} />
         <div className="card-body text-center pb-0">
           <span className="card-text">{this.props.name}</span><br/>
           <small className="text-success">{this.props.setMoneyFormat(this.props.price)}</small><br/>
-          <small className="card-text">{this.props.type}</small>
+          <small className="card-text">{this.props.kind}</small>
         </div>
         <div className="card-body text-center">
           <div className="row">

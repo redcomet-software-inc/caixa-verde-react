@@ -11,6 +11,8 @@ import {
   Checkout,
   Orders,
   MyAccount,
+  MyOrders,
+  Payment,
 } from './';
 
 export default {
@@ -26,6 +28,8 @@ export default {
     { path: '/checkout', name: 'Checkout', component: Checkout },
     { path: '/orders', name: 'Orders', component: Orders },
     { path: '/minhaconta', name: 'My account', component: MyAccount },
+    { path: '/pedidos', name: 'My orders', component: MyOrders },
+    { path: '/pagamento', name: 'Payment', component: Payment },
     
   ],
 };

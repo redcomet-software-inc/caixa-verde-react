@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Route, HashRouter, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Route, Redirect, withRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import Loads from 'react-loads';
 
 import PropTypes from 'prop-types';
 //import CurrencyInput from 'react-currency-input';
-import axios from 'axios';
+import request from '../../common/configApi.js';
 import NavBar from '../navbar/NavBar.js';
 import Footer from '../footer/Footer.js';
 
@@ -25,8 +25,11 @@ import SideBar from '../navbar/SideBar.js';
 import Login from '../pages/Login.js';
 import Registration from '../pages/Registration.js';
 import ShoppingCart from '../pages/ShoppingCart.js';
+import ShoppingCartButton from '../components/ShoppingCartButton.js';
 import Checkout from '../pages/Checkout.js';
 import MyAccount from '../pages/MyAccount.js';
+import Payment from '../pages/Payment.js';
+import MyOrders from '../pages/MyOrders.js';
 import Orders from '../pages/Orders.js';
 import Err from '../common/Err.js';
 import Warning from '../common/Warning.js';
@@ -54,8 +57,7 @@ export class MainPage extends Component {
       this.getProducts();
       this.getKits();
     }
-
-
+    
     this.state = {
       products: productsList || [],
       selectedProducts: selectedProducts || [],
@@ -67,8 +69,8 @@ export class MainPage extends Component {
       kitsCount: kitsCount || 0,
       shoppingCartProducts: [],
       shoppingCartKits:[],
-      totalPriceKits: '0.0',
-      totalPriceProducts: '0.0',
+      totalPriceKits: 0,
+      totalPriceProducts: 0,
       clientName:'',
       clientEmail: clientEmail || '',
       authentication_token: authentication_token || '',
@@ -78,12 +80,14 @@ export class MainPage extends Component {
       redirect: false,
       redirectTo:'',
       changeStateTest:'state1',
-      errMessage:'',
+      err_message:'',
       serviceAvailability:true,
       avatar:'',
       minQuantity:2,
       isLoading:false,
+      isError:false,
       warningMessage:'A sua caixa está vazia.',
+      checkout_order_id:0,
     };
 
     this.redirect = this.redirect.bind(this);
@@ -94,94 +98,120 @@ export class MainPage extends Component {
     this.getMinQuantity();
   }
 
+  setCheckoutOrderId = (order_id) => {
+    this.setState({checkout_order_id: order_id});
+  }
+
   getMinQuantity = () => {
-    axios.get('http://localhost:3000/api/v1/minquantity.json').then(res => {
-      this.setState({minQuantity: res.data.minquantity});
-      console.log("min quantitty");
-      console.log(res.data.minquantity);
-    });
+    request({
+      method: 'get',
+      url: 'api/v1/minquantity.json'
+    }).then((res) => {
+      this.setState({minQuantity: res.minquantity});
+    })
+
   }
 
   /*Check if user is LoggedIn */
   auth = () => {
     const token = localStorage.getItem('token');
     const email = localStorage.getItem('email');
-    axios.get('http://localhost:3000/api/v1/sessions/check.json', {
+    request({
+      method:'get',
+      url: 'api/v1/sessions/check.json',
       params: {
         client_email: email,
         client_token: token,
       },
     }).then(res => {
-       if (res['status'] === 200) {
-          this.setState({loggedIn: true});
-          this.setState({avatar: res.data.thumb});
-          this.setState({clientId: res.data.client.id});
-          this.setState({clientName: res.data.client.name});
-          this.props.turnOffLoading();
-          setTimeout(()=>{this.props.turnOffLoading()}, 2000);
-       } else {
-          this.setState({loggedIn: false});
-          setTimeout(()=>{this.props.turnOffLoading()}, 2000);
-       }
+        this.setState({loggedIn: true});
+        this.setState({avatar: res.thumb});
+        this.setState({clientId: res.client.id});
+        this.setState({clientName: res.client.name});
+        this.props.turnOffMainLoading();
+        setTimeout(()=>{this.props.turnOffMainLoading()}, 4000);
     }).catch(err => {
       this.setState({loggedIn: false});
-      setTimeout(()=>{this.props.turnOffLoading()}, 2000);
+      setTimeout(()=>{this.props.turnOffMainLoading()}, 4000);
     });
   };
 
   getProducts = () => {
-    axios.get(`http://localhost:3000/api/v1/products.json`).then(res => {
-      const products = res.data;
-      if(res.status === 200) {
-        this.setState({ products: products });
-        localStorage.setItem("productsList", JSON.stringify(products));
+    request({
+      method:'get',
+      url: 'api/v1/products.json'
+    }).then(res => {
+        this.setState({ products: res });
+        localStorage.setItem("productsList", JSON.stringify(res));
         this.updateShoppingCart("product");
       }
-    }).catch(error => {
-        throw error;
-      });
+    )
   }
 
   getKits() {
-    axios.get(`http://localhost:3000/api/v1/kits.json`).then(res => {
-      const kits = res.data;
-      if(res.status === 200) {
-        this.setState({ kits: kits });
-        localStorage.setItem("kitsList", JSON.stringify(kits));
+    request({
+      method:'get',
+      url: 'api/v1/kits.json'
+    }).then(res => {
+        this.setState({ kits: res });
+        localStorage.setItem("kitsList", JSON.stringify(res));
         this.updateShoppingCart("kit");
       }
-    });
+    )
   }
 
   /* Reset all data and states */
   changeToLoggedOut = () => {
-    this.setState({loggedIn: false});
-    this.setState({signInMessage:''});
-    this.setState({selectedProducts:[]});
-    this.setState({selectedKits:[]});
-    this.setState({showComponent:false});
-    this.setState({shoppingCartCount:0});
-    this.setState({shoppingCartProducts:[]});
-    this.setState({shoppingCartKits:[]});
+    /* Change all the states to the initial value.        */
+    /* Probably this is not the best way to do it. Thanks */
+    this.setState({products: [] });
+    this.setState({selectedProducts: [] });
+    this.setState({kits: [] });
+    this.setState({selectedKits: []});
+    this.setState({showComponent: false});
+    this.setState({shoppingCartCount: 0});
+    this.setState({productsCount: 0});
+    this.setState({kitsCount: 0});
+    this.setState({shoppingCartProducts: []});
+    this.setState({shoppingCartKits: []});
+    this.setState({totalPriceKits: 0});
+    this.setState({totalPriceProducts: 0});
     this.setState({clientName:''});
-    this.setState({clientEmail:''});
-    this.setState({authentication_token:''});
-    this.setState({clientId:''});
-    this.setState({loggedIn:false});
+    this.setState({clientEmail: ''});
+    this.setState({authentication_token: ''});
+    this.setState({signInMessage: ''});
+    this.setState({clientId: ''});
+    this.setState({loggedIn: false});
+    this.setState({redirect: false});
     this.setState({redirectTo:''});
     this.setState({changeStateTest:'state1'});
-    this.setState({errMessage:''});
+    this.setState({err_message:''});
     this.setState({serviceAvailability:true});
+    this.setState({avatar:''});
+    this.setState({minQuantity:2});
+    this.setState({isLoading:false});
+    this.setState({isError:false});
+    this.setState({warningMessage:'A sua caixa está vazia.'});
+    this.setState({checkout_order_id:0});
+    
+    /* Remove everything from Local Storage */
+    localStorage.removeItem("kitsList");
+    localStorage.removeItem("productsList");
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('selectedProducts');
+    localStorage.removeItem('selectedKits');
+    /* Redirect to the MainPage */
+    this.redirect('/');
+    /* Reload to Make Sure Everything is cleaned up */
+    window.location.reload();
   }
 
   /* Redirect and Render */
   redirect = (targetUrl) => {
-    console.log("reached redirect");
-    console.log(targetUrl);
     this.setState({redirectTo:targetUrl});
     this.setState({redirect: true});
   }
-
   renderRedirect = () => {
       if(this.state.redirect === true) {
         this.setState({redirect: false});
@@ -189,8 +219,8 @@ export class MainPage extends Component {
       }
   };
   
-  
-
+  /* Process All Selected Products and Kits, count, and put price on it */
+  /* This is also the last preparation for Checkout */
   updateShoppingCart = (name) => {
       var selectedItemsInfo = [];
       var totalPriceItems = 0;
@@ -201,25 +231,20 @@ export class MainPage extends Component {
       var items = this.state.products;
       var selectedItems = this.state.selectedProducts;
     }
-
     for (var i = 0; i <= items.length - 1; i++) {
       for (var j = 0; j <= selectedItems.length - 1; j++) {
         if (parseInt(items[i].id, 10) === parseInt(selectedItems[j].id, 10)) {
-         
           var selectedItem = items[i];
           var quantity = selectedItems[j].quantity;
           var price_table_id = selectedItems[j].price_table_id;
           selectedItem['quantity'] = quantity;
           selectedItem['price_table_id'] = price_table_id;
           selectedItem['unit_price'] = selectedItem['price']; //Mercado Pago Format
-
-          totalPriceItems += parseFloat(selectedItem['price']) * quantity;
-          
+          totalPriceItems += selectedItem['price'] * quantity;
           selectedItemsInfo.push(selectedItem);
         }
       }
     }
- 
     this.setState({ totalPrice: totalPriceItems });
     if (name==="kit") {
       this.setState({ shoppingCartKits: selectedItemsInfo });
@@ -263,7 +288,6 @@ export class MainPage extends Component {
       if (selectedItems[i].id === id) {
         checkExistingElement += 1;
         if(selectedItems[i].quantity + delta === 0) {
-          console.log("ZERO");
             selectedItems.splice(i,1);
         } else { 
           
@@ -291,12 +315,12 @@ export class MainPage extends Component {
       this.updateShoppingCart("kit");
     } else if (name==="product") {
       this.setState({ selectedProducts: selectedItems });
-      
+      this.updateShoppingCart("product");
     }
     let shoppingCartCount = countProductsAndKits(this.state.selectedProducts, this.state.selectedKits);
     let productsCount = countProducts(this.state.selectedProducts);
     let kitsCount = countKits(this.state.selectedKits);
-    this.updateShoppingCart(name);
+    
     this.setState({ shoppingCartCount: shoppingCartCount });
     this.setState({ productsCount: productsCount});
     this.setState({ kitsCount: kitsCount });
@@ -308,61 +332,69 @@ export class MainPage extends Component {
     e.preventDefault();
     const email = e.target.elements.email.value;
     const password = e.target.elements.password.value;
-    const authentication_token = '';
-    const status = '';
-
     this.setState({ signInMessage: '' });
 
-    axios
-      .post(`http://localhost:3000/api/v1/sessions.json`, { email, password })
-      .then(res => {
-        if (res['status'] === 201) {
-          const token = res.data['authentication_token'];
-          this.setState({ authentication_token: token });
-          this.setState({ signInMessage: 'Você está logado.' });
-          this.setState({ email: email });
-          this.setState({ clientName:  res.data['name'] });
-          this.setState({ clientId: res.data['id'] });
-          this.setState({ loggedIn: true });
-          localStorage.setItem('token', token);
-          localStorage.setItem('email', email);
-          this.setState({redirectTo:''});
-          this.setState({ redirect: true });
+    request({
+      method:'post',
+      url: 'api/v1/sessions.json',
+      params: {
+        email: email,
+        password: password
+      }
+    }).then(res => { 
+      const token = res['authentication_token'];
+      this.setState({ authentication_token: token });
+      this.setState({ email: email });
+      this.setState({ signInMessage: 'Você está logado.' });
+      this.setState({ clientName:  res['name'] });
+      this.setState({ clientId: res['id'] });
+      this.setState({ loggedIn: true });
+      localStorage.setItem('token', token);
+      localStorage.setItem('email', email);
+      this.setState({redirectTo:''});
+      this.setState({ redirect: true });
 
-        } else {
-          // throw error and go to catch block
-        throw new Error('Error');
-        }
-      })
-      .catch(error => {
+    }).catch(error => {
         console.log('Error', error);
         this.setState({ signInMessage: 'E-mail e/ou Senha não correspondem.' });
-
-      });
+    });
   };
   
   showComponent = value => {
     this.setState({ showComponent: value });
   };
 
-  changeErrMessage = text => {
-    console.log("change Err Message");
-    console.log(text);
-    this.setState({ errMessage: text});
-  }
-
   warning = (text) => {
     this.setState({warningMessage: text});
   }
 
   turnOffLoading = () => {
-    console.log("OFF");
     this.setState({isLoading: false});
   }
   turnOnLoading = () => {
-    console.log("ON");
     this.setState({isLoading: true});
   }
+
+  turnOffError = () => {
+    console.log("Turn Off Error");
+    this.setState({isError: false});
+  }
+
+  turnOnError = (err_message) => {
+    /* Error Also Turn Off Loading */
+    this.turnOffLoading();
+    console.log("Error");
+    this.redirect('0');
+    this.setState({ err_message: err_message});
+    this.setState({isError: true});
+  }
+
+  renderError = () => {
+    if(this.state.isError===true) {
+      return <Err err_message={this.state.err_message} />
+    }
+  }
+
   renderSpinner = () => {
     if(this.state.isLoading===true) {
       return <Spinner />
@@ -370,21 +402,29 @@ export class MainPage extends Component {
   }
 
   visible = () => {
-    if(this.state.isLoading===true) {
+    if(this.state.isLoading===true || this.state.isError===true) {
       return 'invisible';
     } else {
       return 'visible';
     }
   }
 
+  componentDidUpdate(prevProps) {
+    console.log(this.props.location);
+    if (this.props.location !== prevProps.location) {
+      console.log("cmo did update");
+      window.scrollTo(0, 0);
+    }
+  }
+
   render() {
     return (
-
       <div>
-        
-        <HashRouter>
+      
+        <Router  basename="app" history={ Router } >
           <div className="header">
             <div className="left-margin" />
+            <ShoppingCartButton />
             <NavBar
               loggedIn={this.state.loggedIn}
               shoppingCartCount={this.state.shoppingCartCount}
@@ -396,12 +436,12 @@ export class MainPage extends Component {
               image={this.state.avatar}
             />
             <div className="row" >
-              <div className="col-md-3">{this.state.showComponent ? <SideBar /> : null}</div>
-                <div className="container-fluid bg-grey">
-                  <div className="content mx-auto">
+                <div className="container-fluid pb-3">
+                  <div className="mb-5 mx-auto content">
+                    {this.renderError()}
                     {this.renderSpinner()}
-                    <div className="row">
-                      <div className={"col-lg-12 col-md-9 "+ this.visible()}>
+                    <div className="row my-auto ">
+                      <div className={"col-lg-12 pt-md-5 mt-md-5 mx-auto my-auto "+ this.visible()}>
 
                         {this.renderRedirect(this.state.redirectTo)}
                         
@@ -470,9 +510,11 @@ export class MainPage extends Component {
                               clientId={this.state.clientId}
                               clientEmail={this.state.clientEmail}
                               redirect={this.redirect}
-                              changeErrMessage={this.changeErrMessage}
+                              turnOnError={this.turnOnError}
+                              turnOffError={this.turnOffError}
                               turnOnLoading={this.turnOnLoading}
                               turnOffLoading={this.turnOffLoading}
+                              setCheckoutOrderId={this.setCheckoutOrderId}
                             />
                           )}
                         />
@@ -485,7 +527,28 @@ export class MainPage extends Component {
                         <Route
                           path="/minhaconta"
                           render={props => (
-                            <MyAccount turnOffLoading={this.turnOffLoading} turnOnLoading={this.turnOnLoading} />
+                            <MyAccount 
+                              turnOffLoading={this.turnOffLoading} 
+                              turnOnLoading={this.turnOnLoading} 
+                              turnOnError={this.turnOnError}
+                              turnOffError={this.turnOffError}
+                              />
+                          )}
+                        />
+                        <Route
+                          path="/pedidos"
+                          render={props => (
+                            <MyOrders 
+                              turnOnLoading={this.turnOnLoading} 
+                              turnOffLoading={this.turnOffLoading} 
+                              turnOnError={this.turnOnError}
+                              turnOffError={this.turnOffError} />
+                          )}
+                        />
+                        <Route
+                          path="/pagamento"
+                          render={props => (
+                            <Payment turnOffLoading={this.turnOffLoading} turnOnLoading={this.turnOnLoading} checkout_order_id={this.state.checkout_order_id} />
                           )}
                         />
                         <Route
@@ -499,11 +562,14 @@ export class MainPage extends Component {
                   </div>
                 </div>
             </div>
-            
+            <Footer />
           </div>
-        </HashRouter>
+
+        </Router>
 
         <Warning warningMessage={this.state.warningMessage} />
+
+        
 
         {this.state.shoppingCartCount > 0 && (
           <ShoppingCart
@@ -522,6 +588,7 @@ export class MainPage extends Component {
             onRef={ref => (this.custom = ref)}
           />
         )}
+          
       </div>
     );
   }

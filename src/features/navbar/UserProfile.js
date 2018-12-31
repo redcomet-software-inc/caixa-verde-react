@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { NavLink, Link, Route, HashRouter } from 'react-router-dom';
-
+import $ from 'jquery';
 
 import userImage from '../../images/userImage.jpg';
 
@@ -12,29 +12,19 @@ export default class UserProfile extends Component {
      /* Sign In Client and Register new Token */
     signOut = e => {
       e.preventDefault();
-
       const email = localStorage.getItem('email');
       const token = localStorage.getItem('token');
       const deleteUrl = "http://localhost:3000/api/v1/sessions.json?client_email="+email+"&client_token="+token;
       const httpReqHeaders = {
         'Content-Type': 'application/json'
       };
-
       // check the structure here: https://github.com/axios/axios#request-config
       const axiosConfigObject = {headers: httpReqHeaders}; 
-
-      localStorage.removeItem('email');
-      localStorage.removeItem('token');
-      localStorage.removeItem('selectedProducts');
-      localStorage.removeItem('selectedKits');
-
       axios.delete(deleteUrl, axiosConfigObject).then(res=> {
          if (res.status === 200) {
              console.log("Session deleted");
              var targetUrl='';
              this.props.changeToLoggedOut();
-             this.props.redirect('/');
-             
           } else {
             // throw error and go to catch block
             throw new Error('Error');
@@ -53,21 +43,32 @@ export default class UserProfile extends Component {
       } 
     }
 
+    componentDidMount() {
+      $('.dropdown').on('show.bs.dropdown', function(e){
+          $(this).find('.dropdown-menu').first().stop(true, true).slideDown(50);
+        });
+
+        $('.dropdown').on('hide.bs.dropdown', function(e){
+          $(this).find('.dropdown-menu').first().stop(true, true).slideUp(50);
+        });
+    }
+
 
     render() {
         return (
-            <div>
-            
+          <div>
             <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a className="nav-link dropdown-toggle" data-target="navbarDropdown" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     {this.image()}
                     {this.props.clientName}
                     </a>
-                <div className="dropdown-menu dropdown-menu-right text-center" aria-labelledby="navbarDropdown">
+                <div className="dropdown-menu dropdown-menu-right shadow text-center" aria-labelledby="navbarDropdown">
                 <NavLink className="dropdown-item" exact to="/minhaconta">Minha Conta</NavLink>
+                <div className="dropdown-divider"></div>
                 <a className="dropdown-item" href="/">Opções</a>
                 <div className="dropdown-divider"></div>
                 <NavLink className="dropdown-item" exact to="/orders">Histórico</NavLink>
+                <div className="dropdown-divider"></div>
                 <a className="dropdown-item" onClick={this.signOut} href="/">Sair</a>
                 </div>
             </li>

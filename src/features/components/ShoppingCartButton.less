@@ -1,0 +1,35 @@
+@import '../../styles/mixins';
+
+.shopping-cart-button {
+  width: 3.8em;
+  height: 3.8em;
+  position: fixed;
+  z-index: 600;
+  bottom: 2em;
+  right: 2em;
+  border-radius: 100px;
+  background-color: #f21b3f;
+  color: white;
+  transition: position 2s;
+  
+}
+.ico {
+  position: absolute;
+  left: 49%;
+  top: 49%;
+  transform: translate(-50%, -50%);
+  color:white;
+}
+.shopping-cart-button:hover {
+  background-color: #751720;
+}
+.hide-btn {
+  opacity: 0;
+  transition: opacity .5s;
+
+}
+.show-btn {
+  opacity: 1;
+  transition: opacity .5s;
+  cursor: pointer;
+}

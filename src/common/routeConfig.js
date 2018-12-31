@@ -7,6 +7,7 @@ import mainPageRoute from '../features/common/route';
 import _ from 'lodash';
 import pagesRoute from '../features/pages/route';
 import footerRoute from '../features/footer/route';
+import componentsRoute from '../features/components/route';
 
 // NOTE: DO NOT CHANGE the 'childRoutes' name and the declaration pattern.
 // This is used for Rekit cmds to register routes config for new features, and remove config when remove features, etc.
@@ -16,6 +17,7 @@ const childRoutes = [
   commonRoute,
   pagesRoute,
   footerRoute,
+  componentsRoute,
 ];
 
 const routes = [{

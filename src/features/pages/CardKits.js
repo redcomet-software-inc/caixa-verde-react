@@ -3,7 +3,7 @@ import stardardImage from '../../images/standard.jpg';
 
 const Image = (props) => {
   let src='';
-  if(props.image) {
+  if(props.thumb) {
     src = "http://localhost:3000"+ props.image;
   } else {
     src = stardardImage;
@@ -31,9 +31,7 @@ export default class CardKits extends Component {
 
    addBorder = (e) => {
       if(this.state.cardCount===0 && this.state.borderClassName==='') {
-        this.setState({ borderClass: 'card-active' });
-        console.log("aqui");
-        console.log(this.props);
+        this.setState({ borderClass: 'cardkits-active' });
         this.setState({cardCount: this.props.quantity});
         this.props.addCardCount(e);
       }
@@ -64,20 +62,20 @@ export default class CardKits extends Component {
 
   render() {
     return (
-        <div id={this.props.id}  onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto cardkits '+ this.state.borderClass +' ' + this.state.borderClass} >
+        <div id={this.props.id}  onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto card cardkits '+ this.state.borderClass} >
           
           <div className="card-body">
             <h5 className="card-title text-center">{this.props.name}</h5>
-            <p className="card-text text-center text-success">{this.props.setMoneyFormat(this.props.price)}</p>
+            
           </div>
           <ul className="list-group list-group-flush">
             {this.props.products.map((product, index) => (
             <li className="list-group-item"> 
               <div className="row">
-                <div className="col-3 p-0">
-                  <Image image={product.image} />
+                <div className="col p-0">
+                  <img src={product.thumb} />
                 </div>
-                <div className="col-9">
+                <div className="col my-auto">
                   { product.name }
                 </div>
               </div>
@@ -89,14 +87,19 @@ export default class CardKits extends Component {
           </ul>
          <div className="card-body text-center">
           <div className="row">
+            <div className="col">
+              <p className="card-text text-center text-success">{this.props.setMoneyFormat(this.props.price)}</p>
+            </div>
+          </div>
+          <div className="row">
             <div className="col-4">
                 <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"kit",-1)} className={'btn btn-info btn-lg '+this.state.show}>
                   -
                 </div>
                 
             </div>
-            <div className="col-4">
-                <div id={this.props.id} className={'btn disabled '+this.state.show}>{this.state.cardCount}</div>
+            <div className={"col-4 " + this.state.show}>
+                <div id={this.props.id} className={'btn disabled '+ this.state.show}>{this.state.cardCount}</div>
             </div>
             <div className="col-4">
                 <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"kit",1)} className="btn btn-success btn-lg">
@@ -107,6 +110,10 @@ export default class CardKits extends Component {
           </div>
       </div>
       </div>
+
+
+   
+   
 
     );
   }

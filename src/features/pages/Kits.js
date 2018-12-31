@@ -8,6 +8,7 @@ export default class Kits extends Component {
 
    componentDidMount() {
     this.props.showComponent(true);
+    window.scroll({top: 0, left: 0, behavior: 'smooth' })
   }
   componentWillUnmount() {
     this.props.showComponent(false);

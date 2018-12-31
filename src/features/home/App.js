@@ -24,7 +24,7 @@ export default class App extends Component {
   }
 
   /* This functions is called by the MainPage after API request */
-  turnOffLoading = () => {
+  turnOffMainLoading = () => {
         this.setState({ isLoading: false});
         this.setState({ style: ''});
   }
@@ -33,8 +33,8 @@ export default class App extends Component {
   renderLoading = () => {
     if(this.state.isLoading) {
       return( 
-        <div>
-          <img className="logo-intro" src={ logo } width={300} />
+        <div className="w-100 h-100 position-absolute">
+            <img className="mx-auto d-block logo-intro img-fluid animate-flicker" width={200} src={ logo } />
         </div>
       );
     }
@@ -45,7 +45,7 @@ export default class App extends Component {
       <div className="home-app">
         {this.renderLoading()}
          <div style={{display: this.state.style}}>
-          <MainPage turnOffLoading={this.turnOffLoading} />
+          <MainPage turnOffMainLoading={this.turnOffMainLoading} />
          </div>
       </div>
     );

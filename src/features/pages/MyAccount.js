@@ -1,84 +1,136 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import userImage from '../../images/userImage.jpg';
 import Loading from '../common/Loading.js';
+import request from '../../common/configApi.js';
 
 export default class MyAccount extends Component {
   static propTypes = {
 
   };
-
    constructor(props) {
     super(props);
-
     const email = localStorage.getItem('email');
     const token = localStorage.getItem('token');
     this.props.turnOnLoading();
+    this.props.turnOffError();
     this.state = {
       clientId: 0,
       name: '',
       lastname: '',
       cellphone: '',
       email: '',
-      address_id: '',
-      street: '',
-      number:'',
-      neighbourhood: '',
-      complement: '',
-      zipcode: '',
+      address_delivery_id: '',
+      address_delivery_street: '',
+      address_delivery_number:'',
+      address_delivery_neighbourhood: '',
+      address_delivery_complement: '',
+      address_delivery_zipcode: '',
+      address_billing_id: '',
+      address_billing_street: '',
+      address_billing_number:'',
+      address_billing_neighbourhood: '',
+      address_billing_complement: '',
+      address_billing_zipcode: '',
       freight: '',
       adm_region_id: '',
       adm_regions: [],
+      adm_region_name: '',
       email: email || '',
       token: token || '',
-      image:'',
-      edit_address:false,
+      image: '',
+      address_null_delivery:false,
+      address_billing_null:false,
+      address_delivery_null:false,
+      adm_region_null:false,
+      edit_address_delivery:false,
+      edit_address_billing:false,
       edit_contact:false,
       edit_name:false,
+      edit_adm_region:false,
       isAddressLoading:false,
       isContactLoading:false,
       isNameLoading:false,
+      isAdmRegionLoading:false,
       selectedFile: null,
       loadedData:false,
       loadedImage:false
     };
-
     this.getClientInformations = this.getClientInformations.bind(this);
     this.editContact = this.editContact.bind(this);
   }
 
+  getAdmRegions = () => {
+    request({
+      method:'get',
+      url: 'api/v1/adm_regions.json',
+      params: {
+        client_email: this.state.email,
+        client_token: this.state.token
+      }
+    }).then(res => {
+        this.setState({adm_regions: res});
+    });
+  }
+
   getClientInformations = () => {
     /* Get Data from current user based on email and token */
-    axios
-      .get('http://localhost:3000/api/v1/clients/1.json', {
-        params: {
-          client_email: this.state.email,
-          client_token: this.state.token,
-        },
-      })
-      .then(res => {
-        if (res.status === 200) {
-          this.setState({ clientId: res.data.id });
-          this.setState({ name: res.data.name });
-          this.setState({ lastname: res.data.lastname });
-          this.setState({ cellphone: res.data.cellphone });
-          this.setState({ email: res.data.email });
-          this.setState({ address_id: res.data.address.id });
-          this.setState({ street: res.data.address.street });
-          this.setState({ number: res.data.address.number });
-          this.setState({ neighbourhood: res.data.address.neighbourhood });
-          this.setState( {complement: res.data.address.complement})
-          this.setState({ zipcode: res.data.address.zipcode });
-          this.setState({ freight: res.data.freight });
-          this.setState({ adm_region_id: res.data.address.adm_region_id });
-          this.setState({ image: res.data.large});
+    request({
+      method:'get',
+      url: 'api/v1/clients/1.json',
+      params: {
+        client_email: this.state.email,
+        client_token: this.state.token
+      }
+    }).then(res => {
+          this.setState({ clientId: res.id });
+          this.setState({ name: res.name });
+          this.setState({ lastname: res.lastname });
+          this.setState({ cellphone: res.cellphone });
+          this.setState({ email: res.email });
+
+          /* Billing Delivery can be Null */
+          if(res.address_delivery !== null && res.address_delivery.street !=="") {
+            this.setState({ address_delivery_id: res.address_delivery.id });
+            this.setState({ address_delivery_street: res.address_delivery.street });
+            this.setState({ address_delivery_number: res.address_delivery.number });
+            this.setState({ address_delivery_neighbourhood: res.address_delivery.neighbourhood });
+            this.setState( {address_delivery_complement: res.address_delivery.complement})
+            this.setState({ address_delivery_zipcode: res.address_delivery.zipcode });
+          } else {
+            this.setState({ address_delivery_null: true});
+          }
+          /* Billing Address can be Null */
+          if(res.address_billing !== null) {
+              this.setState({ address_billing_id: res.address_billing.id });
+              this.setState({ address_billing_street: res.address_billing.street });
+              this.setState({ address_billing_number: res.address_billing.number });
+              this.setState({ address_billing_neighbourhood: res.address_billing.neighbourhood });
+              this.setState( {address_billing_complement: res.address_billing.complement})
+              this.setState({ address_billing_zipcode: res.address_billing.zipcode });
+          } else {
+            this.setState({ address_billing_null: true});
+          }
+          /* Administrative Region can be Null */
+          if(res.adm_region !== null) {
+            this.setState({ freight: res.freight });
+            this.setState({ adm_region_id: res.adm_region.id });
+            this.setState({ adm_region_name: res.adm_region.name});
+          } else {
+            this.setState({ adm_region_null: true});
+          }
+          /* Image can be Null */
+          if(res.image !== null) {
+            this.setState({ image: res.large});
+          }
           this.loadedData();
-        }
-      });
+          
+     });
   };
 
   componentDidMount() {
     this.getClientInformations();
+    this.getAdmRegions();
+    window.scroll({top: 0, left: 0, behavior: 'smooth' })
   }
 
    loadedData = () => {
@@ -94,7 +146,6 @@ export default class MyAccount extends Component {
     this.setState({loadedImage:true});
     console.log("LOADED IMAGE");
     if(this.state.loadedData === true) {
-      
       this.props.turnOffLoading();
     }
   }
@@ -132,8 +183,8 @@ export default class MyAccount extends Component {
       return(
         <div>
           <ul class="list-group">
-            <li class="list-group-item">{this.state.cellphone}</li>
-            <li class="list-group-item">{this.state.email}</li>
+            <li class="list-group-item list-group-item-custom">{this.state.cellphone}</li>
+            <li class="list-group-item list-group-item-custom">{this.state.email}</li>
           </ul>
           <br/>
         </div>
@@ -149,28 +200,27 @@ export default class MyAccount extends Component {
       let name = e.currentTarget.name.value;
       let lastname = e.currentTarget.lastname.value;
 
-      axios({ method: 'PUT', url: "http://localhost:3000/api/v1/clients/"+this.state.clientId+".json", 
+      request({
+        method:'put',
+        url: '/api/v1/clients/'+this.state.clientId+'.json',
         data: {
           client_email:this.state.email,
           client_token:this.state.token,
-            client: {
-              name: name,
-              lastname: lastname,
-            }
-        }}).then(res=>{
-          if(res.status===200) {
-            console.log("contact");
-            console.log(res);
-            this.setState({name: res.data.client.name});
-            this.setState({lastname: res.data.client.lastname});
-            this.setState({isNameLoading: false});
-            this.setState({edit_name:false});
+          client: {
+            name: name,
+            lastname: lastname,
           }
-        }).catch(error =>{
-          console.log(error);
+        }
+      }).then(res => { 
+          this.setState({name: res.client.name});
+          this.setState({lastname: res.client.lastname});
           this.setState({isNameLoading: false});
           this.setState({edit_name:false});
-        });
+      }).catch(error =>{
+        this.setState({isNameLoading: false});
+        this.setState({edit_name:false});
+      });
+
     }
   }
 
@@ -178,32 +228,32 @@ export default class MyAccount extends Component {
     console.log("Submit Contact");
     e.preventDefault();
     if(this.state.isContactLoading===false) {
+
       this.setState({isContactLoading: true});
       let cellphone = e.currentTarget.cellphone.value;
       let email = e.currentTarget.email.value;
 
-      axios({ method: 'PUT', url: "http://localhost:3000/api/v1/clients/"+this.state.clientId+".json", 
+      request({
+        method:'put',
+        url: 'api/v1/clients/' + this.state.clientId + '.json',
         data: {
           client_email:this.state.email,
           client_token:this.state.token,
-            client: {
-              email: email,
-              cellphone: cellphone,
-            }
-        }}).then(res=>{
-          if(res.status===200) {
-            console.log("contact");
-            console.log(res);
-            this.setState({email: res.data.client.email});
-            this.setState({cellphone: res.data.client.cellphone});
-            this.setState({isContactLoading: false});
-            this.setState({edit_contact:false});
+          client: {
+            email: email,
+            cellphone: cellphone,
           }
-        }).catch(error =>{
-          console.log(error);
-          this.setState({isContactLoading: false});
-          this.setState({edit_contact:false});
-        });
+        }
+      }).then(res => { 
+        this.setState({email: res.client.email});
+        this.setState({cellphone: res.client.cellphone});
+        this.setState({isContactLoading: false});
+        this.setState({edit_contact:false});
+      }).catch(error =>{
+        this.setState({isContactLoading: false});
+        this.setState({edit_contact:false});
+      });
+
     }
   }
 
@@ -219,37 +269,75 @@ export default class MyAccount extends Component {
       let zipcode = e.currentTarget.zipcode.value;
       let number = e.currentTarget.number.value;
       let complement = e.currentTarget.complement.value;
+      let kind = e.currentTarget.address_kind.value;
 
-        axios({ method: 'PUT', url: "http://localhost:3000/api/v1/clients/"+this.state.clientId+"/addresses.json", 
-          data: { 
-            client_email:this.state.email,
+      request({
+        method:'put',
+        url: 'api/v1/clients/' + this.state.clientId + '/addresses.json',
+        data: {
+          client_email:this.state.email,
             client_token:this.state.token,
             address: {
               street: street,
               neighbourhood: neighbourhood,
               zipcode: zipcode,
               number: number,
-              complement: complement
+              complement: complement,
+              kind: kind,
             }
-          }
-        }).then(res=>{
-          if(res.status===200) {
-            console.log(res.data);
-            this.setState({edit_address:false});
-            this.setState({street:res.data.address.street});
-            this.setState({neighbourhood:res.data.address.neighbourhood});
-            this.setState({zipcode:res.data.address.zipcode});
-            this.setState({number:res.data.address.number});
-            this.setState({complement:res.data.address.complement});
-            this.setState({isAddressLoading: false});
-          }
-        }).catch(error => {
-          console.log(error);
-          this.setState({isAddressLoading: false});
-        });
+        }
+      }).then(res => {
+        /* Two types of Addresses: Delivery and Billing */
+        this.setState({["edit_address_" + kind]: false  });
+        this.setState({["address_" + kind + "_street"]: res.address.street});
+        this.setState({["address_" + kind + "_neighbourhood"]: res.address.neighbourhood});
+        this.setState({["address_" + kind + "_zipcode"]:res.address.zipcode});
+        this.setState({["address_" + kind + "_number"]:res.address.zipcode});
+        this.setState({["address_" + kind + "_complement"]:res.address.zipcode});
+        this.setState({isAddressLoading: false});
+        
+      }).catch(error => {
+        console.log(error);
+        this.setState({isAddressLoading: false});
+        this.setState({["edit_address_" + kind]: false  });
+      });
     }
+  }
 
-   
+  submitAdmRegion = (e) => {
+      e.preventDefault();
+      e.persist();
+      this.setState({isAdmRegionLoading: true});
+      const adm_region_id = e.currentTarget.adm_region_id.value;
+      const url = 'api/v1/clients/'+this.state.clientId+'/addresses.json'
+      request({
+        method:'put',
+        url: url,
+        data: {
+          client_email: this.state.email,
+          client_token: this.state.token,
+          address: {
+            kind: "delivery",
+            adm_region_id: adm_region_id
+          },
+        }
+      }).then(res => {
+          this.setState({isAdmRegionLoading: false});
+          console.log("adm region id");
+          console.log(res);
+          this.setState({adm_region_id: res.adm_region_id});
+          this.setState({edit_adm_region: false});
+          this.setState({adm_region_name: res.address_adm_region_name});
+          console.log("ADM REGION");
+          console.log(res.address_adm_region_name);
+          console.log("AMD_REGION IN");
+          console.log(res.adm_region_id);
+
+
+
+      }).catch(error => {
+          this.setState({isAdmRegionLoading: false});
+      });
   }
 
   renderNameLoading = () => {
@@ -264,30 +352,38 @@ export default class MyAccount extends Component {
     }
   }
 
-
   renderAddressLoading = () => {
     if(this.state.isAddressLoading) {
       return <Loading />
     }
   }
 
-  editAddress = () => {
-    if(this.state.edit_address===true) {
+  renderAdmRegionLoading = () => {
+    if(this.state.isAdmRegionLoading) {
+      return <Loading />
+    }
+  }
+
+
+  editAddress = (kind) => {
+      console.log("here");
+    
       return(
         <div>
         <form onSubmit={(e) => this.submitAddress(e)}>
+        <input id="address_kind" name="address_kind" type="hidden" value={ kind } />
           <div className="row">
             <div className="col-md-8">
               <input type="hidden" id="address_id" value={this.state.address_id} />
               <label for="inp" className="inp mb-2">
-                <input type="text" id="street" name="street" placeholder="&nbsp;" defaultValue={this.state.street}/>
+                <input type="text" id="street" name="street" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_street"] }/>
                 <span className="label">Endereço</span>
                 <span className="border"></span>
               </label>
             </div>
             <div className="col-md-4">
               <label for="inp" className="inp mb-2">
-                <input type="text" id="number" name="number" placeholder="&nbsp;" defaultValue={this.state.number} />
+                <input type="text" id="number" name="number" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_number"]} />
                 <span className="label">Nº</span>
                 <span className="border"></span>
               </label>
@@ -296,7 +392,7 @@ export default class MyAccount extends Component {
           <div className="row">
             <div className="col-md-12">
               <label for="inp" className="inp mb-2">
-                <input type="text" id="neighbourhood" name="neighbourhood" placeholder="&nbsp;" defaultValue={this.state.neighbourhood} />
+                <input type="text" id="neighbourhood" name="neighbourhood" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_neighbourhood"]} />
                 <span className="label">Bairro</span>
                 <span className="border"></span>
               </label>
@@ -305,7 +401,7 @@ export default class MyAccount extends Component {
           <div className="row">
             <div className="col-12">
               <label for="inp" className="inp mb-2">
-                <input type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" defaultValue={this.state.zipcode} />
+                <input type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_zipcode"]} />
                 <span className="label">CEP</span>
                 <span className="border"></span>
               </label>
@@ -314,7 +410,7 @@ export default class MyAccount extends Component {
           <div className="row">
             <div className="col-12">
               <label for="inp" className="inp mb-2">
-                <input type="text" id="complement" name="complement" placeholder="&nbsp;" defaultValue={this.state.complement} />
+                <input type="text" id="complement" name="complement" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_complement"]} />
                 <span className="label">Complemento</span>
                 <span className="border"></span>
               </label>
@@ -329,17 +425,57 @@ export default class MyAccount extends Component {
           </form>
         </div>
       );
+    }
+  
+   editAddressDelivery = () => {
+     if(this.state.edit_address_delivery===true) {
+       return this.editAddress("delivery");
+     } else {
+
+       if(this.state.address_delivery_null === false) {
+          return(
+                <div>
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-custom">{this.state.address_delivery_street}, {this.state.address_delivery_number}</li>
+                    <li class="list-group-item list-group-item-custom">{this.state.address_delivery_neighbourhood}</li>
+                    <li class="list-group-item list-group-item-custom">{this.state.address_delivery_zipcode}</li>
+                    <li class="list-group-item list-group-item-custom">{this.state.address_delivery_complement}</li>
+                  </ul>
+                </div> 
+              );
+       } else {
+          return (
+            <div>
+              ( Clique em Editar para alterar seu Endereço )
+            </div>
+            );
+       }
+     }
+   }
+  
+  editAddressBilling = () => {
+    if(this.state.edit_address_billing===true) {
+      return this.editAddress("billing");
     } else {
-      return(
-         <div>
-          <ul class="list-group">
-            <li class="list-group-item">{this.state.street}, {this.state.number}</li>
-            <li class="list-group-item">{this.state.neighbourhood}</li>
-            <li class="list-group-item">{this.state.zipcode}</li>
-            <li class="list-group-item">{this.state.complement}</li>
-          </ul>
-         </div> 
-      );
+
+      if(this.state.address_billing_null === false) {
+        return(
+            <div>
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-custom">{this.state.address_billing_street}, {this.state.address_billing_number}</li>
+                <li class="list-group-item list-group-item-custom">{this.state.address_billing_neighbourhood}</li>
+                <li class="list-group-item list-group-item-custom">{this.state.address_billing_zipcode}</li>
+                <li class="list-group-item list-group-item-custom">{this.state.address_billing_complement}</li>
+              </ul>
+            </div> 
+            );
+      } else {
+        return (
+            <div>
+              ( Clique em Editar para alterar seu Endereço )
+            </div>
+            );
+      }
     }
   }
 
@@ -350,16 +486,14 @@ export default class MyAccount extends Component {
       <div>
         <form onSubmit={(e) => this.submitName(e)}>
             <div className="row">
-              <div className="col-md-12">
+              <div className="col-md-6">
                 <label for="inp" className="inp mb-2">
                   <input type="text" id="name" name="name" placeholder="&nbsp;" defaultValue={this.state.name} />
                   <span className="label">Nome</span>
                   <span className="border"></span>
                 </label>
               </div>
-            </div>
-            <div className="row">
-              <div className="col-md-12">
+              <div className="col-md-6">
                 <label for="inp" className="inp mb-2">
                   <input type="text" id="lastname" name="lastname" placeholder="&nbsp;" defaultValue={this.state.lastname} />
                   <span className="label">Sobrenome</span>
@@ -382,20 +516,82 @@ export default class MyAccount extends Component {
         );
       } 
   }
+
+  change = (e) => {
+    this.setState({adm_region_id: e.target.value});
+  }
+
+   editAdmRegion = () => {
+
+    if(this.state.edit_adm_region===true){
+    return (
+      <div>
+        <form onSubmit={(e) => this.submitAdmRegion(e)}>
+          <label for="inp" className="inp mb-3">
+              <select type="text" id="adm_region_id" name="adm_region_id" placeholder="&nbsp;" onChange={e => this.change(e)} value={this.state.adm_region_id} required>
+                <option > -- Escolha uma região -- </option>
+                {this.state.adm_regions.map((item, index) => (
+                <option value={item.id}> {item.name}</option>              
+            ))}
+              </select> 
+              <span className="label">Região Administrativa</span> 
+              <span className="border"></span>
+            </label>
+            
+            <div class="text-center mx-auto w-100">
+              <div class="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" >Salvar</button></div>
+              <div class="d-inline p-1 text-white position-absolute">{this.renderAdmRegionLoading()}</div>
+            </div>
+          </form>  
+        </div>
+      );
+    } else {
+        if(this.state.adm_region_null === false) {
+          return (
+            <div>
+              {this.state.adm_region_name}
+            </div>
+          );
+          } else {
+            return (
+            <div>
+              ( Clique em Editar para alterar sua região )
+            </div>
+            );
+          }
+       
+      } 
+  }
+  handleEditAdmRegion = () =>{
+    this.setState({edit_adm_region: !this.state.edit_adm_region});
+  }
+
   handleEditName = () => {
     this.setState({edit_name: !this.state.edit_name});
   }
 
-  handleEditAddress = () => {
-    this.setState({edit_address: !this.state.edit_address});
+  handleEditAddressDelivery = () => {
+    this.setState({edit_address_delivery: !this.state.edit_address_delivery});
+  }
+
+  handleEditAddressBilling = () => {
+    this.setState({edit_address_billing: !this.state.edit_address_billing});
   }
 
   handleEditContact = () => {
     this.setState({edit_contact: !this.state.edit_contact});
   }
 
+  handleError = () => {
+    console.log("Erro Image");
+    this.setState({loadedImage: true});
+    
+  }
+
 
  fileChangedHandler = (event) => {
+    event.preventDefault();
+    event.persist();
     this.setState({selectedFile: event.target.files[0]})
     let selectedFile = event.target.files[0];
     
@@ -403,77 +599,92 @@ export default class MyAccount extends Component {
     formData.append('client[image]', selectedFile, selectedFile.name);
     formData.append('client_email', this.state.email);
     formData.append('client_token', this.state.token);
-    axios.put('http://localhost:3000/api/v1/clients/'+this.state.clientId+'.json', formData).then(res=>{
-        this.setState({image: res.data.large});
+
+    request({
+      method:'put',
+      url: 'api/v1/clients/' + this.state.clientId + '.json',
+      data: formData
+    }).then(res => {
+      this.setState({image: res.large});
     });
-    
+
   }
 
- 
+  renderImage = () => {
+
+    if(this.state.image==null) {
+        return(
+        <img className="img-fluid" onError={this.handleError.bind(this)} onLoad={this.loadedImage.bind(this)} src={userImage} />
+      );
+    } else {
+      return(
+        <img  className="img-fluid" onError={this.handleError.bind(this)} onLoad={this.loadedImage.bind(this)} src={this.state.image} />
+      );
+    }
+  }
 
   render() {
     return (
       <div className="pages-my-account">
         <h2 className="text-center title">Minha Conta</h2>
 
-            
-        
-          <div class="row">
-            <div class="col-sm text-center">
-              <img className="img-fluid" onLoad={this.loadedImage.bind(this)} src={this.state.image} />
-              
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Escolha uma foto</span>
+          <div className="row p-2 mb-4 mx-auto">
+            <div className="col-md-6 p-2 mx-auto text-center">
+              <div class="custom-file mx-auto">
+                 { this.renderImage() }
+                 <div class="custom-file text-left">
+                  <input id="logo" type="file" class="custom-file-input" onChange={(e) => this.fileChangedHandler(e)} />
+                  <label for="logo" class="custom-file-label text-truncate">Alterar Imagem...</label>
                 </div>
-                    <div class="custom-file">
-                      <input type="file" onChange={(e) => this.fileChangedHandler(e)}  class="custom-file-input" id="inputGroupFile01" />
-                      <label class="custom-file-label" for="inputGroupFile01">{ this.state.selectedFile} </label>
-                    </div>
               </div>
-              
             </div>
-          </div>
-
-          <div className="row">
-            <div className="col p-2">
-               <div className="card card-my-account float-left">
-                  <div className="card-header">Nome<a href="javascript: void(0)" className="float-right" onClick={this.handleEditName}>Editar</a></div>
-                  <div className="card-body">
-                      
-                      {this.editName()}
-                  </div>
+            <div className="col-md-6 p-2 mx-auto text-center">
+              <div className="row">
+                <div className="col-12 p-2">
+                  <div className="card card-my-account float-left">
+                      <div className="card-header">Nome<a href="javascript: void(0)" className="float-right" onClick={this.handleEditName}>Editar</a></div>
+                      <div className="card-body">
+                          {this.editName()}
+                      </div>
+                    </div>
                 </div>
+                <div className="col-12 p-2">
+                  <div className="card card-my-account float-left">
+                      <div className="card-header">Região Administrativa<a href="javascript: void(0)" className="float-right" onClick={this.handleEditAdmRegion}>Editar</a></div>
+                      <div className="card-body">
+                          {this.editAdmRegion()}
+                      </div>
+                    </div>
+                </div>
+              </div>
             </div>
-            
           </div>
-
-          
           <div className="row">
             <div className="col-md p-2">
                <div className="card float-left card-my-account">
-                  <div className="card-header">Endereço<a href="javascript: void(0)" className="float-right" onClick={this.handleEditAddress}>Editar</a></div>
+                  <div className="card-header">Endereço de Entrega<a href="javascript: void(0)" className="float-right" onClick={this.handleEditAddressDelivery}>Editar</a></div>
                   <div className="card-body">
-                      {this.editAddress()}
+                      {this.editAddressDelivery()}
                   </div>
                 </div>
             </div>
-            
             <div className="col-md p-2">
-               
+               <div className="card float-left card-my-account">
+                  <div className="card-header">Endereço de Cobrança<a href="javascript: void(0)" className="float-right" onClick={this.handleEditAddressBilling}>Editar</a></div>
+                  <div className="card-body">
+                      {this.editAddressBilling()}
+                  </div>
+                </div>
+            </div>
+            <div className="col-md p-2">
                <div className="card float-left card-my-account">
                   <div className="card-header">Contato<a  href="javascript: void(0)" className="float-right" onClick={this.handleEditContact}>Editar</a></div>
                   <div className="card-body">
                     { this.editContact() }
                   </div>
                 </div>
-            
             </div>
-            
           </div>
-
-
-       
       </div>
     );
   }

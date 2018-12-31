@@ -88,7 +88,6 @@ export default class Registration extends Component {
     const adm_region_id = e.target.elements.adm_region_id.value;
     const complement = e.target.elements.complement.value;
     const cellphone = e.target.elements.cellphone.value;
-    const main = true;
     console.log("Zipcode:");
     console.log(zipcode);
 
@@ -102,7 +101,6 @@ export default class Registration extends Component {
             password: password,
             password_confirmation: password,
             addresses_attributes: [{
-              main: main,
               number: addressnumber,
               street: street,
               zipcode: zipcode,
@@ -258,7 +256,6 @@ export default class Registration extends Component {
                   <span className="border"></span>
               </label>
             </div>
-            
           </div>
 
           <div className="form-check form-check-inline p-4">

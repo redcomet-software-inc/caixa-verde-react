@@ -54,24 +54,28 @@ export default class Option extends Component {
 
         <h2 className="text-center title">Como você prefere comprar?</h2>
 
-        <div className="card-deck">
         
-        <div className="row mx-auto text-center">
-          <div className="col-md">
-            <h4 className="text-info">Kits</h4>
-            <NavLink className="mx-auto" to="/kits">
-              <img onMouseOver={this.addColorKit} onMouseOut={this.removeColorKit} className={"img-fluid rounded option "+this.kitsColor()} src={kits} />
-            </NavLink>
+        
+        
+          <div className="row">
+            <div className="col-md-6 text-center">
+              <h4 className="text-info">Kits</h4>
+              <NavLink className="mx-auto" to="/kits">
+                <img onMouseOver={this.addColorKit} onMouseOut={this.removeColorKit} className={"img-fluid rounded option "+this.kitsColor()} src={kits} />
+              </NavLink>
+              <span style={{textAlign:"center"}}>10% de desconto</span>
+            </div>
+            <div className="col-md-6 text-center">
+              <h4 className="text-info">Personalizado</h4>
+              <NavLink className="mx-auto" to="/personalizado">
+                <img onMouseOver={this.addColorCustom} onMouseOut={this.removeColorCustom} className={"img-fluid rounded option "+this.customColor()} src={custom} />
+              </NavLink>
+            </div>
           </div>
-          <div className="col-md">
-            <h4 className="text-info">Personalizado</h4>
-            <NavLink className="mx-auto" to="/personalizado">
-              <img onMouseOver={this.addColorCustom} onMouseOut={this.removeColorCustom} className={"img-fluid rounded option "+this.customColor()} src={custom} />
-            </NavLink>
+          <div className="h-100 row my-auto p-5">
+            
           </div>
-        </div>
 
-        </div>
       </div>
     );
   }

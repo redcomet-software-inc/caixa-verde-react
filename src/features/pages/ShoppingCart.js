@@ -128,7 +128,7 @@ class ShoppingCart extends Component {
                 
             </div>
             <div class="modal-footer">
-              <span>Total: {this.props.setMoneyFormat(this.props.totalPriceKits + this.props.totalPriceProducts)} </span>
+              <span>Total: {this.props.setMoneyFormat( this.props.totalPriceProducts + this.props.totalPriceKits)} </span>
               <HashRouter>
               <button className="btn btn-primary" data-dismiss="modal" data-toggle={this.state.modal} data-target={"#"+this.state.dialog } onClick={this.clickHandle} type="button">Finalizar Compra</button>
               </HashRouter>

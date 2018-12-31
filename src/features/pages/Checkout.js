@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import request from '../../common/configApi.js';
 import Loads from 'react-loads';
 
 import appLogo from '../../images/caixaverde-finalizacao-weblogo.png';
@@ -18,16 +19,20 @@ export default class Checkout extends Component {
     this.props.updateShoppingCart("product");
 
     this.state = {
-      clientId: 0,
-      clientName: '',
-      clientLastname: '',
-      clientCellphone: '',
-      clientEmail: '',
-      clientAddressId: '',
-      clientAddress: '',
-      clientComplement: '',
-      clientZipCode: '',
+      client_id: 0,
+      name: '',
+      lastname: '',
+      cellphone: '',
+      email: '',
+      address_id: '',
+      address_street: '',
+      address_complement: '',
+      address_zipcode: '',
+      address_number:'',
+      address_neighbourhood:'',
+      address_kind:'delivery',
       freight: '',
+      order_price: 0,
       adm_region_id: '',
       adm_regions: [],
       adm_region_name: '',
@@ -41,6 +46,8 @@ export default class Checkout extends Component {
       productsLoaded: false,
       kitsLoaded: false,
       permit: false,
+      checkout_order_id:0,
+
     };
 
     this.redirect = this.redirect.bind(this);
@@ -51,6 +58,7 @@ export default class Checkout extends Component {
       this.mercadoPago();
       this.getClientInformations();
       this.getAdmRegions();
+      window.scroll({top: 0, left: 0, behavior: 'smooth' })
   }
 
   getPermission = () => {
@@ -72,71 +80,127 @@ export default class Checkout extends Component {
       if(this.state.permit === false ) {
         this.props.redirect('personalizado');
       } else {
-        console.log('Turning Of');
+        this.setState({order_price: this.props.totalPriceProducts + this.props.totalPriceKits + this.state.freight });
         this.props.turnOffLoading();
       }
     }
   };
 
-  componentWillUnmount(){
-    this.props.turnOffLoading();
-  }
-
+  /*Get all the new Data and decide what to submit to the server*/
   checkOut = e => {
     e.preventDefault();
-
-    const token = this.state.token;
-    const clientId = e.target.elements.clientId.value;
-    const products = JSON.stringify(this.props.shoppingCartProducts);
-    const kits = JSON.stringify(this.props.shoppingCartKits);
-    const orderPrice = parseFloat(e.target.elements.orderPrice.value).toFixed(2);
     const name = e.target.elements.name.value;
+    this.setState({ name: name });
     const lastname = e.target.elements.lastname.value;
+    this.setState({ lastname: lastname });
     const email = e.target.elements.email.value;
-    const address = e.target.elements.address.value;
-    const addressId = e.target.elements.clientAddressId.value;
-
+    this.setState({ clientEmail: email });
+    const cellphone = e.target.elements.cellphone.value;
+    this.setState({ cellphone: cellphone });
+    const address_street = e.target.elements.address_street.value;
+    this.setState({ address_street: address_street });
+    const address_number = e.target.elements.address_number.value;
+    this.setState({ address_number: address_number });
     const complement = e.target.elements.complement.value;
+    this.setState({ address_complement: complement });
+    const address_neighbourhood = e.target.elements.address_neighbourhood.value;
+    this.setState({address_neighbourhood: address_neighbourhood});
     const adm_region_id = e.target.elements.adm_region_id.value;
+    this.setState({ adm_region_id: adm_region_id});
     const zipcode = e.target.elements.zipcode.value;
-
-    const paymentMethod = e.target.elements.paymentMethod.value;
+    this.setState({ address_zipcode: zipcode });
+    const token = this.state.token;
+    const client_id = e.target.elements.client_id.value;
+    this.setState({ client_id: client_id });
+    const address_id = e.target.elements.address_id.value;
+    this.setState({ address_id: address_id });
+    const payment = e.target.elements.payment.value;
     const cpf = e.target.elements.cpf.value;
+    
+    console.log("payment");
+    if(payment=="money") {
+      console.log("Money");
+    } else if (payment=="credit") {
+      console.log("Credit");
+      console.log("Order Price");
+      console.log(this.state.order_price);
+      this.createOrderAPI();
+      
 
-    return axios({
-      method: 'POST',
-      url: 'http://localhost:3000/api/v1/orders.json"',
-      headers: {
+    }
+  }
+
+
+ 
+
+
+  createOrderAPI = () => {
+    console.log("CREATE ORDER API");
+    const products = this.props.shoppingCartProducts;
+    const kits = this.props.shoppingCartKits;
+    //const kits = JSON.stringify(this.props.shoppingCartKits);
+
+    /* Data structure to Create Order */
+    var data = {
+      order: {
+        client_id: this.state.client_id,
+        price_table_id: '1',
+        order_price: this.state.order_price,
+        orders_products_attributes: [],
+        kits_orders_attributes:[],
+        address_attributes: 
+          {
+            id: this.state.address_id,
+            number: this.state.address_number,
+            street: this.state.address_street,
+            zipcode: this.state.address_zipcode,
+            complement: this.state.address_complement,
+            neighbourhood: this.state.address_neighbourhood,
+            kind: this.state.address_kind
+          }
+        
+      }
+    }
+
+    products.map(function(product) {
+      data.order.orders_products_attributes.push({
+        product_id: product.id,
+        quantity: product.quantity
+      });
+    });
+
+    kits.map(function(kit) {
+      data.order.kits_orders_attributes.push({
+        kit_id: kit.id,
+        quantity: kit.quantity
+      });
+    });
+
+    console.log("CREATE ORDER API");
+    console.log("DATA");
+
+    request({
+      method:'post',
+      url: 'api/v1/orders.json',
+      header: {
         'X-Client-Email': this.state.email,
         'X-Client-Token': this.state.token,
       },
-      data: {
-        client_id: clientId,
-        price_table_id: '1',
-        address_id: addressId,
-        products_json: products,
-        kits_json: kits,
-        client_email: this.state.email,
-        order_price: orderPrice,
-      },
-    })
-      .then(res => {
-        if (res.status === 200) {
-          this.mercadoPagoPay();
-        } else {
-          this.props.changeErrMessage(
-            'Desculpe, estamos com um problema no servidor. Estamos trabalhando para corrigir.',
-          );
-          this.props.redirect('err');
-        }
-      })
-      .catch(error => {
-        this.props.changeErrMessage(
-          'Desculpe, estamos com um problema no servidor. Estamos trabalhando para corrigir.',
-        );
-        this.props.redirect('err');
-      });
+      data: data
+
+    }).then(res => {
+        console.log("Response Data");
+        console.log(res.order.id);
+        this.setState({checkout_order_id: res.order.id});
+        this.props.setCheckoutOrderId(res.order.id);
+        this.props.redirect('pagamento');
+        //this.props.redirect('personalizado');
+    });
+
+    
   };
+  
+    
 
   getClientInformations = () => {
     /* Get Data from current user based on email and token */
@@ -149,17 +213,24 @@ export default class Checkout extends Component {
       })
       .then(res => {
         if (res.status === 200) {
-          this.setState({ clientId: res.data.id });
-          this.setState({ clientName: res.data.name });
-          this.setState({ clientLastname: res.data.lastname });
-          this.setState({ clientCellphone: res.data.cellphone });
-          this.setState({ clientEmail: res.data.email });
-          this.setState({ clientAddress: res.data.address.street });
-          this.setState({ clientAddressId: res.data.id });
-          this.setState({ clientComplement: res.data.id });
-          this.setState({ clientZipcode: res.data.id });
+          this.setState({ client_id: res.data.id });
+          this.setState({ name: res.data.name });
+          this.setState({ lastname: res.data.lastname });
+          this.setState({ cellphone: res.data.cellphone });
+          this.setState({ email: res.data.email });
+
+          if(res.data.address_delivery !== null) {
+            this.setState({ address_street: res.data.address_delivery.street });
+            this.setState({ address_id: res.data.id });
+            this.setState({ address_complement: res.data.id });
+            this.setState({ address_zipcode: res.data.id });
+            this.setState({ address_kind: res.data.address_delivery.kind });
+            this.setState({ address_number: res.data.address_delivery.number})
+            this.setState({ address_neighbourhood: res.data.address_delivery.neighbourhood})
+          }
+
           this.setState({ freight: res.data.id });
-          this.setState({ adm_region_id: res.data.id });
+          this.setState({ adm_region_id: res.data.address_delivery.adm_region_id });
           this.setState({ adm_region_name: res.data.id });
           this.setState({ clientInformationsLoaded: true });
           this.turnOffLoading();
@@ -304,7 +375,6 @@ export default class Checkout extends Component {
   };
 
 
-
   componentDidUpdate(prevProps) {
     if(prevProps.shoppingCartKits !== this.props.shoppingCartKits) {
       if(this.props.shoppingCartKits.length > 0) {
@@ -323,6 +393,9 @@ export default class Checkout extends Component {
     }
   }
 
+  change = (e) => {
+        this.setState({adm_region_id: e.target.value});
+  }
 
 
   render() {
@@ -376,19 +449,11 @@ export default class Checkout extends Component {
                 </span>
               </li>
 
-              <li className="list-group-item d-flex justify-content-between bg-light">
-                <div className="text-success">
-                  <h6 className="my-0">Promo code</h6>
-                  <small>EXAMPLECODE</small>
-                </div>
-                <span className="text-success">-$5</span>
-              </li>
-
               <li className="list-group-item d-flex justify-content-between">
                 <span>Total</span>
                 <strong>
                   {this.props.setMoneyFormat(
-                    this.props.totalPriceKits + this.props.totalPriceProducts + this.state.freight,
+                    this.state.order_price
                   )}
                 </strong>
               </li>
@@ -396,10 +461,10 @@ export default class Checkout extends Component {
 
             <form className="card p-2">
               <div className="input-group">
-                <input type="text" className="form-control" placeholder="Promo code" />
+                <input type="text" className="form-control" placeholder="Código Promocional" />
                 <div className="input-group-append">
                   <button type="submit" className="btn btn-secondary">
-                    Redeem
+                    Obter
                   </button>
                 </div>
               </div>
@@ -409,21 +474,22 @@ export default class Checkout extends Component {
             <h4 className="mb-3">Endereço para Entrega</h4>
 
             <form onSubmit={e => this.checkOut(e)} className="needs-validation mt-3" novalidate>
-              <input id="clientId" name="clientId" type="hidden" value={this.state.clientId} />
+              <input id="client_id" name="client_id" type="hidden" value={this.state.client_id} />
+              <input id="address_kind" name="address_kind" type="hidden" value={ this.state.address_kind } />
               <input
-                id="clientAddressId"
-                name="clientAddressId"
+                id="address_id"
+                name="address_id"
                 type="hidden"
-                value={this.state.clientAddressId}
+                value={this.state.address_id}
               />
               <input
-                id="orderPrice"
-                name="orderPrice"
+                id="order_price"
+                name="order_price"
                 type="hidden"
-                value={
-                  this.props.totalPriceProducts + this.props.totalPriceKits + this.state.freight
-                }
+                value={this.state.order_price }
               />
+          
+              
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label for="firstName">Nome</label>
@@ -434,7 +500,7 @@ export default class Checkout extends Component {
                     name="name"
                     placeholder=""
                     onChange={this.handleChange}
-                    defaultValue={this.state.clientName}
+                    defaultValue={this.state.name}
                     required
                   />
                   <div className="invalid-feedback">Valid first name is required.</div>
@@ -447,7 +513,7 @@ export default class Checkout extends Component {
                     id="lastame"
                     name="lastname"
                     placeholder=""
-                    defaultValue={this.state.clientLastname}
+                    defaultValue={this.state.lastname}
                     required
                   />
                   <div className="invalid-feedback">Valid last name is required.</div>
@@ -464,7 +530,7 @@ export default class Checkout extends Component {
                     id="email"
                     name="email"
                     placeholder="you@example.com"
-                    defaultValue={this.state.clientEmail}
+                    defaultValue={this.state.email}
                     required
                   />
                 </div>
@@ -478,28 +544,70 @@ export default class Checkout extends Component {
                     id="cellphone"
                     name="cellphone"
                     placeholder="9999-9999"
-                    defaultValue={this.state.clientCellphone}
+                    defaultValue={this.state.cellphone}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="row">
+              <div className="col-md-3 mb-3">
+                  <label for="zip">CEP</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="zipcode"
+                    name="zipcode"
+                    placeholder=""
+                    defaultValue={this.state.address_zipcode}
                     required
                   />
                 </div>
               </div>
 
-              <div className="mb-3">
-                <label for="address">Endereço</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="address"
-                  name="address"
-                  placeholder="Rua, Avenina, 99"
-                  defaultValue={this.state.clientAddress}
-                  required
-                />
-                <div className="invalid-feedback">Please enter your shipping address.</div>
+              <div className="row">
+                <div className="col-md-9 mb-3">
+                    <label for="address">Endereço</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="address_street"
+                      name="address_street"
+                      placeholder="Rua, Avenina, 99"
+                      defaultValue={this.state.address_street}
+                      required
+                    />
+                    <div className="invalid-feedback"></div>
+                  </div>
+                  <div className="col-md-3 mb-3">
+                    <div className="mb-3">
+                      <label for="address">Número</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="address_number"
+                        name="address_number"
+                        placeholder=""
+                        defaultValue={this.state.address_number}
+                        required
+                      />
+                    <div className="invalid-feedback"></div>
+                  </div>
+                </div>
               </div>
 
               <div className="row">
-                <div className="col-md-3 mb-3">
+              <div className="col-md-4 mb-3">
+                  <label for="zip">Bairro</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="address_neighbourhood"
+                    name="address_neighbourhood"
+                    placeholder=""
+                    defaultValue={this.state.address_neighbourhood}
+                  />
+                  </div>
+                <div className="col-md-4 mb-3">
                   <label for="zip">Complemento</label>
                   <input
                     type="text"
@@ -507,7 +615,7 @@ export default class Checkout extends Component {
                     id="complement"
                     name="complement"
                     placeholder="(opcional)"
-                    defaultValue={this.state.clientComplement}
+                    defaultValue={this.state.address_complement}
                   />
                   <div className="invalid-feedback" />
                 </div>
@@ -518,7 +626,8 @@ export default class Checkout extends Component {
                     type="text"
                     id="adm_region_id"
                     name="adm_region_id"
-                    defaultValue={this.state.admRegionId}
+                    onChange={e => this.change(e)}
+                    value={this.state.adm_region_id}
                     placeholder="&nbsp;"
                     required
                   >
@@ -528,45 +637,21 @@ export default class Checkout extends Component {
                     ))}
                   </select>
                 </div>
-                <div className="col-md-3 mb-3">
-                  <label for="zip">CEP</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="zipcode"
-                    name="zipcode"
-                    placeholder=""
-                    defaultValue={this.state.clientZipcode}
-                    required
-                  />
-                </div>
+                
               </div>
               <hr className="mb-4" />
 
               <h4 className="mb-3">Pagamento</h4>
 
-              <div className="d-block my-3">
-                <div className="custom-control custom-radio">
-                  <input
-                    id="money"
-                    name="paymentMethod"
-                    type="radio"
-                    className="custom-control-input"
-                    value="money"
-                  />
-                  <label className="custom-control-label">Dinheiro</label>
-                </div>
-                <div className="custom-control custom-radio">
-                  <input
-                    id="credit"
-                    name="paymentMethod"
-                    value="credit"
-                    type="radio"
-                    className="custom-control-input"
-                  />
-                  <label className="custom-control-label">Cartão de Crédito</label>
-                </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="payment" id="inlineRadio1" value="money" />
+                <label class="form-check-label" for="inlineRadio1">Dinheiro</label>
               </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="payment" id="inlineRadio2" value="credit" />
+                <label class="form-check-label" for="inlineRadio2">Cartão de Crédito</label>
+              </div>
+              <br/><br />
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label for="cc-name">Deseja colocar seu CPF na nota?</label>

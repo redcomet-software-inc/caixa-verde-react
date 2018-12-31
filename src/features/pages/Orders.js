@@ -34,6 +34,7 @@ export default class Orders extends Component {
 
   componentDidMount(){
     this.getOrders();
+    window.scroll({top: 0, left: 0, behavior: 'smooth' });
   }
 
   render() {
