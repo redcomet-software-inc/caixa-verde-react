@@ -7,9 +7,20 @@ import {
   Route,
   HashRouter
 } from "react-router-dom";
+import * as actions from './redux/actions';
 
 
-export default class ShoppingCartButton extends Component {
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import request from '../../common/configApi.js';
+
+
+import Loading from '../common/Loading.js';
+
+
+export class ShoppingCartButton extends Component {
   static propTypes = {
 
   };
@@ -37,9 +48,13 @@ export default class ShoppingCartButton extends Component {
   componentWillUnmount() {
     document.removeEventListener('scroll', this.handleScroll);
   }
+
+  handleClick = () => {
+   
+  }
   render() {
     return ( 
-        <div className={"shopping-cart-button shadow " + this.state.invisible}>
+        <div onClick={this.handleClick} className={"shopping-cart-button shadow " + this.state.invisible}>
           <href  className="" data-toggle="modal" data-target='#shoppingCartDialog' exact to="/" > 
             <Icon className="ico" icon={threeDCube} size={40} />
           </href>
@@ -47,3 +62,22 @@ export default class ShoppingCartButton extends Component {
     );
   }
 }
+
+/* istanbul ignore next */
+function mapStateToProps(state) {
+  return {
+    components: state.components,
+  };
+}
+
+/* istanbul ignore next */
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...actions }, dispatch)
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ShoppingCartButton);

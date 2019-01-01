@@ -30,7 +30,7 @@ export class Footer extends Component {
             </p>
             </div>
             <div className="col-lg-4 mx-auto text-center">
-              <ul class="list-group p-3">
+              <ul class="list-group pl-3 pr-2 pb-5">
                 <li class="list-group-item p-3"><NavLink className="nav-link" strict to="/personalizado">Produtos</NavLink></li>
                 <li class="list-group-item p-3"><NavLink className="nav-link" strict to="/kits">Kits</NavLink></li>
                 <li class="list-group-item p-3"><NavLink className="nav-link" strict to="/quemsomos">Quem Somos</NavLink></li>

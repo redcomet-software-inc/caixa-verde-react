@@ -27,6 +27,7 @@ export class Categories extends Component {
 
   componentDidMount () {
     this.getCategories();
+    
   }
 
   getCategories = () => {
@@ -57,7 +58,7 @@ export class Categories extends Component {
       let name = e.target.name;
       this.setState({ current_category: name});
     }
-
+    
     request({
       method: 'get',
       url: 'api/v1/categories/' + id + '.json',

@@ -15,7 +15,7 @@ export default class Option extends Component {
     super();
     this.state = {
       kits_color: false,
-      custom_colr: false,
+      custom_color: false,
     };
   }
 
@@ -54,7 +54,7 @@ export default class Option extends Component {
 
         <h2 className="text-center title">Como você prefere comprar?</h2>
 
-        
+
         
         
           <div className="row">

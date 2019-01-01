@@ -117,10 +117,9 @@ class NavBar extends Component {
               </div>
               <div class="p-0 bd-highlight">
                 <span className="nav-item">
-                  <NavLink  className="nav-link" data-toggle="modal" data-target={'#' + this.state.dialog} exact to="/" > Minha Caixa{' '} 
+                  <NavLink  className="nav-link" exact to="/minhacaixa" > Minha Caixa{' '} 
                   {this.props.shoppingCartCount > 0 ? ( <div className="badge badge-success ">{this.props.shoppingCartCount}</div>  ) : null} 
                   </NavLink>
-                  
                 </span>
               </div>
             </div>

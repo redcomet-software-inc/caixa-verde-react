@@ -41,8 +41,7 @@ export default class Payment extends Component {
   componentDidMount() {
       console.log("NODE RSA");
       console.log(node_rsa);
-
-     
+      window.scroll({top: 0, left: 0, behavior: 'smooth' })
   }
 
   home_tab = () => {

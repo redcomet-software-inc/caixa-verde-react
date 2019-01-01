@@ -28,8 +28,9 @@ import ShoppingCart from '../pages/ShoppingCart.js';
 import ShoppingCartButton from '../components/ShoppingCartButton.js';
 import Checkout from '../pages/Checkout.js';
 import MyAccount from '../pages/MyAccount.js';
-import Payment from '../pages/Payment.js';
 import MyOrders from '../pages/MyOrders.js';
+import MyBox from '../pages/MyBox.js';
+import Payment from '../pages/Payment.js';
 import Orders from '../pages/Orders.js';
 import Err from '../common/Err.js';
 import Warning from '../common/Warning.js';
@@ -409,14 +410,6 @@ export class MainPage extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    console.log(this.props.location);
-    if (this.props.location !== prevProps.location) {
-      console.log("cmo did update");
-      window.scrollTo(0, 0);
-    }
-  }
-
   render() {
     return (
       <div>
@@ -440,8 +433,8 @@ export class MainPage extends Component {
                   <div className="mb-5 mx-auto content">
                     {this.renderError()}
                     {this.renderSpinner()}
-                    <div className="row my-auto ">
-                      <div className={"col-lg-12 pt-md-5 mt-md-5 mx-auto my-auto "+ this.visible()}>
+                    <div className="row my-auto mx-0">
+                      <div className={"col-lg-12 pt-md-5 mx-auto my-auto pl-0 pr-0 "+ this.visible()}>
 
                         {this.renderRedirect(this.state.redirectTo)}
                         
@@ -546,6 +539,21 @@ export class MainPage extends Component {
                           )}
                         />
                         <Route
+                          path="/minhacaixa"
+                          render={props => (
+                            <MyBox
+                              turnOnLoading={this.turnOnLoading} 
+                              turnOffLoading={this.turnOffLoading} 
+                              turnOnError={this.turnOnError}
+                              turnOffError={this.turnOffError} 
+                              updateShoppingCart={this.updateShoppingCart}
+                              shoppingCartCount={this.state.shoppingCartCount}
+                              shoppingCartProducts={this.state.shoppingCartProducts} 
+                              shoppingCartKits={this.state.shoppingCartKits} 
+                              />
+                          )}
+                        />
+                        <Route
                           path="/pagamento"
                           render={props => (
                             <Payment turnOffLoading={this.turnOffLoading} turnOnLoading={this.turnOnLoading} checkout_order_id={this.state.checkout_order_id} />
@@ -574,9 +582,9 @@ export class MainPage extends Component {
         {this.state.shoppingCartCount > 0 && (
           <ShoppingCart
             shoppingCartProducts={this.state.shoppingCartProducts}
+            shoppingCartKits={this.state.shoppingCartKits}
             productsCount={this.state.productsCount}
             kitsCount={this.state.kitsCount}
-            shoppingCartKits={this.state.shoppingCartKits}
             minQuantity={this.state.minQuantity}
             totalPriceKits={this.state.totalPriceKits}
             totalPriceProducts={this.state.totalPriceProducts}

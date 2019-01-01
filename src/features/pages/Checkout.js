@@ -114,25 +114,10 @@ export default class Checkout extends Component {
     this.setState({ client_id: client_id });
     const address_id = e.target.elements.address_id.value;
     this.setState({ address_id: address_id });
-    const payment = e.target.elements.payment.value;
     const cpf = e.target.elements.cpf.value;
-    
-    console.log("payment");
-    if(payment=="money") {
-      console.log("Money");
-    } else if (payment=="credit") {
-      console.log("Credit");
-      console.log("Order Price");
-      console.log(this.state.order_price);
-      this.createOrderAPI();
-      
+    this.createOrderAPI();
 
-    }
   }
-
-
- 
-
 
   createOrderAPI = () => {
     console.log("CREATE ORDER API");
@@ -640,17 +625,6 @@ export default class Checkout extends Component {
                 
               </div>
               <hr className="mb-4" />
-
-              <h4 className="mb-3">Pagamento</h4>
-
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="payment" id="inlineRadio1" value="money" />
-                <label class="form-check-label" for="inlineRadio1">Dinheiro</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="payment" id="inlineRadio2" value="credit" />
-                <label class="form-check-label" for="inlineRadio2">Cartão de Crédito</label>
-              </div>
               <br/><br />
               <div className="row">
                 <div className="col-md-6 mb-3">

@@ -62,7 +62,7 @@ export default class UserProfile extends Component {
                     {this.image()}
                     {this.props.clientName}
                     </a>
-                <div className="dropdown-menu dropdown-menu-right shadow text-center" aria-labelledby="navbarDropdown">
+                <div className="dropdown-menu dropdown-menu-right m-2 shadow text-center" aria-labelledby="navbarDropdown">
                 <NavLink className="dropdown-item" exact to="/minhaconta">Minha Conta</NavLink>
                 <div className="dropdown-divider"></div>
                 <a className="dropdown-item" href="/">Opções</a>
