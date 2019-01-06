@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import {
   NavLink
 } from "react-router-dom";
-import customizedImage from '../../images/customized.gif';
 import kits from '../../images/kits2.png';
 import custom from '../../images/custom.png';
 
-export default class Option extends Component {
+export default class Option extends Component 
+{
   static propTypes = {
-
   };
-
-  constructor (){
+  constructor ()
+  {
     super();
     this.state = {
       kits_color: false,
@@ -19,8 +18,10 @@ export default class Option extends Component {
     };
   }
 
-  customColor = () => {
-    if(this.state.custom_color===true) {
+  customColor = () => 
+  {
+    if(this.state.custom_color===true) 
+    {
       return '';
     } else {
       return 'greyscale';
@@ -28,54 +29,54 @@ export default class Option extends Component {
   }
 
   kitsColor = () => {
-    if(this.state.kits_color===true) {
+    if(this.state.kits_color===true) 
+    {
       return '';
-    } else {
+    } else 
+    {
       return 'greyscale';
     }
   }
 
-  addColorKit = () => {
+  addColorKit = () => 
+  {
     this.setState({kits_color:true});
   }
-  removeColorKit = () => {
+  removeColorKit = () => 
+  {
     this.setState({kits_color:false});
   }
-  addColorCustom = () => {
+  addColorCustom = () => 
+  {
     this.setState({custom_color:true});
   }
-  removeColorCustom= () => {
+  removeColorCustom= () => 
+  {
     this.setState({custom_color:false});
   }
 
-  render() {
+  render() 
+  {
     return (
       <div className="pages-option">
-
         <h2 className="text-center title">Como você prefere comprar?</h2>
-
-
-        
-        
           <div className="row">
             <div className="col-md-6 text-center">
               <h4 className="text-info">Kits</h4>
               <NavLink className="mx-auto" to="/kits">
-                <img onMouseOver={this.addColorKit} onMouseOut={this.removeColorKit} className={"img-fluid rounded option "+this.kitsColor()} src={kits} />
+                <img alt={"Ir para Lista de Kits"} onMouseOver={this.addColorKit} onMouseOut={this.removeColorKit} className={"img-fluid rounded option "+this.kitsColor()} src={kits} />
               </NavLink>
               <span style={{textAlign:"center"}}>10% de desconto</span>
             </div>
             <div className="col-md-6 text-center">
               <h4 className="text-info">Personalizado</h4>
               <NavLink className="mx-auto" to="/personalizado">
-                <img onMouseOver={this.addColorCustom} onMouseOut={this.removeColorCustom} className={"img-fluid rounded option "+this.customColor()} src={custom} />
+                <img alt={"Ir para Lista de Personalizados"} onMouseOver={this.addColorCustom} onMouseOut={this.removeColorCustom} className={"img-fluid rounded option "+this.customColor()} src={custom} />
               </NavLink>
             </div>
           </div>
           <div className="h-100 row my-auto p-5">
-            
           </div>
-
       </div>
     );
   }

@@ -31,7 +31,7 @@ export default {
     { path: '/minhaconta', name: 'My account', component: MyAccount },
     { path: '/pedidos', name: 'My orders', component: MyOrders },
     { path: '/pagamento', name: 'Payment', component: Payment },
-    { path: '/minhacaixa', name: 'My box', component: MyBox },
+    { path: '/minhacaixa', name: 'My box', component: MyBox, isIndex: true },
     
   ],
 };

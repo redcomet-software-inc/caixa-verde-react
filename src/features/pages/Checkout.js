@@ -1,29 +1,26 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import request from '../../common/configApi.js';
-import Loads from 'react-loads';
 
-import appLogo from '../../images/caixaverde-finalizacao-weblogo.png';
-
-export default class Checkout extends Component {
+export default class Checkout extends Component 
+{
   static propTypes = {};
 
-  constructor(props) {
+  constructor(props) 
+  {
     super(props);
-
     const email = localStorage.getItem('email');
     const token = localStorage.getItem('token');
-
-    this.props.turnOnLoading();
+    //this.props.turnOnLoading();
     this.props.updateShoppingCart("kit");
     this.props.updateShoppingCart("product");
-
-    this.state = {
+    this.state = 
+    {
       client_id: 0,
       name: '',
       lastname: '',
       cellphone: '',
-      email: '',
+      cpf: '',
       address_id: '',
       address_street: '',
       address_complement: '',
@@ -38,48 +35,48 @@ export default class Checkout extends Component {
       adm_region_name: '',
       email: email || '',
       token: token || '',
-      mercadoPagoAccessToken: '',
-      mercadoPagoShoppingCart: [],
-      mercadoPagoLoaded: false,
       clientInformationsLoaded: false,
       admRegionsLoaded: false,
       productsLoaded: false,
       kitsLoaded: false,
       permit: false,
       checkout_order_id:0,
-
     };
 
     this.redirect = this.redirect.bind(this);
-    this.mercadoPagoPay = this.mercadoPagoPay.bind(this);
   }
 
-  componentDidMount() {
-      this.mercadoPago();
+  componentDidMount() 
+  {
       this.getClientInformations();
       this.getAdmRegions();
       window.scroll({top: 0, left: 0, behavior: 'smooth' })
   }
 
-  getPermission = () => {
-    if((this.props.productsCount < this.props.minQuantity) && this.props.kitsCount==0) {
+  getPermission = () => 
+  {
+    if((this.props.productsCount < this.props.minQuantity) && this.props.kitsCount===0) 
+    {
       this.setState({permit: false});
-    } else {
+    } else 
+    {
       this.setState({permit: true});
     }
   }
 
-  turnOffLoading = () => {
+  turnOffLoading = () => 
+  {
     this.getPermission();
     if (
       this.state.clientInformationsLoaded === true &&
-      this.state.mercadoPagoLoaded === true &&
       this.state.admRegionsLoaded === true
-
-    ) {
-      if(this.state.permit === false ) {
+    ) 
+    {
+      if(this.state.permit === false ) 
+      {
         this.props.redirect('personalizado');
-      } else {
+      } else 
+      {
         this.setState({order_price: this.props.totalPriceProducts + this.props.totalPriceKits + this.state.freight });
         this.props.turnOffLoading();
       }
@@ -87,10 +84,10 @@ export default class Checkout extends Component {
   };
 
   /*Get all the new Data and decide what to submit to the server*/
-  checkOut = e => {
+  checkOut = e => 
+  {
     e.preventDefault();
     const name = e.target.elements.name.value;
-    this.setState({ name: name });
     const lastname = e.target.elements.lastname.value;
     this.setState({ lastname: lastname });
     const email = e.target.elements.email.value;
@@ -101,68 +98,72 @@ export default class Checkout extends Component {
     this.setState({ address_street: address_street });
     const address_number = e.target.elements.address_number.value;
     this.setState({ address_number: address_number });
-    const complement = e.target.elements.complement.value;
-    this.setState({ address_complement: complement });
+    const address_complement = e.target.elements.address_complement.value;
+    this.setState({ address_complement: address_complement });
     const address_neighbourhood = e.target.elements.address_neighbourhood.value;
     this.setState({address_neighbourhood: address_neighbourhood});
-    const adm_region_id = e.target.elements.adm_region_id.value;
-    this.setState({ adm_region_id: adm_region_id});
-    const zipcode = e.target.elements.zipcode.value;
-    this.setState({ address_zipcode: zipcode });
+    const address_adm_region_id = e.target.elements.adm_region_id.value;
+    this.setState({ adm_region_id: address_adm_region_id});
+    const address_zipcode = e.target.elements.address_zipcode.value;
+    this.setState({ address_zipcode: address_zipcode });
     const token = this.state.token;
     const client_id = e.target.elements.client_id.value;
     this.setState({ client_id: client_id });
     const address_id = e.target.elements.address_id.value;
     this.setState({ address_id: address_id });
     const cpf = e.target.elements.cpf.value;
-    this.createOrderAPI();
-
-  }
-
-  createOrderAPI = () => {
-    console.log("CREATE ORDER API");
+    
     const products = this.props.shoppingCartProducts;
     const kits = this.props.shoppingCartKits;
     //const kits = JSON.stringify(this.props.shoppingCartKits);
-
     /* Data structure to Create Order */
+    console.log("creating order");
+    console.log(this.state.address_complement)
+
     var data = {
+      client_token: this.state.token,
+      client_email: this.state.email,
       order: {
-        client_id: this.state.client_id,
-        price_table_id: '1',
+        client_id: client_id,
         order_price: this.state.order_price,
         orders_products_attributes: [],
         kits_orders_attributes:[],
+        client_attributes: 
+        {
+          name: name,
+          lastname: lastname,
+          email: this.state.email,
+          cellphone: cellphone,
+          cpf: cpf,
+        },
         address_attributes: 
           {
             id: this.state.address_id,
-            number: this.state.address_number,
-            street: this.state.address_street,
-            zipcode: this.state.address_zipcode,
-            complement: this.state.address_complement,
-            neighbourhood: this.state.address_neighbourhood,
+            number: address_number,
+            street: address_street,
+            zipcode: address_zipcode,
+            adm_region_id: address_adm_region_id,
+            complement: address_complement,
+            neighbourhood: address_neighbourhood,
             kind: this.state.address_kind
           }
-        
       }
     }
-
-    products.map(function(product) {
+    products.map((product) =>
+    {
       data.order.orders_products_attributes.push({
         product_id: product.id,
         quantity: product.quantity
       });
     });
 
-    kits.map(function(kit) {
+    kits.map((kit) =>
+    {
       data.order.kits_orders_attributes.push({
         kit_id: kit.id,
         quantity: kit.quantity
       });
     });
-
-    console.log("CREATE ORDER API");
-    console.log("DATA");
 
     request({
       method:'post',
@@ -172,175 +173,61 @@ export default class Checkout extends Component {
         'X-Client-Token': this.state.token,
       },
       data: data
-
-    }).then(res => {
-        console.log("Response Data");
-        console.log(res.order.id);
-        this.setState({checkout_order_id: res.order.id});
-        this.props.setCheckoutOrderId(res.order.id);
-        this.props.redirect('pagamento');
-        //this.props.redirect('personalizado');
+    }).then(res => 
+    {
+      console.log("Response Data");
+      console.log(res.order.id);
+      this.setState({checkout_order_id: res.order.id});
+      this.props.setCheckoutOrderId(res.order.id);
+      //this.props.redirect('pagamento');
+      //this.props.redirect('personalizado');
     });
+  }
 
-    
-  };
-  
-    
-
-  getClientInformations = () => {
+  getClientInformations = () => 
+  {
     /* Get Data from current user based on email and token */
-    axios
-      .get('http://localhost:3000/api/v1/clients/1.json', {
-        params: {
-          client_email: this.state.email,
-          client_token: this.state.token,
-        },
-      })
-      .then(res => {
-        if (res.status === 200) {
-          this.setState({ client_id: res.data.id });
-          this.setState({ name: res.data.name });
-          this.setState({ lastname: res.data.lastname });
-          this.setState({ cellphone: res.data.cellphone });
-          this.setState({ email: res.data.email });
-
-          if(res.data.address_delivery !== null) {
-            this.setState({ address_street: res.data.address_delivery.street });
-            this.setState({ address_id: res.data.id });
-            this.setState({ address_complement: res.data.id });
-            this.setState({ address_zipcode: res.data.id });
-            this.setState({ address_kind: res.data.address_delivery.kind });
-            this.setState({ address_number: res.data.address_delivery.number})
-            this.setState({ address_neighbourhood: res.data.address_delivery.neighbourhood})
-          }
-
-          this.setState({ freight: res.data.id });
-          this.setState({ adm_region_id: res.data.address_delivery.adm_region_id });
-          this.setState({ adm_region_name: res.data.id });
-          this.setState({ clientInformationsLoaded: true });
-          this.turnOffLoading();
-        }
-      });
-  };
-
-  /*Init payment Process with Mercado Pago */
-  mercadoPagoPay = () => {
-    const mercadoPagoAccessToken = this.state.mercadoPagoAccessToken;
-
-    var apiRequest = {
-      items: [],
-      payer: {},
-      payment_methods: {},
-    };
-
-    apiRequest.payment_methods = {
-      excluded_payment_types: [{ id: 'ticket' }, { id: 'atm' }],
-    };
-
-    apiRequest.items = [
+    axios.get('http://localhost:3000/api/v1/clients/1.json', 
+    {
+      params: 
       {
-        title: 'frete',
-        quantity: 1,
-        unit_price: this.state.freight,
+        client_email: this.state.email,
+        client_token: this.state.token,
       },
-    ];
-
-    apiRequest.payer = {
-      name: 'Guilherme',
-      surname: 'Nunes',
-      email: 'guilhermewn@gmail.com',
-      phone: {
-        area_code: 61,
-        number: 998698660,
-      },
-      address: {
-        street_name: 'Rua Yollanda Ferreira Penzo',
-        street_number: 60,
-        zip_code: '79826-175',
-      },
-    };
-
-    var productsList = this.props.shoppingCartProducts;
-    var kitsList = this.props.shoppingCartKits;
-    /* Mercado Pago Data Format */
-
-    productsList.map(function(item) {
-      apiRequest.items.push({
-        title: item.name,
-        quantity: item.quantity,
-        unit_price: item.price,
-      });
-    });
-
-    kitsList.map(function(item) {
-      apiRequest.items.push({
-        title: item.name,
-        quantity: item.quantity,
-        unit_price: item.price,
-      });
-    });
-
-    apiRequest = JSON.stringify(apiRequest);
-
-    console.log('PRODUCTS');
-    console.log(apiRequest);
-
-    const url =
-      'https://api.mercadopago.com/checkout/preferences/?attributes=id,client_id,sandbox_init_point&access_token=' +
-      mercadoPagoAccessToken;
-
-    var request = axios({
-      method: 'POST',
-      url: url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: apiRequest,
     })
-      .then(response => {
-        if (response.status === 201) {
-          window.location = response.data['sandbox_init_point'];
-          console.log(response.data);
+    .then(res => 
+    {
+      if (res.status === 200) 
+      {
+        this.setState({ client_id: res.data.id });
+        this.setState({ name: res.data.name });
+        this.setState({ lastname: res.data.lastname });
+        this.setState({ cellphone: res.data.cellphone });
+        this.setState({ email: res.data.email });
+        this.setState({ cpf: res.data.cpf})
+        if(res.data.address_delivery !== null) 
+        {
+          this.setState({ address_street: res.data.address_delivery.street });
+          this.setState({ address_id: res.data.address_delivery.id });
+          this.setState({ address_complement: res.data.address_delivery.complement });
+          this.setState({ address_zipcode: res.data.address_delivery.zipcode });
+          this.setState({ address_kind: res.data.address_delivery.kind });
+          this.setState({ address_number: res.data.address_delivery.number})
+          this.setState({ address_neighbourhood: res.data.address_delivery.neighbourhood})
         }
-      })
-      .catch(function(error) {
-        // handle error
-        console.log(error);
-      });
-  };
-
-  /*Get Auth Token from Mercado Pago */
-  mercadoPago = () => {
-    axios({
-      method: 'POST',
-      url: 'https://api.mercadopago.com/oauth/token',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        accept: 'application/json',
-      },
-      data: {
-        grant_type: 'client_credentials',
-        client_id: '2818049652001946',
-        client_secret: 'HtIm5hoTD2cMwRPTr2Nv2dEaGkhPZ1YL',
-      },
-    }).then(response => {
-      if (response.status === 200) {
-        this.setState({ mercadoPagoAccessToken: response.data['access_token'] });
-        console.log(response.data['access_token']);
-        this.setState({ mercadoPagoLoaded: true });
+        this.setState({ freight: res.data.freight });
+        this.setState({ adm_region_id: res.data.address_delivery.adm_region_id });
+        this.setState({ adm_region_name: res.data.adm_region.id });
+        this.setState({ clientInformationsLoaded: true });
         this.turnOffLoading();
       }
     });
   };
 
-  convertShoppingCartToMercadoPago = () => {
-    console.log('Converting JSON SHOPPING CART TO MERCADO PAGO');
-    console.log(this.props.addressIdshoppingCart);
-    return null;
-  };
-
-  getAdmRegions = () => {
-    axios.get('http://localhost:3000/api/v1/adm_regions.json').then(res => {
+  getAdmRegions = () => 
+  {
+    axios.get('http://localhost:3000/api/v1/adm_regions.json').then(res => 
+    {
       const adm_regions = res.data;
       console.log(adm_regions);
       this.setState({ adm_regions: adm_regions });
@@ -349,43 +236,52 @@ export default class Checkout extends Component {
     });
   };
 
-  redirect() {
+  redirect() 
+  {
     return this.props.redirect('login');
   }
 
-  renderQuantity = quantity => {
+  renderQuantity = quantity => 
+  {
     if (quantity > 1) {
       return '(' + quantity + ')';
     }
   };
 
 
-  componentDidUpdate(prevProps) {
-    if(prevProps.shoppingCartKits !== this.props.shoppingCartKits) {
-      if(this.props.shoppingCartKits.length > 0) {
+  componentDidUpdate(prevProps) 
+  {
+    if(prevProps.shoppingCartKits !== this.props.shoppingCartKits) 
+    {
+      if(this.props.shoppingCartKits.length > 0) 
+      {
           this.setState({ kitsLoaded: true });
           this.turnOffLoading();
         }
     }
-    if(prevProps.shoppingCartProducts !== this.props.shoppingCartProducts) {
-        if(this.props.shoppingCartProducts.length > 0) {
+    if(prevProps.shoppingCartProducts !== this.props.shoppingCartProducts) 
+    {
+        if(this.props.shoppingCartProducts.length > 0) 
+        {
           this.setState({ productsLoaded: true });
           this.turnOffLoading();
         }
     }
-    if(prevProps.productsCount !== this.props.productsCount) {
+    if(prevProps.productsCount !== this.props.productsCount) 
+    {
       console.log("Produtos:"+this.props.productsCount);
     }
   }
 
-  change = (e) => {
-        this.setState({adm_region_id: e.target.value});
+  change = (e) => 
+  {
+    this.setState({adm_region_id: e.target.value});
   }
 
-
-  render() {
+  render() 
+  {
     return (
-      <div className="pages-checkout">
+      <div className="pages-checkout pb-5 mb-5">
         <div className="row">
           <div className="col-md-4 order-md-2 mb-4">
             <h4 className="d-flex justify-content-between align-items-center mb-3">
@@ -394,10 +290,8 @@ export default class Checkout extends Component {
                 {this.props.shoppingCartCount}
               </span>
             </h4>
-
             <ul className="list-group mb-3">
               {this.props.shoppingCartProducts.map((item, index) => (
-                
                   <li className="list-group-item d-flex justify-content-between lh-condensed">
                     <div>
                       <h6 className="my-0">
@@ -410,21 +304,19 @@ export default class Checkout extends Component {
                     </span>
                   </li>
               ))}
-              
-                { this.props.shoppingCartKits.map((item, index) => (
-                    <li className="list-group-item d-flex justify-content-between lh-condensed">
-                      <div>
-                        <h6 className="my-0">
-                          {item.name} {this.renderQuantity(item.quantity)}
-                        </h6>
-                        <small className="text-muted">{item.description}</small>
-                      </div>
-                      <span className="text-muted">
-                        {this.props.setMoneyFormat(item.price * item.quantity)}
-                      </span>
-                    </li>
+              { this.props.shoppingCartKits.map((item, index) => (
+                  <li className="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                      <h6 className="my-0">
+                        {item.name} {this.renderQuantity(item.quantity)}
+                      </h6>
+                      <small className="text-muted">{item.description}</small>
+                    </div>
+                    <span className="text-muted">
+                      {this.props.setMoneyFormat(item.price * item.quantity)}
+                    </span>
+                  </li>
                 ))}
-
               <li className="list-group-item d-flex justify-content-between bg-light">
                 <div className="text-info">
                   <h6 className="my-0">Valor do Frete</h6>
@@ -433,7 +325,6 @@ export default class Checkout extends Component {
                   {this.props.setMoneyFormat(this.state.freight)}
                 </span>
               </li>
-
               <li className="list-group-item d-flex justify-content-between">
                 <span>Total</span>
                 <strong>
@@ -443,7 +334,6 @@ export default class Checkout extends Component {
                 </strong>
               </li>
             </ul>
-
             <form className="card p-2">
               <div className="input-group">
                 <input type="text" className="form-control" placeholder="Código Promocional" />
@@ -457,7 +347,6 @@ export default class Checkout extends Component {
           </div>
           <div className="col-md-8 order-md-1">
             <h4 className="mb-3">Endereço para Entrega</h4>
-
             <form onSubmit={e => this.checkOut(e)} className="needs-validation mt-3" novalidate>
               <input id="client_id" name="client_id" type="hidden" value={this.state.client_id} />
               <input id="address_kind" name="address_kind" type="hidden" value={ this.state.address_kind } />
@@ -473,8 +362,6 @@ export default class Checkout extends Component {
                 type="hidden"
                 value={this.state.order_price }
               />
-          
-              
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label for="firstName">Nome</label>
@@ -540,15 +427,14 @@ export default class Checkout extends Component {
                   <input
                     type="text"
                     className="form-control"
-                    id="zipcode"
-                    name="zipcode"
+                    id="address_zipcode"
+                    name="address_zipcode"
                     placeholder=""
                     defaultValue={this.state.address_zipcode}
                     required
                   />
                 </div>
               </div>
-
               <div className="row">
                 <div className="col-md-9 mb-3">
                     <label for="address">Endereço</label>
@@ -579,7 +465,6 @@ export default class Checkout extends Component {
                   </div>
                 </div>
               </div>
-
               <div className="row">
               <div className="col-md-4 mb-3">
                   <label for="zip">Bairro</label>
@@ -597,8 +482,8 @@ export default class Checkout extends Component {
                   <input
                     type="text"
                     className="form-control"
-                    id="complement"
-                    name="complement"
+                    id="address_complement"
+                    name="address_complement"
                     placeholder="(opcional)"
                     defaultValue={this.state.address_complement}
                   />
@@ -622,7 +507,6 @@ export default class Checkout extends Component {
                     ))}
                   </select>
                 </div>
-                
               </div>
               <hr className="mb-4" />
               <br/><br />
@@ -634,14 +518,13 @@ export default class Checkout extends Component {
                     className="form-control"
                     id="cpf"
                     name="cpf"
+                    defaultValue={this.state.cpf}
                     placeholder="000.000.000-00"
                   />
-
                   <div className="invalid-feedback">Name on card is required</div>
                 </div>
               </div>
-
-              <hr className="mb-4" />
+              <hr className="mb-4 pb-5" />
               <button className="btn btn-primary btn-lg btn-block">Continuar Compra</button>
             </form>
           </div>
@@ -651,6 +534,7 @@ export default class Checkout extends Component {
   }
 }
 
-const renderError = () => {
+const renderError = () => 
+{
   return <p>Erro</p>;
 };

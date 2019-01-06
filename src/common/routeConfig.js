@@ -1,4 +1,3 @@
-import { MainPage } from '../features/home/MainPage';
 import App from '../features/home/App.js';
 import { PageNotFound } from '../features/common';
 import homeRoute from '../features/home/route';

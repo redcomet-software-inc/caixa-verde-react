@@ -10,7 +10,6 @@ export default class Registration extends Component {
 
   };
 
-
   constructor(props){
     super(props);
     this.state = {
@@ -128,9 +127,9 @@ export default class Registration extends Component {
 
   render(props) {
     return (
-      <div className="pages-registration form-spacing">
-          <NavLink to="/login" >Já tenho uma conta</NavLink>
-      
+      <div className="pages-registration form-spacing p-lg-2 mb-5 pb-5">
+          <NavLink className="nav-link p-4 text-center" to="/login" >Já tenho uma conta</NavLink>
+          <p></p>
         <h2 className="text-center title">Cadastro</h2>
         <form onSubmit={this.register}>
           <div className="row">

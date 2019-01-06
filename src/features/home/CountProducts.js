@@ -15,9 +15,7 @@ export const countProductsAndKits = (productsList, kitsList) => {
   };
 
 export const getTotalPrice = (productsList, kitsList) => {
-  console.log("Calculating Total Price Noew");
-  console.log(productsList);
-  console.log(kitsList);
+
 }
 
 export const countProducts = (productsList) => {

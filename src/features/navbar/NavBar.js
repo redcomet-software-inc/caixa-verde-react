@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import appLogo from '../../images/caixaverde-finalizacao-weblogo.png';
-import userImage from '../../images/userImage.jpg';
 import { NavLink } from 'react-router-dom';
 import UserProfile from './UserProfile.js';
+
 class NavBar extends Component {
   static propTypes = {};
   constructor(props) {
@@ -14,7 +14,7 @@ class NavBar extends Component {
   }
 
   addCardCount = (e, b, c) => {
-    console.log('confere');
+
   };
 
   changeDialog = () => {
@@ -31,6 +31,8 @@ class NavBar extends Component {
     this.props.updateShoppingCart("kit");
     this.props.updateShoppingCart("product");
     document.addEventListener('scroll', this.handleScroll, {passive: true} );
+
+     
   }
 
   componentDidUpdate(prevProps) {
@@ -56,7 +58,7 @@ class NavBar extends Component {
   render() {
     return (
       <div id="caixa-verde-header">
-      
+
         <nav className="navbar navbar-primary navbar-expand-lg navbar-light shadow">
           <NavLink className="navbar-brand" exact to="/">
             <img src={appLogo} width={200} />
@@ -106,22 +108,33 @@ class NavBar extends Component {
           </div>
         </nav>
 
+
         <nav className={"navbar-options bg-dark shadow " + this.state.fixedTop}>
           <div className="w-100">
             <div className="d-flex justify-content-lg-end justify-content-center bd-highlight mb-0">
-             <div class="p-0 bd-highlight"></div>
-              <div class="p-0 bd-highlight">
+             <div className="p-0 bd-highlight">
+                <span className="nav-item">
+                  <NavLink className="nav-link" to="/kits">Kits</NavLink>
+                </span>
+              </div>
+             <div className="p-0 bd-highlight">
+                <span className="nav-item">
+                  <NavLink className="nav-link" to="/personalizado">Personalizado</NavLink>
+                </span>
+              </div>
+              <div className="p-0 bd-highlight">
                 <span className="nav-item">
                   {this.props.loggedIn ? (<NavLink className="nav-link nav-item" exact to="/pedidos">Meus Pedidos</NavLink>) : null }
                 </span>
               </div>
-              <div class="p-0 bd-highlight">
+              <div className="p-0 bd-highlight">
                 <span className="nav-item">
                   <NavLink  className="nav-link" exact to="/minhacaixa" > Minha Caixa{' '} 
                   {this.props.shoppingCartCount > 0 ? ( <div className="badge badge-success ">{this.props.shoppingCartCount}</div>  ) : null} 
                   </NavLink>
                 </span>
               </div>
+              
             </div>
           </div>
         </nav>

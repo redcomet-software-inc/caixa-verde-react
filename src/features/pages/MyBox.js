@@ -1,113 +1,81 @@
 import React, { Component } from 'react';
 
 export default class MyBox extends Component {
-  static propTypes = {
-
-  };
-
   constructor (props) 
   {
     super(props);
     /* Load Props from MainPage */
+    this.props.turnOffError();
     this.props.turnOnLoading(); /* Every Component has this one */
     this.props.updateShoppingCart("product");
     this.props.updateShoppingCart("kit");
     let count = this.props.shoppingCartCount;
     let box_empty = true;
-
+    if(count>0) {
+      box_empty = false;
+    }
     this.state = {
-        kits_empty: true,
-        products_empty: true, 
-        products_loaded: false,
-        kits_loaded: false,
-        authorized: false,
+        box_empty: box_empty,
+        authorized: true,
     }
   }
 
   /* Mount */
   componentDidMount() 
   {
+    this.setState({authorized: true});
     window.scroll({top: 0, left: 0, behavior: 'smooth' });
     this.authorize();
+    console.log(this.props.shoppingCartProducts);
     
-
   }
   /* Clear */
   componentWillUnmount() 
   {
     this.setState({authorized: false});
   }
-  /* Verify if all Data has been loaded */
+  /*  */
   authorize = () => 
   {
-      console.log("authorization");
-      console.log(this.state.authorized)
-   
       if(this.state.authorized) 
       {
-        console.log("authorized");
         this.props.turnOffLoading();
+      } else {
+        this.props.turnOnError("Permissão não concedida");
       }
   }
 
-  loadedCheck = () =>
+  renderBox = () => 
   {
-    console.log(this.state.kits_empty);
-    console.log("loaded check");
-
-    if(this.state.products_loaded && this.state.kits_loaded)
-    {
-      this.setState({ authorized: true});
-      this.authorize();
-    }
-  }
-  
-  componentDidUpdate(prevProps, prevState) 
-  {
-    
-    if(prevProps.shoppingCartKits !== this.props.shoppingCartKits) 
-    { 
-      this.setState({ kits_loaded: true });
-      if(this.props.shoppingCartKits.length > 0) {
-        this.setState({ kits_empty: false });
-      } else
-      {
-        this.setState({ kits_empty: true });
-      }
-      console.log("set state 2");
-
-    }
-
-    if(prevProps.shoppingCartProducts !== this.props.shoppingCartProducts) 
-    {
-      this.setState({ products_loaded: true });
-      if(this.props.shoppingCartProducts.length > 0) {
-        this.setState({ kits_empty: false });
-      } else
-      {
-        this.setState({ products_empty: true });
-      }
-      console.log("set state 2");
-      
-    }
-
-    if(prevState.products_loaded !== this.state.products_loaded) {
-      console.log("prev State");
-        this.loadedCheck();
-    }
-    if(prevState.kits_loaded !== this.state.kits_loaded) {
-      console.log("Prev State 2")
-        this.loadedCheck();
-    }
-  }
-
-  renderBox = () => {
-    
-    if(this.state.box_empty==false) 
+    if(this.state.box_empty===false) 
     {
       return(
-        <div>
-          Print all the Items
+        <div className="card-columns">
+          { this.props.shoppingCartProducts.map((product, index) => (
+
+              <div className="card mb-3" style={{width: 180, backgroundColor: '#fff'}}>
+                <div className="card-header">{ product.name }</div>
+                <div className="card-body">
+                  <img alt={"Image do Produto " + product.name} className="img-fluid" src={ product.thumb } />
+                  <p className="card-text"></p>
+                </div>
+              </div>
+
+          ))}
+
+          { this.props.shoppingCartKits.map((kit, index) => (
+            <div>
+              <div className="card bg-light mb-3" style={{width: 180}}>
+                 { kit.products.map((product, index) => (
+                <div className="card-header">{ product.name }</div>
+                 ))}
+                <div className="card-body">
+                  <h5 className="card-title">Kits</h5>
+                  <p className="card-text"></p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       );
     } else 
@@ -120,7 +88,8 @@ export default class MyBox extends Component {
     }
   }
 
-  render() {
+  render() 
+  {
     return (
       <div className="pages-my-box">
         <h2 className="text-center title">Minha Caixa</h2>

@@ -20,15 +20,15 @@ span.tab{
 
 .invisible {
   opacity: 0;
-  transition: opacity 2s;
+  transition: opacity .5s;
 }
 .visible {
 
-    -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
-       -moz-animation: fadein 1s; /* Firefox < 16 */
-        -ms-animation: fadein 1s; /* Internet Explorer */
-         -o-animation: fadein 1s; /* Opera < 12.1 */
-            animation: fadein 1s;
+    -webkit-animation: fadein .5s; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein .5s; /* Firefox < 16 */
+        -ms-animation: fadein .5s; /* Internet Explorer */
+         -o-animation: fadein .5s; /* Opera < 12.1 */
+            animation: fadein .5s;
 }
 
 @keyframes fadein {
@@ -111,6 +111,29 @@ button:focus {
 
 .modal-body {
   overflow: auto;
+}
+.modal-title {
+  color: #145423 !important;
+}
+
+.modal-footer {
+  border-top: 1px solid #dddcf0;
+}
+.modal-header  {
+  border-bottom: 1px solid #dddcf0;
+}
+
+.modal.fade .modal-dialog {
+    transition: -webkit-transform .1s ease-out;
+    -webkit-transition: -webkit-transform .1s ease-out;
+    -o-transition: transform .1s ease-out;
+    transition: transform .1s ease-out;
+    transition: transform .1s ease-out, -webkit-transform .1s ease-out;
+    transition: transform .1s ease-out,-webkit-transform .1s ease-out;
+}
+
+.table {
+  margin-bottom: 0 !important;
 }
 
 .dropdown-menu {
@@ -260,9 +283,15 @@ button:focus {
     border:0;
     padding-left: 20px;
     padding-right: 20px;
-    transition: background-color 2s;
+    transition: background-color .5s;
     left: 0;
     transition: left .5s;
+}
+
+.btn-info {
+    color: #fff;
+    background-color: #f21b3f;
+    border-color: #f21b3f;
 }
 
 .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
@@ -408,3 +437,11 @@ input:-webkit-autofill:active  {
 .inp select:focus + span + .border {
   transform: scaleX(1);
 }
+
+::-webkit-scrollbar              { background-color:#343a40;  }
+::-webkit-scrollbar-button       { background-color: #f0f0f1; }
+::-webkit-scrollbar-track        { background-color:#343a40; }
+::-webkit-scrollbar-track-piece  { background-color: #f0f0f1; }
+::-webkit-scrollbar-thumb        { background-color:#343a40; }
+::-webkit-scrollbar-corner       { background-color:#343a40;}
+::-webkit-resizer                { background-color:#343a40; }

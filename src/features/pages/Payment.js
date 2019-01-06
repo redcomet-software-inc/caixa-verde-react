@@ -188,8 +188,6 @@ export default class Payment extends Component {
             card_cvv: this.state.credit_card_cvc,
           })
 
-      const url = this.state.url_request;
-      console.log("URL");
       console.log(cardString);
       const key = new node_rsa(public_key);
       key.setOptions({'encryptionScheme': 'pkcs1'});

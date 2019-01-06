@@ -8,15 +8,10 @@ import {
   HashRouter
 } from "react-router-dom";
 import * as actions from './redux/actions';
-
-
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
 import request from '../../common/configApi.js';
-
-
 import Loading from '../common/Loading.js';
 
 
@@ -28,7 +23,7 @@ export class ShoppingCartButton extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      invisible:'hide-btn disabled'
+      invisible:'show-btn'
     }
   }
 
@@ -42,23 +37,28 @@ export class ShoppingCartButton extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('scroll', this.handleScroll, { passive: true});
+    //document.addEventListener('scroll', this.handleScroll, { passive: true});
   }
 
   componentWillUnmount() {
-    document.removeEventListener('scroll', this.handleScroll);
+    //document.removeEventListener('scroll', this.handleScroll);
   }
 
   handleClick = () => {
-   
+      
   }
   render() {
-    return ( 
+
+   
+
+    return (
+      <NavLink  className="" data-toggle="modal" data-target='#shoppingCartDialog' exact to="/" >
         <div onClick={this.handleClick} className={"shopping-cart-button shadow " + this.state.invisible}>
-          <href  className="" data-toggle="modal" data-target='#shoppingCartDialog' exact to="/" > 
+           
             <Icon className="ico" icon={threeDCube} size={40} />
-          </href>
+          
         </div>
+      </NavLink>
     );
   }
 }

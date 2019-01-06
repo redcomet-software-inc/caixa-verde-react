@@ -46,11 +46,8 @@ export class Categories extends Component {
     let id = '';
     
     if(e==undefined) {
-      console.log("NULL");
       id = 'all';
     } 
-    console.log("E");
-    console.log(e);
     if(e!==undefined){
       e.preventDefault();
       e.persist();
@@ -64,7 +61,6 @@ export class Categories extends Component {
       url: 'api/v1/categories/' + id + '.json',
     }).then((res) => {
       this.setState({products_by_category: res});
-        console.log(this.state.products_by_category)
         /* Pass products to parent component 'Products' */
         this.props.refProducts(this.state.products_by_category);
     }).catch(error =>{
@@ -79,37 +75,29 @@ export class Categories extends Component {
   }
 
   turnOffLoading = () => {
-    console.log("TURN OFF LOADING");
     this.props.turnOffLoading();
   }
 
   render() {
     return (
       <div className="components-categories">
-        <p>Procurar por:{'  '}
-        <div class="d-flex flex-row bd-highlight mb-3">
-          <div class="p-2 bd-highlight">
+        Procurar por:{'  '}
+        <div className="d-flex flex-row bd-highlight mb-3">
+          <div className="p-2 bd-highlight">
             <button className="btn btn-secondary btn-lg dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               { this.state.current_category }
             </button>
-                <div class="dropdown-menu" >
+                <div className="dropdown-menu" >
                   { this.state.categories.map((category) => (
-                    <a class="dropdown-item" id={ category.id } name={category.name} onClick={(e) => this.getProducts(e)} href="#">{ category.name }</a>
+                    <a key={"category" + category.id} id={ category.id } className="dropdown-item" name={category.name} onClick={(e) => this.getProducts(e)} href="#">{ category.name }</a>
                   )) } 
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" name="Tudo" id="all" onClick={(e) => this.getProducts(e)}>Tudo</a>
+                  <div className="dropdown-divider"></div>
+                  <a className="dropdown-item" name="Tudo" id="all" onClick={(e) => this.getProducts(e)}>Tudo</a>
                 </div>
               </div>
-          <div class="p-2 bd-highlight my-auto">{ this.renderLoading() }</div>
+          <div className="p-2 bd-highlight my-auto">{ this.renderLoading() }</div>
         </div>
-  
-
-
-          
-
-
-
-        </p>
+        
       </div>
     );
   }

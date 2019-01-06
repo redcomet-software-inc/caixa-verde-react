@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import PropTypes from 'prop-types';
-import { MainPage } from '../home/MainPage.js';
+import MainPage from '../home/MainPage.js';
 import logo from '../../images/logo-caixaverde-cube-video.png';
 
-/*
-  This is the root component of your app. Here you define the overall layout
-  and the container of the react router.
-  You should adjust it according to the requirement of your app.
-*/
-
 export default class App extends Component {
+  
+  defaultProps = {
+    isLoading: PropTypes.bool,
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +21,8 @@ export default class App extends Component {
       timerName2:0,/* Clear SetInterval */
     }
   }
+
+  
 
   /* This functions is called by the MainPage after API request */
   turnOffMainLoading = () => {
@@ -34,7 +35,7 @@ export default class App extends Component {
     if(this.state.isLoading) {
       return( 
         <div className="w-100 h-100 position-absolute">
-            <img className="mx-auto d-block logo-intro img-fluid animate-flicker" width={200} src={ logo } />
+            <img alt={"Logo da Caixa Verde"} className="mx-auto d-block logo-intro img-fluid animate-flicker" width={200} src={ logo } />
         </div>
       );
     }

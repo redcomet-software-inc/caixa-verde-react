@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import userImage from '../../images/userImage.jpg';
-import Loading from '../common/Loading.js';
 import request from '../../common/configApi.js';
 
 export default class MyOrders extends Component {

@@ -16,10 +16,10 @@ export default class CardKits extends Component {
 
   };
 
-  constructor(props) {
+  constructor(props) 
+  {
     super(props);
     this.myClass = 'cardkits-active';
-
     this.state = {
       classState: 'cardkits-mouseout',
       borderClass: 'standard',
@@ -29,92 +29,88 @@ export default class CardKits extends Component {
     };
   }
 
-   addBorder = (e) => {
-      if(this.state.cardCount===0 && this.state.borderClassName==='') {
-        this.setState({ borderClass: 'cardkits-active' });
-        this.setState({cardCount: this.props.quantity});
-        this.props.addCardCount(e);
-      }
+  addBorder = (e) => 
+  {
+    if(this.state.cardCount===0 && this.state.borderClassName==='') {
+      this.setState({ borderClass: 'cardkits-active' });
+      this.setState({cardCount: this.props.quantity});
+      this.props.addCardCount(e);
+    }
   };
 
-  deactivateBorder = e => {
+  deactivateBorder = e => 
+  {
     this.setState({ borderClass:''});
   }
 
-   selectCard = (quantity) => {
-    if(quantity === 0) {
+   selectCard = (quantity) => 
+   {
+    if(quantity === 0) 
+    {
       this.setState({borderClass:'standard'});
       this.setState({show:'hide'});
-    } else {
+    } else 
+    {
       this.setState({borderClass:this.myClass});
       this.setState({show:'show'});
     }
   }
 
-  componentDidMount(){
+  componentDidMount()
+  {
     this.setState({cardCount: this.props.quantity});
     this.selectCard(this.props.quantity);
   }
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(props)
+  {
     this.setState({cardCount: props.quantity});
     this.selectCard(props.quantity);
   }
 
-  render() {
+  render()
+  {
     return (
-        <div id={this.props.id}  onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto card cardkits '+ this.state.borderClass} >
-          
-          <div className="card-body">
-            <h5 className="card-title text-center">{this.props.name}</h5>
-            
-          </div>
-          <ul className="list-group list-group-flush">
-            {this.props.products.map((product, index) => (
-            <li className="list-group-item"> 
-              <div className="row">
-                <div className="col p-0">
-                  <img src={product.thumb} />
-                </div>
-                <div className="col my-auto">
-                  { product.name }
-                </div>
+      <div id={this.props.id}  onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto card cardkits '+ this.state.borderClass} >
+        <div className="card-body">
+          <h5 className="card-title text-center">{this.props.name}</h5>
+        </div>
+        <ul className="list-group list-group-flush">
+          {this.props.products.map((product, index) => (
+          <li className="list-group-item"> 
+            <div className="row">
+              <div className="col p-0">
+                <img alt={"Imagem Kit " + product.name} src={product.thumb} />
               </div>
-            </li>
-            
-           
-
-             ))}
-          </ul>
-         <div className="card-body text-center">
-          <div className="row">
-            <div className="col">
-              <p className="card-text text-center text-success">{this.props.setMoneyFormat(this.props.price)}</p>
+              <div className="col my-auto">
+                { product.name }
+              </div>
+            </div>
+          </li>
+            ))}
+        </ul>
+        <div className="card-body text-center">
+        <div className="row">
+          <div className="col">
+            <p className="card-text text-center text-success">{this.props.setMoneyFormat(this.props.price)}</p>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-4">
+            <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"kit",-1)} className={'btn btn-info btn-lg '+this.state.show}>
+              -
             </div>
           </div>
-          <div className="row">
-            <div className="col-4">
-                <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"kit",-1)} className={'btn btn-info btn-lg '+this.state.show}>
-                  -
-                </div>
-                
-            </div>
-            <div className={"col-4 " + this.state.show}>
-                <div id={this.props.id} className={'btn disabled '+ this.state.show}>{this.state.cardCount}</div>
-            </div>
-            <div className="col-4">
-                <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"kit",1)} className="btn btn-success btn-lg">
-                  +
-                </div>
-            </div>
-              
+          <div className={"col-4 " + this.state.show}>
+            <div id={this.props.id} className={'btn disabled '+ this.state.show}>{this.state.cardCount}</div>
           </div>
+          <div className="col-4">
+            <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"kit",1)} className="btn btn-success btn-lg">
+              +
+            </div>
+          </div>
+        </div>
       </div>
-      </div>
-
-
-   
-   
-
+    </div>
     );
   }
 }

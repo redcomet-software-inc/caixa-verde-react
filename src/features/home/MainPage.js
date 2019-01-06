@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Link, Route, Redirect, withRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import Loads from 'react-loads';
-
 import PropTypes from 'prop-types';
+
 //import CurrencyInput from 'react-currency-input';
 import request from '../../common/configApi.js';
 import NavBar from '../navbar/NavBar.js';
@@ -15,13 +14,11 @@ import { setLocalStorage, checkLocalStorage } from './SetLocalStorage';
 import { countProductsAndKits } from './CountProducts';
 import { countProducts } from './CountProducts';
 import { countKits } from './CountProducts';
-import { getTotalPrice } from './CountProducts';
 
 /* Pages and render components */
 import Products from '../pages/Products.js';
 import Kits from '../pages/Kits.js';
 import Option from '../pages/Option.js';
-import SideBar from '../navbar/SideBar.js';
 import Login from '../pages/Login.js';
 import Registration from '../pages/Registration.js';
 import ShoppingCart from '../pages/ShoppingCart.js';
@@ -36,12 +33,40 @@ import Err from '../common/Err.js';
 import Warning from '../common/Warning.js';
 import Spinner from '../common/Spinner.js';
 
-
-export class MainPage extends Component {
+export default class MainPage extends Component {
   constructor(props) {
     super(props);
-
-    
+    MainPage.defaultProps = {
+      products: PropTypes.array,
+      selectedProducts: PropTypes.array,
+      kits: PropTypes.array,
+      selectedKits: PropTypes.array,
+      showComponent: PropTypes.bool,
+      shoppingCartCount: PropTypes.number,
+      productsCount: PropTypes.number,
+      kitsCount: PropTypes.number,
+      shoppingCartProducts: PropTypes.array,
+      shoppingCartKits: PropTypes.array,
+      totalPriceKits: PropTypes.number,
+      totalPriceProducts: PropTypes.number,
+      clientName: PropTypes.string,
+      clientEmail: PropTypes.string,
+      authentication_token: PropTypes.string,
+      signInMessage: PropTypes.string,
+      clientId: PropTypes.string,
+      loggedIn: PropTypes.bool,
+      redirect: PropTypes.bool,
+      redirectTo: PropTypes.string,
+      changeStateTest: PropTypes.string,
+      err_message: PropTypes.string,
+      serviceAvailability: PropTypes.bool,
+      avatar: PropTypes.string,
+      minQuantity: PropTypes.number,
+      isLoading: PropTypes.bool,
+      isError: PropTypes.bool,
+      warningMessage: PropTypes.string,
+      checkout_order_id: PropTypes.number,
+    }
     /* GetItems from LocalStorage */
     if (checkLocalStorage() !== false) {
       var selectedProducts = JSON.parse(localStorage.getItem('selectedProducts'));
@@ -51,18 +76,13 @@ export class MainPage extends Component {
       var shoppingCartCount = countProductsAndKits(selectedProducts,selectedKits); //Updates NavBar
       var productsCount = countProducts(selectedProducts);
       var kitsCount = countKits(selectedKits);
-      var totalPrice = getTotalPrice(selectedProducts, selectedKits);//Does not inclue freight
-      var productsList = JSON.parse(localStorage.getItem('productsList'));
-      var kitsList = JSON.parse(localStorage.getItem('kitsList'));
-    } else {
-      this.getProducts();
-      this.getKits();
     }
-    
+    this.getProducts();
+    this.getKits();
     this.state = {
-      products: productsList || [],
+      products: [],
       selectedProducts: selectedProducts || [],
-      kits: kitsList || [],
+      kits: [],
       selectedKits: selectedKits ||  [],
       showComponent: false,
       shoppingCartCount: shoppingCartCount || 0,
@@ -90,7 +110,6 @@ export class MainPage extends Component {
       warningMessage:'A sua caixa está vazia.',
       checkout_order_id:0,
     };
-
     this.redirect = this.redirect.bind(this);
   }
 
@@ -222,19 +241,27 @@ export class MainPage extends Component {
   
   /* Process All Selected Products and Kits, count, and put price on it */
   /* This is also the last preparation for Checkout */
-  updateShoppingCart = (name) => {
-      var selectedItemsInfo = [];
-      var totalPriceItems = 0;
-    if (name==="kit") {
-      var items = this.state.kits;
-      var selectedItems = this.state.selectedKits;
-    } else if (name==="product") {
-      var items = this.state.products;
-      var selectedItems = this.state.selectedProducts;
+  updateShoppingCart = (name) => 
+  {
+      let selectedItemsInfo = [];
+      let totalPriceItems = 0;
+      let items = [];
+      let selectedItems = [];
+    if (name==="kit") 
+    {
+      items = this.state.kits;
+      selectedItems = this.state.selectedKits;
+    } else if (name==="product") 
+    {
+      items = this.state.products;
+      selectedItems = this.state.selectedProducts;
     }
-    for (var i = 0; i <= items.length - 1; i++) {
-      for (var j = 0; j <= selectedItems.length - 1; j++) {
-        if (parseInt(items[i].id, 10) === parseInt(selectedItems[j].id, 10)) {
+    for (let i = 0; i <= items.length - 1; i++) 
+    {
+      for (let j = 0; j <= selectedItems.length - 1; j++) 
+      {
+        if (parseInt(items[i].id, 10) === parseInt(selectedItems[j].id, 10)) 
+        {
           var selectedItem = items[i];
           var quantity = selectedItems[j].quantity;
           var price_table_id = selectedItems[j].price_table_id;
@@ -246,11 +273,13 @@ export class MainPage extends Component {
         }
       }
     }
-    this.setState({ totalPrice: totalPriceItems });
-    if (name==="kit") {
+
+    if (name==="kit") 
+    {
       this.setState({ shoppingCartKits: selectedItemsInfo });
       this.setState({totalPriceKits: totalPriceItems});
-    } else if (name==="product") {
+    } else if (name==="product") 
+    {
       this.setState({shoppingCartProducts: selectedItemsInfo });
       this.setState({totalPriceProducts: totalPriceItems});
     }
@@ -266,18 +295,21 @@ export class MainPage extends Component {
     /* name variable can be either kit or product */
     /* delta defines if the value increase or decrease */
     /* this serves to differenciate list of kits and products */
+    let priceTableId = "";
+    let selectedItems = [];
+    let items = [];
     if (name==="kit") {
-      var priceTableId = '';
-      var selectedItems = this.state.selectedKits;
-      var items = this.state.kits;
+      priceTableId = '';
+      selectedItems = this.state.selectedKits;
+      items = this.state.kits;
     } else if (name==="product") {
-      var priceTableId = '';
-      var selectedItems = this.state.selectedProducts;
-      var items = this.state.products;
+      priceTableId = '';
+      selectedItems = this.state.selectedProducts;
+      items = this.state.products;
     }
 
     /* Get Price_table_id from clicked element */
-    for (var i = 0; i <= items.length - 1; i++) {
+    for (let i = 0; i <= items.length - 1; i++) {
       if (items[i].id === id) {
         priceTableId = items[i].price_table_id;
       }
@@ -285,19 +317,19 @@ export class MainPage extends Component {
 
     /* Get Element from Array State and Update the data in a temporary Variable */
     var checkExistingElement = 0;
-    for (var i = 0; i <= selectedItems.length - 1; i++) {
-      if (selectedItems[i].id === id) {
+    for (var x = 0; x <= selectedItems.length - 1; x++) {
+      if (selectedItems[x].id === id) {
         checkExistingElement += 1;
-        if(selectedItems[i].quantity + delta === 0) {
-            selectedItems.splice(i,1);
+        if(selectedItems[x].quantity + delta === 0) {
+            selectedItems.splice(x,1);
         } else { 
           
           var newItem = {
             id: id,
-            quantity: selectedItems[i].quantity + delta,
-            price_table_id: selectedItems[i].price_table_id,
+            quantity: selectedItems[x].quantity + delta,
+            price_table_id: selectedItems[x].price_table_id,
           };
-          selectedItems.splice(i, 1, newItem);
+          selectedItems.splice(x, 1, newItem);
         }
       }
     }
@@ -310,18 +342,20 @@ export class MainPage extends Component {
       };
       selectedItems.push(newItemZero);
     }
+
     /* UpdateState */
-    if (name==="kit") {
+    if (name==="kit") 
+    {
       this.setState({ selectedKits: selectedItems });
       this.updateShoppingCart("kit");
-    } else if (name==="product") {
+    } else if (name==="product") 
+    {
       this.setState({ selectedProducts: selectedItems });
       this.updateShoppingCart("product");
     }
     let shoppingCartCount = countProductsAndKits(this.state.selectedProducts, this.state.selectedKits);
     let productsCount = countProducts(this.state.selectedProducts);
     let kitsCount = countKits(this.state.selectedKits);
-    
     this.setState({ shoppingCartCount: shoppingCartCount });
     this.setState({ productsCount: productsCount});
     this.setState({ kitsCount: kitsCount });
@@ -329,12 +363,12 @@ export class MainPage extends Component {
   };
 
   /* Sign In Client and Register new Token */
-  signIn = e => {
+  signIn = e => 
+  {
     e.preventDefault();
     const email = e.target.elements.email.value;
     const password = e.target.elements.password.value;
     this.setState({ signInMessage: '' });
-
     request({
       method:'post',
       url: 'api/v1/sessions.json',
@@ -354,249 +388,254 @@ export class MainPage extends Component {
       localStorage.setItem('email', email);
       this.setState({redirectTo:''});
       this.setState({ redirect: true });
-
-    }).catch(error => {
-        console.log('Error', error);
+    }).catch(error => 
+    {
         this.setState({ signInMessage: 'E-mail e/ou Senha não correspondem.' });
     });
   };
   
-  showComponent = value => {
+  showComponent = value => 
+  {
     this.setState({ showComponent: value });
   };
 
-  warning = (text) => {
+  warning = (text) => 
+  {
     this.setState({warningMessage: text});
   }
 
-  turnOffLoading = () => {
+  turnOffLoading = () => 
+  {
     this.setState({isLoading: false});
   }
-  turnOnLoading = () => {
+
+  turnOnLoading = () => 
+  {
     this.setState({isLoading: true});
   }
 
-  turnOffError = () => {
-    console.log("Turn Off Error");
+  turnOffError = () => 
+  {
     this.setState({isError: false});
   }
 
-  turnOnError = (err_message) => {
+  turnOnError = (err_message) => 
+  {
     /* Error Also Turn Off Loading */
     this.turnOffLoading();
-    console.log("Error");
     this.redirect('0');
     this.setState({ err_message: err_message});
     this.setState({isError: true});
   }
 
-  renderError = () => {
-    if(this.state.isError===true) {
+  renderError = () => 
+  {
+    if(this.state.isError===true) 
+    {
       return <Err err_message={this.state.err_message} />
     }
   }
 
-  renderSpinner = () => {
-    if(this.state.isLoading===true) {
+  renderSpinner = () => 
+  {
+    if(this.state.isLoading===true) 
+    {
       return <Spinner />
     }
   }
 
-  visible = () => {
-    if(this.state.isLoading===true || this.state.isError===true) {
+  visible = () => 
+  {
+    if(this.state.isLoading===true || this.state.isError===true) 
+    {
       return 'invisible';
-    } else {
+    } else 
+    {
       return 'visible';
     }
   }
 
-  render() {
+  render() 
+  {
     return (
-      <div>
-      
-        <Router  basename="app" history={ Router } >
-          <div className="header">
-            <div className="left-margin" />
-            <ShoppingCartButton />
-            <NavBar
-              loggedIn={this.state.loggedIn}
-              shoppingCartCount={this.state.shoppingCartCount}
-              clientName={this.state.clientName}
-              warning={this.warning}
-              redirect={this.redirect}
-              changeToLoggedOut={this.changeToLoggedOut}
-              updateShoppingCart={this.updateShoppingCart}
-              image={this.state.avatar}
-            />
-            <div className="row" >
-                <div className="container-fluid pb-3">
-                  <div className="mb-5 mx-auto content">
-                    {this.renderError()}
-                    {this.renderSpinner()}
-                    <div className="row my-auto mx-0">
-                      <div className={"col-lg-12 pt-md-5 mx-auto my-auto pl-0 pr-0 "+ this.visible()}>
-
-                        {this.renderRedirect(this.state.redirectTo)}
-                        
-                        <Route exact path="/" component={Option} />
-                        <Route
-                          exact
-                          path="/Personalizado"
-                          render={props => (
-                            <Products
-                              addCardCount={this.addCardCount}
-                              setMoneyFormat={this.setMoneyFormat}
-                              subtractCardCount={this.subtractCardCount}
-                              selectedProducts={this.state.selectedProducts}
-                              products={this.state.products}
-                              onRef={ref => (this.custom = ref)}
-                              showComponent={this.showComponent}
+        <div>
+          <Router  basename="app" >
+            <div>
+              <div className="header">
+                <div className="left-margin" />
+                <ShoppingCartButton />
+                <NavBar
+                  loggedIn={this.state.loggedIn}
+                  shoppingCartCount={this.state.shoppingCartCount}
+                  clientName={this.state.clientName}
+                  warning={this.warning}
+                  redirect={this.redirect}
+                  changeToLoggedOut={this.changeToLoggedOut}
+                  updateShoppingCart={this.updateShoppingCart}
+                  image={this.state.avatar}
+                />
+                <div className="row" >
+                    <div className="container-fluid pb-3">
+                      <div className="mb-5 mx-auto content">
+                        {this.renderError()}
+                        {this.renderSpinner()}
+                        <div className="row my-auto mx-0">
+                          <div className={"col-lg-12 pt-md-5 mx-auto my-auto pl-0 pr-0 "+ this.visible()}>
+                            {this.renderRedirect(this.state.redirectTo)}
+                            <Route exact path="/" component={Option} />
+                            <Route
+                              exact
+                              path="/Personalizado"
+                              render={props => (
+                                <Products
+                                  addCardCount={this.addCardCount}
+                                  setMoneyFormat={this.setMoneyFormat}
+                                  subtractCardCount={this.subtractCardCount}
+                                  selectedProducts={this.state.selectedProducts}
+                                  products={this.state.products}
+                                  onRef={ref => (this.custom = ref)}
+                                  showComponent={this.showComponent}
+                                />
+                              )}
                             />
-                          )}
-                        />
-                        <Route
-                          exact
-                          path="/Kits"
-                          render={props => (
-                            <Kits
-                              addCardCount={this.addCardCount}
-                              subtractCardCountKit={this.subtractCardCountKit}
-                              selectedKits={this.state.selectedKits}
-                              kits={this.state.kits}
-                              onRef={ref => (this.custom = ref)}
-                              setMoneyFormat={this.setMoneyFormat}
-                              showComponent={this.showComponent}
+                            <Route
+                              exact
+                              path="/Kits"
+                              render={props => (
+                                <Kits
+                                  addCardCount={this.addCardCount}
+                                  subtractCardCountKit={this.subtractCardCountKit}
+                                  selectedKits={this.state.selectedKits}
+                                  kits={this.state.kits}
+                                  onRef={ref => (this.custom = ref)}
+                                  setMoneyFormat={this.setMoneyFormat}
+                                  showComponent={this.showComponent}
+                                />
+                              )}
                             />
-                          )}
-                        />
-                        <Route
-                          path="/login"
-                          render={props => (
-                            <Login
-                              signIn={this.signIn}
-                              signInMessage={this.state.signInMessage}
-                              loggedIn={this.state.loggedIn}
-                              redirect={this.redirect}
+                            <Route
+                              path="/login"
+                              render={props => (
+                                <Login
+                                  signIn={this.signIn}
+                                  signInMessage={this.state.signInMessage}
+                                  loggedIn={this.state.loggedIn}
+                                  redirect={this.redirect}
+                                />
+                              )}
                             />
-                          )}
-                        />
-                        <Route
-                          path="/cadastro"
-                          render={props => (
-                            <Registration register={this.register} component={Registration} redirect={this.redirect} />
-                          )}
-                        />
-                        <Route
-                          path="/checkout"
-                          render={props => (
-                            <Checkout
-                              shoppingCartProducts={this.state.shoppingCartProducts}
-                              productsCount={this.state.productsCount}
-                              kitsCount={this.state.kitsCount}
-                              minQuantity={this.state.minQuantity}
-                              shoppingCartKits={this.state.shoppingCartKits}
-                              shoppingCartCount={this.state.shoppingCartCount}
-                              updateShoppingCart={this.updateShoppingCart}
-                              totalPriceKits={this.state.totalPriceKits}
-                              totalPriceProducts={this.state.totalPriceProducts}
-                              setMoneyFormat={this.setMoneyFormat}
-                              clientId={this.state.clientId}
-                              clientEmail={this.state.clientEmail}
-                              redirect={this.redirect}
-                              turnOnError={this.turnOnError}
-                              turnOffError={this.turnOffError}
-                              turnOnLoading={this.turnOnLoading}
-                              turnOffLoading={this.turnOffLoading}
-                              setCheckoutOrderId={this.setCheckoutOrderId}
+                            <Route
+                              path="/cadastro"
+                              render={props => (
+                                <Registration register={this.register} component={Registration} redirect={this.redirect} />
+                              )}
                             />
-                          )}
-                        />
-                        <Route
-                          path="/orders"
-                          render={props => (
-                            <Orders />
-                          )} 
-                        />
-                        <Route
-                          path="/minhaconta"
-                          render={props => (
-                            <MyAccount 
-                              turnOffLoading={this.turnOffLoading} 
-                              turnOnLoading={this.turnOnLoading} 
-                              turnOnError={this.turnOnError}
-                              turnOffError={this.turnOffError}
-                              />
-                          )}
-                        />
-                        <Route
-                          path="/pedidos"
-                          render={props => (
-                            <MyOrders 
-                              turnOnLoading={this.turnOnLoading} 
-                              turnOffLoading={this.turnOffLoading} 
-                              turnOnError={this.turnOnError}
-                              turnOffError={this.turnOffError} />
-                          )}
-                        />
-                        <Route
-                          path="/minhacaixa"
-                          render={props => (
-                            <MyBox
-                              turnOnLoading={this.turnOnLoading} 
-                              turnOffLoading={this.turnOffLoading} 
-                              turnOnError={this.turnOnError}
-                              turnOffError={this.turnOffError} 
-                              updateShoppingCart={this.updateShoppingCart}
-                              shoppingCartCount={this.state.shoppingCartCount}
-                              shoppingCartProducts={this.state.shoppingCartProducts} 
-                              shoppingCartKits={this.state.shoppingCartKits} 
-                              />
-                          )}
-                        />
-                        <Route
-                          path="/pagamento"
-                          render={props => (
-                            <Payment turnOffLoading={this.turnOffLoading} turnOnLoading={this.turnOnLoading} checkout_order_id={this.state.checkout_order_id} />
-                          )}
-                        />
-                        <Route
-                          path="/err"
-                          render={props => (
-                            <Err errMessage={this.state.errMessage} />
-                          )}
-                        />
+                            <Route
+                              path="/checkout"
+                              render={props => (
+                                <Checkout
+                                  shoppingCartProducts={this.state.shoppingCartProducts}
+                                  productsCount={this.state.productsCount}
+                                  kitsCount={this.state.kitsCount}
+                                  minQuantity={this.state.minQuantity}
+                                  shoppingCartKits={this.state.shoppingCartKits}
+                                  shoppingCartCount={this.state.shoppingCartCount}
+                                  updateShoppingCart={this.updateShoppingCart}
+                                  totalPriceKits={this.state.totalPriceKits}
+                                  totalPriceProducts={this.state.totalPriceProducts}
+                                  setMoneyFormat={this.setMoneyFormat}
+                                  clientId={this.state.clientId}
+                                  clientEmail={this.state.clientEmail}
+                                  redirect={this.redirect}
+                                  turnOnError={this.turnOnError}
+                                  turnOffError={this.turnOffError}
+                                  turnOnLoading={this.turnOnLoading}
+                                  turnOffLoading={this.turnOffLoading}
+                                  setCheckoutOrderId={this.setCheckoutOrderId}
+                                />
+                              )}
+                            />
+                            <Route
+                              path="/orders"
+                              render={props => (
+                                <Orders />
+                              )} 
+                            />
+                            <Route
+                              path="/minhaconta"
+                              render={props => (
+                                <MyAccount 
+                                  turnOffLoading={this.turnOffLoading} 
+                                  turnOnLoading={this.turnOnLoading} 
+                                  turnOnError={this.turnOnError}
+                                  turnOffError={this.turnOffError}
+                                  />
+                              )}
+                            />
+                            <Route
+                              path="/pedidos"
+                              render={props => (
+                                <MyOrders 
+                                  turnOnLoading={this.turnOnLoading} 
+                                  turnOffLoading={this.turnOffLoading} 
+                                  turnOnError={this.turnOnError}
+                                  turnOffError={this.turnOffError} />
+                              )}
+                            />
+                            <Route
+                              path="/minhacaixa"
+                              render={props => (
+                                <MyBox
+                                  turnOnLoading={this.turnOnLoading} 
+                                  turnOffLoading={this.turnOffLoading} 
+                                  turnOnError={this.turnOnError}
+                                  turnOffError={this.turnOffError} 
+                                  updateShoppingCart={this.updateShoppingCart}
+                                  shoppingCartCount={this.state.shoppingCartCount}
+                                  shoppingCartProducts={this.state.shoppingCartProducts} 
+                                  shoppingCartKits={this.state.shoppingCartKits} 
+                                  />
+                              )}
+                            />
+                            <Route
+                              path="/pagamento"
+                              render={props => (
+                                <Payment turnOffLoading={this.turnOffLoading} turnOnLoading={this.turnOnLoading} checkout_order_id={this.state.checkout_order_id} />
+                              )}
+                            />
+                            <Route
+                              path="/err"
+                              render={props => (
+                                <Err errMessage={this.state.errMessage} />
+                              )}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
                 </div>
-            </div>
-            <Footer />
+                <Footer />
+              </div>
+            <Warning warningMessage={this.state.warningMessage} />
+            {this.state.shoppingCartCount > 0 && (
+              <ShoppingCart
+                shoppingCartProducts={this.state.shoppingCartProducts}
+                shoppingCartKits={this.state.shoppingCartKits}
+                productsCount={this.state.productsCount}
+                kitsCount={this.state.kitsCount}
+                minQuantity={this.state.minQuantity}
+                totalPriceKits={this.state.totalPriceKits}
+                totalPriceProducts={this.state.totalPriceProducts}
+                setMoneyFormat={this.setMoneyFormat}
+                loggedIn={this.state.loggedIn}
+                warning={this.warning}
+                redirect={this.redirect}
+                renderRedirect={this.renderRedirect}
+                onRef={ref => (this.custom = ref)}
+              />
+            )}
           </div>
-
         </Router>
-
-        <Warning warningMessage={this.state.warningMessage} />
-
-        
-
-        {this.state.shoppingCartCount > 0 && (
-          <ShoppingCart
-            shoppingCartProducts={this.state.shoppingCartProducts}
-            shoppingCartKits={this.state.shoppingCartKits}
-            productsCount={this.state.productsCount}
-            kitsCount={this.state.kitsCount}
-            minQuantity={this.state.minQuantity}
-            totalPriceKits={this.state.totalPriceKits}
-            totalPriceProducts={this.state.totalPriceProducts}
-            setMoneyFormat={this.setMoneyFormat}
-            loggedIn={this.state.loggedIn}
-            warning={this.warning}
-            redirect={this.redirect}
-            renderRedirect={this.renderRedirect}
-            onRef={ref => (this.custom = ref)}
-          />
-        )}
-          
       </div>
     );
   }
