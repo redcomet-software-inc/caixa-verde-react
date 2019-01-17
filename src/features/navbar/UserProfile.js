@@ -6,7 +6,7 @@ import userImage from '../../images/userImage.jpg';
 
 export default class UserProfile extends Component 
 {
-     /* Sign In Client and Register new Token */
+    /* Sign In Client and Register new Token */
     signOut = e => 
     {
       e.preventDefault();

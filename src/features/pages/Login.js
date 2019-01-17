@@ -69,7 +69,6 @@ export default class Login extends Component {
               <label for="inp" className="inp">
                 <input type="text" id="inp" name="email" placeholder="&nbsp;" />
                 <span class="label">Email</span>
-                <span class="border"></span>
               </label>
             </div>
           </div>
@@ -78,7 +77,6 @@ export default class Login extends Component {
               <label for="inp" className="inp">
                 <input type="password" id="inp" name="password" placeholder="&nbsp;" />
                 <span class="label">Senha</span>
-                <span class="border"></span>
               </label>
             </div>
           </div>

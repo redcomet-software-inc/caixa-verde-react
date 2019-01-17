@@ -126,6 +126,7 @@ export default class Checkout extends Component
       order: {
         client_id: client_id,
         order_price: this.state.order_price,
+        price_table_id: 1,
         orders_products_attributes: [],
         kits_orders_attributes:[],
         client_attributes: 
@@ -178,8 +179,9 @@ export default class Checkout extends Component
       console.log("Response Data");
       console.log(res.order.id);
       this.setState({checkout_order_id: res.order.id});
+      localStorage.setItem("checkout_order_id", res.order.id);
       this.props.setCheckoutOrderId(res.order.id);
-      //this.props.redirect('pagamento');
+      this.props.redirect('pagamento');
       //this.props.redirect('personalizado');
     });
   }

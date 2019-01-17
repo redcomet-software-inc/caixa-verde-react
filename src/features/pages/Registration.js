@@ -137,7 +137,7 @@ export default class Registration extends Component {
                 <label for="inp" className="inp mb-2">
                   <input type="text" id="name" name="name" placeholder="&nbsp;" required/>
                   <span className="label">Nome</span>
-                  <span className="border"></span>
+                   
                 </label>
               
               </div>
@@ -145,7 +145,7 @@ export default class Registration extends Component {
                 <label for="inp" className="inp mb-2">
                   <input type="text" id="lastname" name="lastname" placeholder="&nbsp;" required />
                   <span className="label">Sobrenome</span>
-                  <span className="border"></span>
+                   
                 </label>
               </div>
             </div>
@@ -155,7 +155,7 @@ export default class Registration extends Component {
                   <label for="inp" className="inp mb-2">
                     <input type="email" id="email" name="email" placeholder="&nbsp;" required/>
                     <span className="label">E-mail</span>
-                    <span className="border"></span>
+                     
                     <small id="passwordHelp" className={"text-danger " + this.state.invalidEmail}>
                       Este E-mail já está cadastrado.
                     </small>  
@@ -166,7 +166,7 @@ export default class Registration extends Component {
                   <label for="inp" className="inp mb-2">
                     <input type="password" id="password" name="password" placeholder="&nbsp;" required/>
                     <span className="label">Senha</span>
-                    <span className="border"></span>
+                     
                   </label>
                 
                 </div>
@@ -182,7 +182,7 @@ export default class Registration extends Component {
               
                   <input onBlur={(e) => this.getAddressAPI(e.currentTarget.value)} type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" required/> 
                   <span className="label">CEP</span> 
-                  <span className="border"></span>
+                   
                 </label>
                 
             </div>
@@ -203,7 +203,7 @@ export default class Registration extends Component {
                 ))}
                   </select> 
                   <span className="label">Região Administrativa</span> 
-                  <span className="border"></span>
+                   
                 </label>
             </div>
 
@@ -215,7 +215,7 @@ export default class Registration extends Component {
               <label for="inp" className="inp mb-2">
                   <input type="text" id="street" name="street" placeholder="&nbsp;" defaultValue={this.state.street} required/>
                   <span className="label">Endereço</span>
-                  <span className="border"></span>
+                   
                 </label>
                 
             </div>
@@ -223,7 +223,7 @@ export default class Registration extends Component {
               <label for="inp" className="inp mb-2">
                     <input type="text" id="addressnumber" name="addressnumber" placeholder="&nbsp;" required/>
                       <span className="label">Número</span>
-                      <span className="border"></span>
+                       
                   </label>
             </div>
 
@@ -234,7 +234,7 @@ export default class Registration extends Component {
               <label for="inp" className="inp mb-2">
               <input type="text" id="neighbourhood" name="neighbourhood" placeholder="&nbsp;" defaultValue={this.state.neighbourhood} required/>
                   <span className="label">Bairro</span>
-                  <span className="border"></span>
+                   
               </label>
             </div>
             
@@ -242,7 +242,7 @@ export default class Registration extends Component {
               <label for="inp" className="inp mb-2">
               <input type="text" id="complement" name="complement" placeholder="&nbsp;" defaultValue={this.state.complement} />
                   <span className="label">Complemento</span>
-                  <span className="border"></span>
+                   
               </label>
             </div>
           </div>
@@ -252,7 +252,7 @@ export default class Registration extends Component {
               <label for="inp" className="inp mb-2">
               <input type="text" id="cellphone" name="cellphone" placeholder="&nbsp;" required/>
                   <span className="label">Celular</span>
-                  <span className="border"></span>
+                   
               </label>
             </div>
           </div>

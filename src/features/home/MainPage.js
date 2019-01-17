@@ -459,7 +459,7 @@ export default class MainPage extends Component {
   {
     return (
         <div>
-          <Router  basename="app" >
+          <Router>
             <div>
               <div className="header">
                 <div className="left-margin" />

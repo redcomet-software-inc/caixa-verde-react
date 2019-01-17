@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import stardardImage from '../../images/standard.jpg';
+import { Icon } from 'react-icons-kit';
+import { boxAdd } from 'react-icons-kit/icomoon/boxAdd';
+import { minus } from 'react-icons-kit/icomoon/minus';
 
 const Image = (props) => {
   let src='';
@@ -96,17 +99,22 @@ export default class CardKits extends Component {
         </div>
         <div className="row">
           <div className="col-4">
-            <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"kit",-1)} className={'btn btn-info btn-lg '+this.state.show}>
-              -
-            </div>
+          <Icon
+                icon={minus}
+                id={this.props.id}
+                onClick={e => this.props.addCardCount(e.currentTarget.id, 'kit', -1)}
+                className={'btn btn-info ' + this.props.hide_number}   />
           </div>
           <div className={"col-4 " + this.state.show}>
             <div id={this.props.id} className={'btn disabled '+ this.state.show}>{this.state.cardCount}</div>
           </div>
           <div className="col-4">
-            <div id={this.props.id} onClick={(e) => this.props.addCardCount(e.target.id,"kit",1)} className="btn btn-success btn-lg">
-              +
-            </div>
+          <Icon
+                icon={boxAdd}
+                id={this.props.id}
+                onClick={e => this.props.addCardCount(e.currentTarget.id, 'kit', 1) }
+                className="btn btn-success btn-lg" />
+            
           </div>
         </div>
       </div>

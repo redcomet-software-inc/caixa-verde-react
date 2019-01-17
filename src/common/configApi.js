@@ -9,7 +9,6 @@ const client = axios.create({
   baseURL: "http://localhost:3000"
 });
 
-
 /**
  * Request Wrapper with default success/error actions
  */

@@ -160,7 +160,7 @@ export default class MyAccount extends Component {
             <label htmlFor="inp" className="inp mb-2">
               <input type="text" id="cellphone" name="cellphone" placeholder="&nbsp;" defaultValue={this.state.cellphone} />
               <span className="label">Celular</span>
-              <span className="border"></span>
+               
             </label>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default class MyAccount extends Component {
             <label htmlFor="inp" className="inp mb-2">
               <input type="email" id="email" name="email" placeholder="&nbsp;" defaultValue={this.state.email} />
               <span className="label">E-mail</span>
-              <span className="border"></span>
+               
             </label>
           </div>
         </div>
@@ -387,14 +387,14 @@ export default class MyAccount extends Component {
               <label htmlFor="inp" className="inp mb-2">
                 <input type="text" id="street" name="street" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_street"] }/>
                 <span className="label">Endereço</span>
-                <span className="border"></span>
+                 
               </label>
             </div>
             <div className="col-md-4">
               <label htmlFor="inp" className="inp mb-2">
                 <input type="text" id="number" name="number" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_number"]} />
                 <span className="label">Nº</span>
-                <span className="border"></span>
+                 
               </label>
             </div>
           </div>
@@ -403,7 +403,7 @@ export default class MyAccount extends Component {
               <label htmlFor="inp" className="inp mb-2">
                 <input type="text" id="neighbourhood" name="neighbourhood" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_neighbourhood"]} />
                 <span className="label">Bairro</span>
-                <span className="border"></span>
+                 
               </label>
             </div>
           </div>
@@ -412,7 +412,7 @@ export default class MyAccount extends Component {
               <label htmlFor="inp" className="inp mb-2">
                 <input type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_zipcode"]} />
                 <span className="label">CEP</span>
-                <span className="border"></span>
+                 
               </label>
             </div>
           </div>
@@ -421,7 +421,7 @@ export default class MyAccount extends Component {
               <label htmlFor="inp" className="inp mb-2">
                 <input type="text" id="complement" name="complement" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_complement"]} />
                 <span className="label">Complemento</span>
-                <span className="border"></span>
+                 
               </label>
             </div>
           </div>
@@ -506,14 +506,14 @@ export default class MyAccount extends Component {
                 <label htmlFor="inp" className="inp mb-2">
                   <input type="text" id="name" name="name" placeholder="&nbsp;" defaultValue={this.state.name} />
                   <span className="label">Nome</span>
-                  <span className="border"></span>
+                   
                 </label>
               </div>
               <div className="col-md-6">
                 <label htmlFor="inp" className="inp mb-2">
                   <input type="text" id="lastname" name="lastname" placeholder="&nbsp;" defaultValue={this.state.lastname} />
                   <span className="label">Sobrenome</span>
-                  <span className="border"></span>
+                   
                 </label>
               </div>
             </div>
@@ -554,7 +554,7 @@ export default class MyAccount extends Component {
           ))}
             </select> 
             <span className="label">Região Administrativa</span> 
-            <span className="border"></span>
+             
           </label>
           <div className="text-center mx-auto w-100">
             <div className="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" >Salvar</button></div>

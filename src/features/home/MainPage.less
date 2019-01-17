@@ -1,15 +1,14 @@
 @import '../../styles/mixins';
 
-
-html, body {
+html, body, .fixed-top {
   line-height: 1;
   width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+  margin: 0px !important;
+  padding: 0px !important;
+  overflow-x:hidden;
+  overflow-y: auto;
+  
 }
-
-
 
 span.tab{
   padding: 0 15px; /* Or desired space*/
@@ -22,8 +21,8 @@ span.tab{
   opacity: 0;
   transition: opacity .5s;
 }
-.visible {
 
+.visible {
     -webkit-animation: fadein .5s; /* Safari, Chrome and Opera > 12.1 */
        -moz-animation: fadein .5s; /* Firefox < 16 */
         -ms-animation: fadein .5s; /* Internet Explorer */
@@ -72,21 +71,21 @@ h2 {
   margin-left: 12px !important;
 }
 
-
 .navbar-light .navbar-nav .nav-link {
   color: rgb(44, 121, 87) !important;
   font-weight: 600;
+  
 }
 
 .nav-item a:hover {
   color: #f21b3f !important;
 }
+
 .nav-item a {
     color: #b5bdb1 !important;
     font-weight: 600;
     transition: color .2s;
 }
-
 
 button:focus {
     outline: 2px solid;
@@ -94,24 +93,18 @@ button:focus {
     transition: outline 1s;
 }
 
-.custom-toggler .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,102,203, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
-}
-
-
-
 .navbar-light .navbar-nav .nav-link:hover {
   color: #f21b3f !important;
 }
 
 .navbar {
     padding-left: 1em !important;
-    padding-right: 0.3em !important;
 }
 
-.modal-body {
-  overflow: auto;
+.custom-toggler .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,102,203, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
 }
+
 .modal-title {
   color: #145423 !important;
 }
@@ -119,8 +112,28 @@ button:focus {
 .modal-footer {
   border-top: 1px solid #dddcf0;
 }
+
 .modal-header  {
   border-bottom: 1px solid #dddcf0;
+}
+
+.modal-content {
+  border:0;
+  line-height: .5;
+}
+
+.modal-body{
+  height: 250px;
+  overflow-y: auto;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: .5em;
+  height: 1em
+}
+
+.modal-open {
+  overflow-y: auto !important;
 }
 
 .modal.fade .modal-dialog {
@@ -140,23 +153,37 @@ button:focus {
   border: 0.1em solid #dc3545;
   padding: 1em; 
 }
+
 .dropdown-menu a {
   color: #2c7957 !important;
 }
+
 .dropdown-divider {
-    border-top: 1px solid #e6e6e6;
+  border-top: 1px solid #e6e6e6;
 }
 
 .dropdown-item.active, .dropdown-item:active {
-    color: #fff;
-    text-decoration: none;
-    background-color: inherit;
+  color: #fff;
+  text-decoration: none;
+  background-color: inherit;
 }
 
 .dropdown-menu a:hover {
-    color: red !important;
-    background-color: inherit;
+  color: red !important;
+  background-color: inherit;
 }
+
+.fixed-top {
+  position: fixed;
+  left: 0;
+  top: 0px;
+  transition: top 2s linear;
+  z-index: 5 !important;
+  overflow: hidden !important;
+  padding-right: -30px;
+  background: green;
+}
+
 
 .left-margin {
   position: fixed;
@@ -167,7 +194,6 @@ button:focus {
   width:15px;
   z-index: 100;
 }
-
 
 .home-index {
   text-align: center;
@@ -187,13 +213,12 @@ button:focus {
     opacity: 0.08;
     height: 190px;
   }
-
+  
   .app-header {
     background-color: #222;
     height: 150px;
     padding: 20px;
     color: white;
-    overflow: hidden;
     position: relative;
   }
 
@@ -236,16 +261,14 @@ button:focus {
     }
   }
 }
-.navbar {
-//background-image: url("../../images/cubes.png");
-/* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
-}
+
 .content {
   max-width: 60em;
   margin-top:50px;
   min-height: 70vh;
   background-color: #fff;
   padding-top:4rem;
+  padding-bottom:4em;
   padding-left:3rem;
   padding-right:1.8rem;
   border-radius: 5px;
@@ -288,10 +311,23 @@ button:focus {
     transition: left .5s;
 }
 
+.btn-primary.focus, .btn-primary:focus {
+  -webkit-box-shadow: 0 0 0 0 #f21b3f !important;
+  box-shadow: 0 0 0 0 #f21b3f !important;
+  border: floralwhite;
+  background-color: #a6172f;
+}
+
 .btn-info {
     color: #fff;
     background-color: #f21b3f;
     border-color: #f21b3f;
+}
+
+.btn-info:hover {
+  color: #fff;
+  background-color: #c31935;
+  border-color: #c31935;
 }
 
 .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
@@ -303,7 +339,13 @@ button:focus {
     -webkit-box-shadow: 0 0 0 0 rgb(242, 27, 63) !important;
     box-shadow: 0 0 0 0 rgb(242, 27, 63) !important;
     
-    /* border: floralwhite; */
+     border: floralwhite;
+}
+
+.btn-info:not(:disabled):not(.disabled).active, .btn-info:not(:disabled):not(.disabled):active, .show>.btn-info.dropdown-toggle {
+  color: #fff;
+  background-color: #a2253a !important;
+  border-color: #a2253a !important;
 }
 
 .absolute-center {
@@ -335,23 +377,13 @@ button:focus {
   position: relative;
   margin: auto;
   width: 100%;
+}
 
-}
-.inp .label {
-  position: absolute;
-  top: 16px;
-  left: 0;
-  font-size: 16px;
-  color: #9098a9;
-  font-weight: 500;
-  transform-origin: 0 0;
-  transition: all 0.2s ease;
-}
 .inp .border {
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 2px;
+  height: 0px;
   width: 100%;
   background: #07f;
   transform: scaleX(0);
@@ -375,7 +407,7 @@ button:focus {
   transition: all 0.15s ease;
 }
 .inp input:hover {
-  background: rgba(34,50,84,0.03);
+  
 }
 .inp input:not(:placeholder-shown) + span {
   color: #5a667f;
@@ -386,6 +418,27 @@ button:focus {
   outline: none;
   color: #f21b3f !important;
 }
+
+.inp .label {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  font-size: 16px;
+  color: #9098a9;
+  font-weight: 500;
+  transform-origin: 0 0;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.inp label:focus + span {
+  color: #f21b3f;
+  transform: translateY(-26px) scale(0.75);
+}
+.inp label:focus + span {
+  transform: scaleX(1);
+}
+
 .inp input:focus + span {
   color: #f21b3f;
   transform: translateY(-26px) scale(0.75);
@@ -402,7 +455,6 @@ input:-webkit-autofill:active  {
 }
 
 .inp select {
-  
   width: 100%;
   border: 0;
   font-family: inherit;

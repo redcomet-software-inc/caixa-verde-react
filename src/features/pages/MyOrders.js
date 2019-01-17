@@ -35,12 +35,11 @@ export default class MyOrders extends Component {
           client_token: this.state.client_token,
         }
       }).then(res => {
-
+        this.props.turnOffLoading();
         if(res.length === 0) {
           this.setState({orders_empty: true});
         } else {
           this.setState({orders_empty: false});
-          this.props.turnOffLoading();
           this.setState({orders: res});
         }
       }).catch(error =>{
@@ -75,6 +74,23 @@ export default class MyOrders extends Component {
     );
   }
 
+  renderKits = (kits_orders) => {
+    let order_dom = [];
+    if(kits_orders.length > 0) {
+       kits_orders.map((kit, index) => (
+    order_dom.push(
+        <tr>
+          <th scope="row">{ index+1 }</th>
+          <td>{kit.name}</td>
+          <td></td>
+          <td>{kit.price}</td>
+        </tr>
+        )
+      ));
+      return order_dom;  
+    }
+  }
+
   renderItens = (orders_products) => {
     let order_dom = [];
     if(orders_products.length > 0) {
@@ -92,7 +108,6 @@ export default class MyOrders extends Component {
       return order_dom;
     }
   }
-
 
   renderOrders = () => {
     console.log(" render orders");
@@ -139,6 +154,7 @@ export default class MyOrders extends Component {
                         </thead>
                         <tbody>
                           { this.renderItens(order.orders_products) }
+                          { this.renderKits(order.kits_orders) }
                         </tbody>
                       </table>
                   </div>
