@@ -8,17 +8,15 @@ import node_rsa from 'node-rsa';
 import qs from 'qs';
 import { getClientInfo } from '../../common/getClientInfo.js';
 import { getOrders } from '../../common/getOrders.js';
-import { getCardToken } from '../../common/getSession.js';
+import { getCardToken, getSession, setSession } from '../../common/getSession.js';
 import 'react-credit-cards/es/styles-compiled.css';
 
 export class PagSeguro extends Component
 {
   constructor (props) {
     super(props);
-    
     /* Autenticação SandBox */
-    const credentials = 
-    { 
+    const credentials = { 
       email: 'guilhermewnunes@gmail.com' ,
       token: '3774B1301F034CDAA8900429ACCB394B',
       app_key: '8CAA79B12020B98EE4827F8090434CBC',
@@ -32,7 +30,6 @@ export class PagSeguro extends Component
         reference: '12345'
       }
     }
-
     this.ps = new Ps({
         email: credentials.email,
         token: credentials.token,
@@ -45,20 +42,6 @@ export class PagSeguro extends Component
     this.ps.currency('BRL');
     this.ps.reference('12345');
     return this.ps
-  }
-
-  getCardToken = function()
-  {
-    /*
-    this.ps.createCardToken({
-      cardNumber:'4111111111111111',
-      brand:'visa',
-      cvc:'123',
-      expirationMonth:12,
-      expirationYear:2030,
-    }).then(success => {
-
-    });*/
   }
 
   send = function ()
@@ -75,7 +58,6 @@ export class PagSeguro extends Component
   {
     let address_delivery  = shipping.address_delivery
     let adm_region = shipping.adm_region
- 
     this.ps.shipping({
       type: 1,
       street: address_delivery.street,
@@ -91,7 +73,6 @@ export class PagSeguro extends Component
 
   setClient = function(buyer)
   {
-
     this.ps.buyer({
       name: buyer.name,
       email: buyer.email,
@@ -104,7 +85,6 @@ export class PagSeguro extends Component
   setItem = function(item)
   {
     let item_result = this.ps.addItem(item);
-
     if(item_result) {
       return true;
     } else {
@@ -125,7 +105,6 @@ export default class Payment extends Component {
     if (checkLocalStorage() !== false) {
       order_id = localStorage.getItem("order_id");
     }
-    
     this.state = { 
       client_token: token || '',
       client_email: email || '',
@@ -139,13 +118,14 @@ export default class Payment extends Component {
       card_expiry:'',
       card_expiry_month:'',
       card_expiry_year:'',
+      card_brand:'',
       cvc:'',
       encryption_key:'ek_test_2bravIrMyJOPSlHj6x2vm9HLrYmzMF',
       url_request:'',
       public_key:'',
       pagarme_id:'',
       focused:'',
-      isLoading: true,
+      isLoadingSend: false,
       order_id: order_id || 0,
       ps_session:'',
       orders_products:[],
@@ -154,10 +134,8 @@ export default class Payment extends Component {
     };
   }
 
-  componentDidMount() 
-  {
+  componentDidMount() {
     let pagSeguro = new PagSeguro();
-    pagSeguro.getCardToken();
     window.scroll({top: 0, left: 0, behavior: 'smooth' });
     let data = [];
     getClientInfo.then(buyer => {
@@ -170,29 +148,23 @@ export default class Payment extends Component {
   }
 
   /* Get Order from API and Set to pagSeguro instance */
-  getOrder = (pagSeguro) => 
-  {
-    getOrders(this.state.order_id).then(order => 
-    {
+  getOrder = (pagSeguro) => {
+    getOrders(this.state.order_id).then(order => {
       this.setState({ orders_products: order });
-      if(order.orders_products.length > 0)
-      {
+      if(order.orders_products.length > 0) {
         this.setItems(pagSeguro, order.orders_products);
       }
-      if(order.orders_kits.length > 0)
-      {
+      if(order.orders_kits.length > 0) {
         this.setItems(pagSeguro, order.orders_kits);
       }
       pagSeguro.send();
     });
   }
 
-  setItems = (pagSeguro, items) => 
-  {
+  setItems = (pagSeguro, items) => {
     let item = {}
     let count = 0;
-    items.map((item) => 
-    {
+    items.map((item) => {
         item = {id: item.id,
                   name: item.name,
                   description: item.description,
@@ -210,18 +182,14 @@ export default class Payment extends Component {
     }
   }
 
-  
-
-  home_tab = () => 
-  {
+  home_tab = () => {
     return(
       <div>
       </div>
     )
   }
 
-  money_tab = () => 
-  {
+  money_tab = () => {
     return(
       <div>
         This is the Money Tab
@@ -229,48 +197,12 @@ export default class Payment extends Component {
     )
   }
 
-  fixShortDate = (txtBox) => {
-    console.log("fixShortDate");
-    console.log(txtBox);
-
-    /*
-    if (txtBox == null) { 
-        return '' }
-
-    var re = new RegExp(/(\d{6})(\d{2})?/);
- 
- 
-       if (txtBox.length == 8) {
-           txtBox = txtBox.substring(0, 2) + '/' + txtBox.substring(2, 4) + '/' + txtBox.substring(4, 8)
-       }
-        
-        if (txtBox.length == 6) {
-           if (txtBox.substring(4, 6) < 20)
-          {
-              txtBox = txtBox.substring(0, 2) + '/' + txtBox.substring(2, 4) + '/20' + txtBox.substring(4, 6);
-            }
-           else
-           {
-              txtBox = txtBox.substring(0, 2) + '/' + txtBox.substring(2, 4) + '/19' + txtBox.substring(4, 6);
-            }
-        }
-
-    this.setState({card_expiry: txtBox});
-    console.log(txtBox);
-    return txtBox;
-    */
- }
-
-  handleChangeExpiry = (e) => 
-  {
+  handleChangeExpiry = (e) => {
     const name = e.currentTarget.name;
     const value = e.currentTarget.value;
     let value_expiry = "";
-    
     console.log("Expiry");
-
-    if(name === "expiry_month")
-    {
+    if(name === "expiry_month") {
       console.log("month");
       this.setState({card_expiry_month: value});
       let txt_month = value
@@ -278,15 +210,12 @@ export default class Payment extends Component {
       let txt = txt_month + txt_year;
       this.setState({card_expiry: txt});
     }
-    if(name === "expiry_year")
-    {
+    if(name === "expiry_year") {
       let txt_month = "";
       this.setState({card_expiry_year: value});
-      if(this.state.card_expiry_month.length === 0)
-      {
+      if(this.state.card_expiry_month.length === 0) {
         txt_month = "--";
-      } else 
-      {
+      } else {
         txt_month = this.state.card_expiry_month.toString(2);
       }
       let txt_year = value.substring(value.length-2).toString(2);
@@ -297,8 +226,7 @@ export default class Payment extends Component {
     console.log(e.currentTarget.value);
   }
 
-  handleChange = (e) => 
-  {
+  handleChange = (e) => {
     e.preventDefault();
     e.persist();
     const card_name = e.currentTarget.name;
@@ -307,46 +235,47 @@ export default class Payment extends Component {
     this.setState({ [card_name]: card_string });
   }
 
-  handleClick_card = (e) => 
-  {
+  handleClick_card = (e) => {
     e.preventDefault();
     e.persist();
     this.setState({ focused: e.target.id})
-
-    if(e.target.id==="cvc") 
-    {
-      //this.setState({ cvc: ''});
-      //e.target = '';
-    }
   }
 
+  cardCallback = (callback) => {
+    this.setState({card_brand: callback.issuer});
+  }
 
-  onSubmitCard = (e) =>
-  {
+  onSubmitCard = (e) => {
+    this.setState({isLoadingSend: true});
     e.preventDefault();
     e.persist();
-    let card = e.target.elements;
-    getCardToken(card);
-    console.log("submit card");
+    let card = e.currentTarget;
+    /* Client Side Payment Process */
+    getCardToken(card).then(response => {
+      this.setState({isLoadingSend: false});
+    });
+
+
+    console.log("Submit Card");
     e.target.elements.card_number
   }
 
   renderYearSelect = () => {
     let year = (new Date().getFullYear());
     let method = [];
-    for(let i=0; i<=10; i++)
-    { 
+    for(let i=0; i<=11; i++) { 
       method.push(<option value={year +i}>{ year + i }</option>);
     }
     return method;
   }
 
-  card_tab = () => 
-  {
+  card_tab = () => {
     const placeholders = {name: 'SEU NOME AQUI'}
     const locale = { valid: 'vencimento'}
-    return(
+    return (
       <form onSubmit={(e) => this.onSubmitCard(e)}>
+        <input type="hidden" name="card_brand" value={this.state.card_brand} />
+
         <div className="mx-auto">
           Order Id: {this.state.order_id}
           <div className="form-row mb-4">
@@ -358,6 +287,7 @@ export default class Payment extends Component {
                 focused={this.state.focused}
                 placeholders={placeholders}
                 locale={locale}
+                callback={this.cardCallback}
               />
           </div>
           <div className="form-row">
@@ -407,12 +337,6 @@ export default class Payment extends Component {
             </div>
           </div>
           
-
-
-          
-
-          
-
           <div className="form-row">
             <div className="col mb-3">
               <label for="inp" className="inp mb-2">
@@ -422,20 +346,17 @@ export default class Payment extends Component {
               </label>
             </div>
           </div>
-
           <div className="row text-center mx-auto p-2">
             <div className="text-center mx-auto w-100">
               <div className="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" disabled={this.props.disable} >Finalizar Compra</button></div>
-              <div className="d-inline p-1 text-white position-absolute">{this.renderLoading()}</div>
+              <div className="d-inline p-1 text-white position-absolute">{this.renderLoadingSend()}</div>
             </div>
           </div>
-          
         </div>
       </form>
     )
   }
-  ticket_tab = () => 
-  {
+  ticket_tab = () => {
     return(
       <div>
         This is the Ticket Tab
@@ -443,61 +364,21 @@ export default class Payment extends Component {
     )
   }
 
-  current_page = () => 
-  {
-    if(this.state.current_tab==="home") 
-    {
+  current_page = () => {
+    if(this.state.current_tab==="home") {
       return this.home_tab();
-    } else if (this.state.current_tab==="money") 
-    {
+    } else if (this.state.current_tab==="money") {
       return this.money_tab();
-    } else if (this.state.current_tab==="card")
-    {
+    } else if (this.state.current_tab==="card") {
       return this.card_tab();
-    } else if (this.state.current_tab==="ticket") 
-    {
+    } else if (this.state.current_tab==="ticket") {
       return this.ticket_tab();
-    } else 
-    {
+    } else {
 
     }
   }
 
-  card_hash_generate = (public_key) => 
-  {
-      const cardString = qs.stringify({
-            card_number: this.state.card_number,
-            card_holder_name: this.state.card_name,
-            card_expiration_date: this.state.card_expiry,
-            cvc: this.state.cvc,
-          })
-
- 
-      const key = new node_rsa(public_key);
-      key.setOptions({'encryptionScheme': 'pkcs1'});
-      const encrypted = key.encrypt(cardString, 'base64');
-
-      const cardHash = this.state.pagarme_id + '_' + encrypted;
-
-
-      request({
-      method:'post',
-      url: '/api/v1/payments.json',
-      params: {
-        client_token: this.state.client_token,
-        client_email: this.state.client_email,
-        card_hash: cardHash,
-        pagarme_id: this.state.pagarme_id,
-        order_id: this.state.checkout_order_id
-      }
-      }).then(res => 
-      {
-
-      });
-  }
-
-  handleClick = (e) => 
-  {
+  handleClick = (e) => {
     e.preventDefault();
     e.persist();
     let name = e.target.name;
@@ -507,35 +388,15 @@ export default class Payment extends Component {
     this.setState({ active_money: ''});
     this.setState({ active_ticket: ''});
     this.setState({ ['active_' + name]: 'active' });
-
-    if(e.target.name === "card") 
-    {
-      this.setState({ cvc:''});
-      this.setState({ focused:''});
-      request({
-      method:'get',
-      url: 'https://api.pagar.me/1/transactions/card_hash_key',
-      params: {
-        encryption_key: this.state.encryption_key
-      }
-      }).then(res => {
-        this.setState({ public_key: res.public_key});
-        this.setState({ pagarme_id: res.id});
-        this.card_hash_generate(res.public_key);
-      });
-    } 
   }
 
-  renderLoading = () => 
-  {
-    if(this.state.isLoading) 
-    {
+  renderLoadingSend = () => {
+    if(this.state.isLoadingSend) {
       return <Loading />
     }
   }
 
-  render() 
-  {
+  render() {
     return (
       <div className="pages-payment">
         <h2 className="text-center title">Pagamento</h2>
