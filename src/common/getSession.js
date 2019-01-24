@@ -2,6 +2,31 @@ import request from './configApi.js';
 
 let PagSeguroDirectPayment = window.PagSeguroDirectPayment;
 
+/* After Client Side, Back End Executes */
+export let sendToApi = function(order_id) {
+    return new Promise((resolve, reject) => {
+        const client_email = localStorage.getItem("email");
+        const client_token  = localStorage.getItem("token");
+        request({
+            url:'api/v1/pagseguro/payment.json',
+            method:'post',
+            params: {
+                client_email: client_email,
+                client_token: client_token,
+                order_id: order_id,
+            }
+        }).then(response => 
+         {
+            console.log("Send To Api");
+            console.log(response);
+            resolve(response);
+
+        }).catch(err => {
+            reject("Failed to Send to Api" + err);
+        });
+    });
+}
+
 /* The First to be Executed by Get Session.js */
 export let getCardToken = function(card) {
     return new Promise(function(resolve, reject) {

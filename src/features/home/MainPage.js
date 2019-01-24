@@ -14,6 +14,8 @@ import { setLocalStorage, checkLocalStorage } from './SetLocalStorage';
 import { countProductsAndKits } from './CountProducts';
 import { countProducts } from './CountProducts';
 import { countKits } from './CountProducts';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 /* Pages and render components */
 import Products from '../pages/Products.js';
@@ -28,12 +30,13 @@ import MyAccount from '../pages/MyAccount.js';
 import MyOrders from '../pages/MyOrders.js';
 import MyBox from '../pages/MyBox.js';
 import Payment from '../pages/Payment.js';
-import Orders from '../pages/Orders.js';
 import Err from '../common/Err.js';
 import Warning from '../common/Warning.js';
 import Spinner from '../common/Spinner.js';
 
-export default class MainPage extends Component {
+import * as actions from '../../features/home/redux/actions.js';
+
+export class MainPage extends Component {
   constructor(props) {
     super(props);
     MainPage.defaultProps = {
@@ -41,7 +44,6 @@ export default class MainPage extends Component {
       selectedProducts: PropTypes.array,
       kits: PropTypes.array,
       selectedKits: PropTypes.array,
-      showComponent: PropTypes.bool,
       shoppingCartCount: PropTypes.number,
       productsCount: PropTypes.number,
       kitsCount: PropTypes.number,
@@ -62,8 +64,6 @@ export default class MainPage extends Component {
       serviceAvailability: PropTypes.bool,
       avatar: PropTypes.string,
       minQuantity: PropTypes.number,
-      isLoading: PropTypes.bool,
-      isError: PropTypes.bool,
       warningMessage: PropTypes.string,
       checkout_order_id: PropTypes.number,
     }
@@ -84,7 +84,6 @@ export default class MainPage extends Component {
       selectedProducts: selectedProducts || [],
       kits: [],
       selectedKits: selectedKits ||  [],
-      showComponent: false,
       shoppingCartCount: shoppingCartCount || 0,
       productsCount: productsCount || 0,
       kitsCount: kitsCount || 0,
@@ -95,7 +94,6 @@ export default class MainPage extends Component {
       clientName:'',
       clientEmail: clientEmail || '',
       authentication_token: authentication_token || '',
-      signInMessage: '',
       clientId: '',
       loggedIn: false,
       redirect: false,
@@ -105,8 +103,6 @@ export default class MainPage extends Component {
       serviceAvailability:true,
       avatar:'',
       minQuantity:2,
-      isLoading:false,
-      isError:false,
       warningMessage:'A sua caixa está vazia.',
       checkout_order_id:0,
     };
@@ -116,6 +112,8 @@ export default class MainPage extends Component {
   componentDidMount() {
     this.auth();
     this.getMinQuantity();
+    console.log("prps");
+    console.log(this.props);
   }
 
   setCheckoutOrderId = (order_id) => {
@@ -129,7 +127,6 @@ export default class MainPage extends Component {
     }).then((res) => {
       this.setState({minQuantity: res.minquantity});
     })
-
   }
 
   /*Check if user is LoggedIn */
@@ -149,10 +146,10 @@ export default class MainPage extends Component {
         this.setState({clientId: res.client.id});
         this.setState({clientName: res.client.name});
         this.props.turnOffMainLoading();
-        setTimeout(()=>{this.props.turnOffMainLoading()}, 4000);
+        setTimeout(()=>{this.props.turnOffMainLoading()}, 500);
     }).catch(err => {
       this.setState({loggedIn: false});
-      setTimeout(()=>{this.props.turnOffMainLoading()}, 4000);
+      setTimeout(()=>{this.props.turnOffMainLoading()}, 500);
     });
   };
 
@@ -188,7 +185,6 @@ export default class MainPage extends Component {
     this.setState({selectedProducts: [] });
     this.setState({kits: [] });
     this.setState({selectedKits: []});
-    this.setState({showComponent: false});
     this.setState({shoppingCartCount: 0});
     this.setState({productsCount: 0});
     this.setState({kitsCount: 0});
@@ -209,7 +205,6 @@ export default class MainPage extends Component {
     this.setState({serviceAvailability:true});
     this.setState({avatar:''});
     this.setState({minQuantity:2});
-    this.setState({isLoading:false});
     this.setState({isError:false});
     this.setState({warningMessage:'A sua caixa está vazia.'});
     this.setState({checkout_order_id:0});
@@ -363,107 +358,65 @@ export default class MainPage extends Component {
   };
 
   /* Sign In Client and Register new Token */
-  signIn = e => 
-  {
-    e.preventDefault();
-    const email = e.target.elements.email.value;
-    const password = e.target.elements.password.value;
-    this.setState({ signInMessage: '' });
-    request({
-      method:'post',
-      url: 'api/v1/sessions.json',
-      params: {
-        email: email,
-        password: password
-      }
-    }).then(res => { 
-      const token = res['authentication_token'];
+  setSignIn = (client_id, client_name, client_email, token) => {
       this.setState({ authentication_token: token });
-      this.setState({ email: email });
+      this.setState({ email: client_email });
       this.setState({ signInMessage: 'Você está logado.' });
-      this.setState({ clientName:  res['name'] });
-      this.setState({ clientId: res['id'] });
+      this.setState({ clientName: client_name });
+      this.setState({ clientId: client_id });
       this.setState({ loggedIn: true });
       localStorage.setItem('token', token);
-      localStorage.setItem('email', email);
-      this.setState({redirectTo:''});
-      this.setState({ redirect: true });
-    }).catch(error => 
-    {
-        this.setState({ signInMessage: 'E-mail e/ou Senha não correspondem.' });
-    });
-  };
-  
-  showComponent = value => 
-  {
-    this.setState({ showComponent: value });
+      localStorage.setItem('email', client_email);
   };
 
-  warning = (text) => 
-  {
+  warning = (text) => {
     this.setState({warningMessage: text});
   }
 
-  turnOffLoading = () => 
-  {
-    this.setState({isLoading: false});
-  }
 
-  turnOnLoading = () => 
-  {
-    this.setState({isLoading: true});
-  }
-
-  turnOffError = () => 
-  {
+  turnOffError = () => {
     this.setState({isError: false});
   }
 
-  turnOnError = (err_message) => 
-  {
+  turnOnError = (err_message) => {
     /* Error Also Turn Off Loading */
-    this.turnOffLoading();
+    this.props.actions.turnOffLoading();
+    this.props.actions.turnOnError();
     this.redirect('0');
     this.setState({ err_message: err_message});
-    this.setState({isError: true});
   }
 
-  renderError = () => 
-  {
-    if(this.state.isError===true) 
-    {
+  renderError = () => {
+    if(this.props.home.isError===true) {
       return <Err err_message={this.state.err_message} />
+    } else {
+      return null;
     }
   }
 
-  renderSpinner = () => 
-  {
-    if(this.state.isLoading===true) 
+  renderSpinner = () => {
+    if(this.props.home.isLoading===true) 
     {
-      return <Spinner />
+      return <Spinner redirect={this.redirect} />
     }
   }
 
-  visible = () => 
-  {
-    if(this.state.isLoading===true || this.state.isError===true) 
-    {
+  visible = () => {
+    if(this.props.home.isLoading===true || this.props.home.isError===true) {
       return 'invisible';
-    } else 
-    {
+    } else {
       return 'visible';
     }
   }
 
-  render() 
-  {
+  render() {
     return (
         <div>
           <Router>
             <div>
               <div className="header">
                 <div className="left-margin" />
-                <ShoppingCartButton />
+                <ShoppingCartButton shoppingCartCount={this.state.shoppingCartCount}/>
                 <NavBar
                   loggedIn={this.state.loggedIn}
                   shoppingCartCount={this.state.shoppingCartCount}
@@ -494,7 +447,6 @@ export default class MainPage extends Component {
                                   selectedProducts={this.state.selectedProducts}
                                   products={this.state.products}
                                   onRef={ref => (this.custom = ref)}
-                                  showComponent={this.showComponent}
                                 />
                               )}
                             />
@@ -509,7 +461,6 @@ export default class MainPage extends Component {
                                   kits={this.state.kits}
                                   onRef={ref => (this.custom = ref)}
                                   setMoneyFormat={this.setMoneyFormat}
-                                  showComponent={this.showComponent}
                                 />
                               )}
                             />
@@ -517,8 +468,7 @@ export default class MainPage extends Component {
                               path="/login"
                               render={props => (
                                 <Login
-                                  signIn={this.signIn}
-                                  signInMessage={this.state.signInMessage}
+                                  setSignIn={this.setSignIn}
                                   loggedIn={this.state.loggedIn}
                                   redirect={this.redirect}
                                 />
@@ -527,7 +477,9 @@ export default class MainPage extends Component {
                             <Route
                               path="/cadastro"
                               render={props => (
-                                <Registration register={this.register} component={Registration} redirect={this.redirect} />
+                                <Registration register={this.register} 
+                                component={Registration} 
+                                redirect={this.redirect} />
                               )}
                             />
                             <Route
@@ -547,60 +499,39 @@ export default class MainPage extends Component {
                                   clientId={this.state.clientId}
                                   clientEmail={this.state.clientEmail}
                                   redirect={this.redirect}
-                                  turnOnError={this.turnOnError}
-                                  turnOffError={this.turnOffError}
-                                  turnOnLoading={this.turnOnLoading}
-                                  turnOffLoading={this.turnOffLoading}
                                   setCheckoutOrderId={this.setCheckoutOrderId}
                                 />
                               )}
                             />
                             <Route
-                              path="/orders"
-                              render={props => (
-                                <Orders />
-                              )} 
-                            />
-                            <Route
                               path="/minhaconta"
                               render={props => (
                                 <MyAccount 
-                                  turnOffLoading={this.turnOffLoading} 
-                                  turnOnLoading={this.turnOnLoading} 
-                                  turnOnError={this.turnOnError}
-                                  turnOffError={this.turnOffError}
                                   />
                               )}
                             />
                             <Route
                               path="/pedidos"
                               render={props => (
-                                <MyOrders 
-                                  turnOnLoading={this.turnOnLoading} 
-                                  turnOffLoading={this.turnOffLoading} 
-                                  turnOnError={this.turnOnError}
-                                  turnOffError={this.turnOffError} />
+                                <MyOrders />
                               )}
-                            />
+                             />
                             <Route
                               path="/minhacaixa"
                               render={props => (
                                 <MyBox
-                                  turnOnLoading={this.turnOnLoading} 
-                                  turnOffLoading={this.turnOffLoading} 
-                                  turnOnError={this.turnOnError}
-                                  turnOffError={this.turnOffError} 
                                   updateShoppingCart={this.updateShoppingCart}
                                   shoppingCartCount={this.state.shoppingCartCount}
                                   shoppingCartProducts={this.state.shoppingCartProducts} 
-                                  shoppingCartKits={this.state.shoppingCartKits} 
+                                  shoppingCartKits={this.state.shoppingCartKits}
                                   />
                               )}
                             />
                             <Route
                               path="/pagamento"
                               render={props => (
-                                <Payment turnOffLoading={this.turnOffLoading} turnOnLoading={this.turnOnLoading} checkout_order_id={this.state.checkout_order_id} />
+                                <Payment 
+                                checkout_order_id={this.state.checkout_order_id} />
                               )}
                             />
                             <Route
@@ -640,3 +571,22 @@ export default class MainPage extends Component {
     );
   }
 }
+
+/* istanbul ignore next */
+function mapStateToProps(state) {
+  return {
+    home: state.home,
+  };
+}
+
+/* istanbul ignore next */
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...actions }, dispatch)
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MainPage);

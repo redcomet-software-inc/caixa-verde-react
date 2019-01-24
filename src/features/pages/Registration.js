@@ -196,7 +196,7 @@ export default class Registration extends Component {
             
             <div className="col-md-6 mb-12 float-right">
               <label for="inp" className="inp mb-3">
-                  <select type="text" id="adm_region_id" name="adm_region_id" placeholder="&nbsp;" required>
+                  <select type="text" id="adm_region_id" name="adm_region_id" placeholder="&nbsp;">
                     <option disabled selected value=""> -- Escolha uma região -- </option>
                     {this.state.adm_regions.map((item, index) => (
                     <option value={item.id}> {item.name}</option>              

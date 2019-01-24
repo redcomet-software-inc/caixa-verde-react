@@ -18,6 +18,10 @@ export class Footer extends Component {
     actions: PropTypes.object.isRequired,
   };
 
+  rollTop = () => {
+    window.scroll({top: 0, left: 0, behavior: 'smooth' });
+  }
+
   render() {
     return (
       <div className="footer-style font-small pt-5 mt-0 pl-2">
@@ -26,7 +30,9 @@ export class Footer extends Component {
             <div className="col-lg-4 mx-auto my-auto">
             
             <p className="m-3 pl-lg-5 mx-auto my-auto text-center">
-              <img src={ FooterLogo2 } width={150} />
+              <NavLink exact onClick={this.rollTop} to="/">
+                <img src={ FooterLogo2 } width={150} />
+              </NavLink>
             </p>
             </div>
             <div className="col-lg-4 mx-auto text-center">
@@ -41,12 +47,12 @@ export class Footer extends Component {
             </div>
             <div className="col-lg-4 my-auto text-center">
               <span className="p-2">Siga-nos nas Redes Sociais</span><br/>
-              <img src={fbIcon} width={50} />
-              <img src={instaIcon} width={50} />
+              <a href="https://www.facebook.com/caixaverdebrasil/"><img src={fbIcon} width={50} /></a>
+              <a href="https://www.instagram.com/caixaverdebrasil"><img src={instaIcon} width={50} /></a>
 
               <div className="p-5">
                   &copy; {new Date().getFullYear()} copyright {" "}
-                  <a href=""> caixaverde 2018 </a>
+                  caixaverde 2018
               </div>
               <div>
                 <ul className="list-group">

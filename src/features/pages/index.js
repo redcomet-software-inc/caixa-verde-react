@@ -6,7 +6,6 @@ export { default as Products } from './Products';
 export { default as Checkout } from './Checkout';
 export { default as Kits } from './Kits';
 export { default as CardKits } from './CardKits';
-export { default as Orders } from './Orders';
 export { default as MyAccount } from './MyAccount';
 export { default as MyOrders } from './MyOrders';
 export { default as Payment } from './Payment';

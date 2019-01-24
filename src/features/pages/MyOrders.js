@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import request from '../../common/configApi.js';
+import * as actions from '../../features/home/redux/actions.js';
+import LoaderHOC from '../../HOC/LoaderHOC.js';
 
-export default class MyOrders extends Component {
+class MyOrders extends Component {
   static propTypes = {
-  
+    pages: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequfired,
   };
 
   constructor (props) {
     super(props);
-    this.props.turnOnLoading();
-    this.props.turnOffError();
     const email = localStorage.getItem("email");
     const token = localStorage.getItem("token");
     this.state = {
@@ -35,7 +37,7 @@ export default class MyOrders extends Component {
           client_token: this.state.client_token,
         }
       }).then(res => {
-        this.props.turnOffLoading();
+        this.props.actions.turnOffLoading();
         if(res.length === 0) {
           this.setState({orders_empty: true});
         } else {
@@ -43,8 +45,8 @@ export default class MyOrders extends Component {
           this.setState({orders: res});
         }
       }).catch(error =>{
-        this.props.turnOffLoading();
-        this.props.turnOnError(" Desculpe, tivemos um problema no Servidor.");
+        this.props.actions.turnOffLoading();
+        
       });
       
   }
@@ -74,10 +76,10 @@ export default class MyOrders extends Component {
     );
   }
 
-  renderKits = (kits_orders) => {
+  renderKits = ( orders_kits) => {
     let order_dom = [];
-    if(kits_orders.length > 0) {
-       kits_orders.map((kit, index) => (
+    if( orders_kits.length > 0) {
+        orders_kits.map((kit, index) => (
     order_dom.push(
         <tr>
           <th scope="row">{ index+1 }</th>
@@ -154,7 +156,7 @@ export default class MyOrders extends Component {
                         </thead>
                         <tbody>
                           { this.renderItens(order.orders_products) }
-                          { this.renderKits(order.kits_orders) }
+                          { this.renderKits(order. orders_kits) }
                         </tbody>
                       </table>
                   </div>
@@ -188,3 +190,5 @@ export default class MyOrders extends Component {
     );
   }
 }
+
+export default LoaderHOC(MyOrders);

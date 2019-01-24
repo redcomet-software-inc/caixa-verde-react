@@ -7,8 +7,7 @@ import userImage from '../../images/userImage.jpg';
 export default class UserProfile extends Component 
 {
     /* Sign In Client and Register new Token */
-    signOut = e => 
-    {
+    signOut = e => {
       e.preventDefault();
       const email = localStorage.getItem('email');
       const token = localStorage.getItem('token');
@@ -21,45 +20,36 @@ export default class UserProfile extends Component
       const axiosConfigObject = {headers: httpReqHeaders}; 
       axios.delete(deleteUrl, axiosConfigObject).then(res=> 
       {
-         if (res.status === 200) 
-         {
+         if (res.status === 200) {
              this.props.changeToLoggedOut();
-          } else 
-          {
+          } else {
             // throw error and go to catch block
             throw new Error('Error');
           }
 
-      }).catch(error => 
-      {
+      }).catch(error => {
         console.log('Error', error);
       })
     };
 
-    image = () => 
-    {
-      if(this.props.image) 
-      {
+    image = () => {
+      if(this.props.image) {
         return (<img alt={"Foto do Usuário"} src={this.props.image} className="image profile-image mr-2 rounded-circle" width={50} />);
       } else {
         return (<img alt={"Foto do Usuário (Vazio)"} src={userImage} className="image profile-image mr-2 rounded-circle" width={50} />);
       } 
     }
 
-    componentDidMount() 
-    {
-      $('.dropdown').on('show.bs.dropdown', function(e)
-      {
+    componentDidMount() {
+      $('.dropdown').on('show.bs.dropdown', function(e) {
         $(this).find('.dropdown-menu').first().stop(true, true).slideDown(50);
       });
-      $('.dropdown').on('hide.bs.dropdown', function(e)
-      {
+      $('.dropdown').on('hide.bs.dropdown', function(e) {
         $(this).find('.dropdown-menu').first().stop(true, true).slideUp(50);
       });
     }
 
-    render() 
-    {
+    render() {
         return (
           <div>
             <li className="nav-item dropdown">

@@ -1,46 +1,36 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import userImage from '../../images/userImage.jpg';
 import Loading from '../common/Loading.js';
+import { getClientInfo } from '../../common/getClientInfo.js';
 import request from '../../common/configApi.js';
 import { NavLink } from 'react-router-dom';
+import LoaderHOC from '../../HOC/LoaderHOC.js';
+import * as actions from '../../features/home/redux/actions.js';
 
-export default class MyAccount extends Component {
+class MyAccount extends Component {
   static propTypes = {
-
+    pages: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequfired,
   };
    constructor(props) {
     super(props);
     const email = localStorage.getItem('email');
     const token = localStorage.getItem('token');
-    this.props.turnOnLoading();
-    this.props.turnOffError();
     this.state = {
       clientId: 0,
-      name: '',
-      lastname: '',
-      cellphone: '',
-      email: email || '',
-      address_delivery_id: '',
-      address_delivery_street: '',
-      address_delivery_number:'',
-      address_delivery_neighbourhood: '',
-      address_delivery_complement: '',
-      address_delivery_zipcode: '',
-      address_billing_id: '',
-      address_billing_street: '',
-      address_billing_number:'',
-      address_billing_neighbourhood: '',
-      address_billing_complement: '',
-      address_billing_zipcode: '',
+      client_data: [],
+      address_delivery: [],
+      address_billing: [],
       freight: '',
       adm_region_id: '',
       adm_regions: [],
       adm_region_name: '',
       token: token || '',
+      email: email || '',
       image: '',
-      address_null_delivery:false,
-      address_billing_null:false,
-      address_delivery_null:false,
+      address_billing_null:true,
+      address_delivery_null:true,
       adm_region_null:false,
       edit_address_delivery:false,
       edit_address_billing:false,
@@ -59,6 +49,59 @@ export default class MyAccount extends Component {
     this.editContact = this.editContact.bind(this);
   }
 
+  handleEditAdmRegion = (e) =>{
+    e.preventDefault();
+    this.setState({edit_adm_region: !this.state.edit_adm_region});
+  }
+
+  handleEditName = (e) => {
+    e.preventDefault();
+    this.setState({edit_name: !this.state.edit_name});
+  }
+
+  handleEditAddressDelivery = (e) => {
+    e.preventDefault();
+    this.setState({edit_address_delivery: !this.state.edit_address_delivery});
+  }
+
+  handleEditAddressBilling = (e) => {
+    e.preventDefault();
+    this.setState({edit_address_billing: !this.state.edit_address_billing});
+  }
+
+  handleEditContact = (e) => {
+    e.preventDefault();
+    this.setState({edit_contact: !this.state.edit_contact});
+  }
+
+  handleError = () => {
+    this.setState({loadedImage: true});
+  }
+
+  renderNameLoading = () => {
+    if(this.state.isNameLoading) {
+      return <Loading />
+    }
+  }
+
+   renderContactLoading = () => {
+    if(this.state.isContactLoading) {
+      return <Loading />
+    }
+  }
+
+  renderAddressLoading = () => {
+    if(this.state.isAddressLoading) {
+      return <Loading />
+    }
+  }
+
+  renderAdmRegionLoading = () => {
+    if(this.state.isAdmRegionLoading) {
+      return <Loading />
+    }
+  }
+
   getAdmRegions = () => {
     request({
       method:'get',
@@ -74,42 +117,22 @@ export default class MyAccount extends Component {
 
   getClientInformations = () => {
     /* Get Data from current user based on email and token */
-    request({
-      method:'get',
-      url: 'api/v1/clients/1.json',
-      params: {
-        client_email: this.state.email,
-        client_token: this.state.token
-      }
-    }).then(res => 
+    getClientInfo().then(res => 
     {
-      this.setState({ clientId: res.id });
-      this.setState({ name: res.name });
-      this.setState({ lastname: res.lastname });
-      this.setState({ cellphone: res.cellphone });
-      this.setState({ email: res.email });
-      /* Billing Delivery can be Null */
-      if(res.address_delivery !== null && res.address_delivery.street !=="") {
-        this.setState({ address_delivery_id: res.address_delivery.id });
-        this.setState({ address_delivery_street: res.address_delivery.street });
-        this.setState({ address_delivery_number: res.address_delivery.number });
-        this.setState({ address_delivery_neighbourhood: res.address_delivery.neighbourhood });
-        this.setState( {address_delivery_complement: res.address_delivery.complement})
-        this.setState({ address_delivery_zipcode: res.address_delivery.zipcode });
-      } else {
-        this.setState({ address_delivery_null: true});
+      console.log("CLIENT INFO");
+      console.log(res);
+      this.setState({ address_delivery: res.address_delivery});
+      this.setState({ address_billing: res.address_billing});
+      this.setState({ client_data: res});
+      this.setState({ clientId: res.id});
+
+      if( res.address_delivery !== null) {
+        this.setState({address_delivery_null: false});
       }
-      /* Billing Address can be Null */
-      if(res.address_billing !== null) {
-        this.setState({ address_billing_id: res.address_billing.id });
-        this.setState({ address_billing_street: res.address_billing.street });
-        this.setState({ address_billing_number: res.address_billing.number });
-        this.setState({ address_billing_neighbourhood: res.address_billing.neighbourhood });
-        this.setState( {address_billing_complement: res.address_billing.complement})
-        this.setState({ address_billing_zipcode: res.address_billing.zipcode });
-      } else {
-        this.setState({ address_billing_null: true});
+      if( res.address_billing !== null) {
+        this.setState({address_billing_null: false});
       }
+
       /* Administrative Region can be Null */
       if(res.adm_region !== null) {
         this.setState({ freight: res.freight });
@@ -126,20 +149,17 @@ export default class MyAccount extends Component {
      });
   };
 
-  componentDidMount() 
-  {
+  componentDidMount() {
     this.getClientInformations();
     this.getAdmRegions();
     window.scroll({top: 0, left: 0, behavior: 'smooth' })
   }
 
-   loadedData = () => 
-   {
+   loadedData = () => {
     this.setState({loadedData:true});
     console.log("LOADED DATA");
-    if(this.state.loadedImage === true) 
-    {
-      this.props.turnOffLoading();
+    if(this.state.loadedImage === true) {
+      this.props.actions.turnOffLoading();
     }
   }
 
@@ -147,7 +167,7 @@ export default class MyAccount extends Component {
     this.setState({loadedImage:true});
     console.log("LOADED IMAGE");
     if(this.state.loadedData === true) {
-      this.props.turnOffLoading();
+      this.props.actions.turnOffLoading();
     }
   }
 
@@ -158,7 +178,7 @@ export default class MyAccount extends Component {
       <div className="row">
           <div className="col-md-12">
             <label htmlFor="inp" className="inp mb-2">
-              <input type="text" id="cellphone" name="cellphone" placeholder="&nbsp;" defaultValue={this.state.cellphone} />
+              <input type="text" id="cellphone" name="cellphone" placeholder="&nbsp;" defaultValue={this.state.client_data.cellphone} />
               <span className="label">Celular</span>
                
             </label>
@@ -167,7 +187,7 @@ export default class MyAccount extends Component {
         <div className="row">
           <div className="col-12">
             <label htmlFor="inp" className="inp mb-2">
-              <input type="email" id="email" name="email" placeholder="&nbsp;" defaultValue={this.state.email} />
+              <input type="email" id="email" name="email" placeholder="&nbsp;" defaultValue={this.state.client_data.email} />
               <span className="label">E-mail</span>
                
             </label>
@@ -184,8 +204,8 @@ export default class MyAccount extends Component {
       return(
         <div>
           <ul className="list-group">
-            <li className="list-group-item list-group-item-custom">{this.state.cellphone}</li>
-            <li className="list-group-item list-group-item-custom">{this.state.email}</li>
+            <li className="list-group-item list-group-item-custom">{this.state.client_data.cellphone}</li>
+            <li className="list-group-item list-group-item-custom">{this.state.client_data.email}</li>
           </ul>
           <br/>
         </div>
@@ -200,7 +220,6 @@ export default class MyAccount extends Component {
       this.setState({isNameLoading: true});
       let name = e.currentTarget.name.value;
       let lastname = e.currentTarget.lastname.value;
-
       request({
         method:'put',
         url: '/api/v1/clients/'+this.state.clientId+'.json',
@@ -213,8 +232,7 @@ export default class MyAccount extends Component {
           }
         }
       }).then(res => { 
-          this.setState({name: res.client.name});
-          this.setState({lastname: res.client.lastname});
+          this.setState({client_data: res.client});
           this.setState({isNameLoading: false});
           this.setState({edit_name:false});
       }).catch(error =>{
@@ -225,12 +243,10 @@ export default class MyAccount extends Component {
     }
   }
 
-  submitContact = e => 
-  {
+  submitContact = e => {
     e.preventDefault();
     e.persist();
-    if(this.state.isContactLoading===false) 
-    {
+    if(this.state.isContactLoading===false) {
       this.setState({isContactLoading: true});
       let cellphone = e.currentTarget.cellphone.value;
       let email = e.currentTarget.email.value;
@@ -246,8 +262,7 @@ export default class MyAccount extends Component {
           }
         }
       }).then(res => { 
-        this.setState({email: res.client.email});
-        this.setState({cellphone: res.client.cellphone});
+        this.setState({email: res.client_data});
         this.setState({isContactLoading: false});
         this.setState({edit_contact:false});
       }).catch(error =>{
@@ -258,13 +273,11 @@ export default class MyAccount extends Component {
     }
   }
 
-  submitAddress = e => 
-  {
+  submitAddress = e => {
     e.preventDefault();
     e.persist();
     /*Avoid multiple Clicks on Submit*/
-    if(this.state.isAddressLoading===false) 
-    {
+    if(this.state.isAddressLoading===false) {
       this.setState({isAddressLoading: true});
       let address_id = e.currentTarget.address_id.value;
       let street = e.currentTarget.street.value;
@@ -277,7 +290,7 @@ export default class MyAccount extends Component {
         method:'put',
         url: 'api/v1/clients/' + this.state.clientId + '/addresses.json',
         data: {
-          client_email:this.state.email,
+            client_email:this.state.email,
             client_token:this.state.token,
             address: {
               street: street,
@@ -290,17 +303,10 @@ export default class MyAccount extends Component {
         }
       }).then(res => 
       {
-        /* Two types of Addresses: Delivery and Billing */
-        this.setState({["edit_address_" + kind]: false  });
-        this.setState({["address_" + kind + "_id"]: res.address.id});
-        this.setState({["address_" + kind + "_street"]: res.address.street});
-        this.setState({["address_" + kind + "_neighbourhood"]: res.address.neighbourhood});
-        this.setState({["address_" + kind + "_zipcode"]:res.address.zipcode});
-        this.setState({["address_" + kind + "_number"]:res.address.zipcode});
-        this.setState({["address_" + kind + "_complement"]:res.address.zipcode});
         this.setState({isAddressLoading: false});
-      }).catch(error => 
-      {
+        this.setState({["edit_address_" + kind]: false });
+        this.setState({["address_" + kind]: res.address });
+      }).catch(error => {
         this.setState({isAddressLoading: false});
         this.setState({["edit_address_" + kind]: false  });
       });
@@ -342,39 +348,6 @@ export default class MyAccount extends Component {
       });
   }
 
-  renderNameLoading = () => 
-  {
-    if(this.state.isNameLoading) 
-    {
-      return <Loading />
-    }
-  }
-
-   renderContactLoading = () => 
-   {
-    if(this.state.isContactLoading) 
-    {
-      return <Loading />
-    }
-  }
-
-  renderAddressLoading = () => 
-
-  {
-    if(this.state.isAddressLoading) {
-      return <Loading />
-    }
-  }
-
-  renderAdmRegionLoading = () => 
-  {
-    if(this.state.isAdmRegionLoading) 
-    {
-      return <Loading />
-    }
-  }
-
-
   editAddress = (kind) => 
   {
       return(
@@ -383,16 +356,16 @@ export default class MyAccount extends Component {
         <input id="address_kind" name="address_kind" type="hidden" value={ kind } />
           <div className="row">
             <div className="col-md-8">
-              <input type="hidden" id="address_id" value={this.state["address_" + kind + "_id"] } />
+              <input type="hidden" id="address_id" value={this.state["address_" + kind] ? this.state["address_" + kind].id : null } />
               <label htmlFor="inp" className="inp mb-2">
-                <input type="text" id="street" name="street" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_street"] }/>
+                <input type="text" id="street" name="street" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].street : null }/>
                 <span className="label">Endereço</span>
                  
               </label>
             </div>
             <div className="col-md-4">
               <label htmlFor="inp" className="inp mb-2">
-                <input type="text" id="number" name="number" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_number"]} />
+                <input type="text" id="number" name="number" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].number : null } />
                 <span className="label">Nº</span>
                  
               </label>
@@ -401,7 +374,7 @@ export default class MyAccount extends Component {
           <div className="row">
             <div className="col-md-12">
               <label htmlFor="inp" className="inp mb-2">
-                <input type="text" id="neighbourhood" name="neighbourhood" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_neighbourhood"]} />
+                <input type="text" id="neighbourhood" name="neighbourhood" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].neighbourhood : null } />
                 <span className="label">Bairro</span>
                  
               </label>
@@ -410,7 +383,7 @@ export default class MyAccount extends Component {
           <div className="row">
             <div className="col-12">
               <label htmlFor="inp" className="inp mb-2">
-                <input type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_zipcode"]} />
+                <input type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].zipcode : null } />
                 <span className="label">CEP</span>
                  
               </label>
@@ -419,7 +392,7 @@ export default class MyAccount extends Component {
           <div className="row">
             <div className="col-12">
               <label htmlFor="inp" className="inp mb-2">
-                <input type="text" id="complement" name="complement" placeholder="&nbsp;" defaultValue={this.state["address_" + kind + "_complement"]} />
+                <input type="text" id="complement" name="complement" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].complement : null } />
                 <span className="label">Complemento</span>
                  
               </label>
@@ -434,22 +407,27 @@ export default class MyAccount extends Component {
       );
     }
   
-   editAddressDelivery = () => 
+   addressInfo = (kind) => 
    {
-     if(this.state.edit_address_delivery===true) 
+     let address = this.state['address_' + kind]
+     if(this.state['edit_address_' + kind] === true) 
      {
-       return this.editAddress("delivery");
+       return this.editAddress(kind);
      } else 
      {
-       if(this.state.address_delivery_null === false) 
-       {
+       if(this.state['address_' + kind + '_null'] === false) {
           return(
                 <div>
                   <ul className="list-group">
-                    <li className="list-group-item list-group-item-custom">{this.state.address_delivery_street}, {this.state.address_delivery_number}</li>
-                    <li className="list-group-item list-group-item-custom">{this.state.address_delivery_neighbourhood}</li>
-                    <li className="list-group-item list-group-item-custom">{this.state.address_delivery_zipcode}</li>
-                    <li className="list-group-item list-group-item-custom">{this.state.address_delivery_complement}</li>
+                    <li className="list-group-item list-group-item-custom">
+                    {address ? address.street : null}, 
+                    {address ? address.number : null}</li>
+                    <li className="list-group-item list-group-item-custom">
+                    {address ? address.neighbourhood : null}</li>
+                    <li className="list-group-item list-group-item-custom">
+                    {address ? address.zipcode : null}</li>
+                    <li className="list-group-item list-group-item-custom">
+                    {address ? address.complement : null}</li>
                   </ul>
                 </div> 
               );
@@ -464,38 +442,9 @@ export default class MyAccount extends Component {
      }
    }
   
-  editAddressBilling = () => 
-  {
-    if(this.state.edit_address_billing===true) 
-    {
-      return this.editAddress("billing");
-    } else 
-    {
-      if(this.state.address_billing_null === false) 
-      {
-        return(
-            <div>
-              <ul className="list-group">
-                <li className="list-group-item list-group-item-custom">{this.state.address_billing_street}, {this.state.address_billing_number}</li>
-                <li className="list-group-item list-group-item-custom">{this.state.address_billing_neighbourhood}</li>
-                <li className="list-group-item list-group-item-custom">{this.state.address_billing_zipcode}</li>
-                <li className="list-group-item list-group-item-custom">{this.state.address_billing_complement}</li>
-              </ul>
-            </div> 
-            );
-      } else 
-      {
-        return (
-          <div>
-            ( Clique em Editar para alterar seu Endereço )
-          </div>
-          );
-      }
-    }
-  }
-
   editName = () => 
   {
+    let client_data = this.state.client_data;
     if(this.state.edit_name===true)
     {
     return (
@@ -504,14 +453,14 @@ export default class MyAccount extends Component {
             <div className="row">
               <div className="col-md-6">
                 <label htmlFor="inp" className="inp mb-2">
-                  <input type="text" id="name" name="name" placeholder="&nbsp;" defaultValue={this.state.name} />
+                  <input type="text" id="name" name="name" placeholder="&nbsp;" defaultValue={client_data ? client_data.name : null} />
                   <span className="label">Nome</span>
                    
                 </label>
               </div>
               <div className="col-md-6">
                 <label htmlFor="inp" className="inp mb-2">
-                  <input type="text" id="lastname" name="lastname" placeholder="&nbsp;" defaultValue={this.state.lastname} />
+                  <input type="text" id="lastname" name="lastname" placeholder="&nbsp;" defaultValue={client_data ? client_data.lastname : null} />
                   <span className="label">Sobrenome</span>
                    
                 </label>
@@ -528,7 +477,7 @@ export default class MyAccount extends Component {
     {
         return (
           <div>
-            {this.state.name + " " + this.state.lastname}
+            {client_data.name + " " + client_data.lastname}
           </div>
         );
       } 
@@ -583,44 +532,7 @@ export default class MyAccount extends Component {
     } 
   }
 
-  handleEditAdmRegion = (e) =>
-  {
-    e.preventDefault();
-    this.setState({edit_adm_region: !this.state.edit_adm_region});
-  }
-
-  handleEditName = (e) => 
-  {
-    e.preventDefault();
-    this.setState({edit_name: !this.state.edit_name});
-  }
-
-  handleEditAddressDelivery = (e) => 
-  {
-    e.preventDefault();
-    this.setState({edit_address_delivery: !this.state.edit_address_delivery});
-  }
-
-  handleEditAddressBilling = (e) => 
-  {
-    e.preventDefault();
-    this.setState({edit_address_billing: !this.state.edit_address_billing});
-  }
-
-  handleEditContact = (e) => 
-  {
-    e.preventDefault();
-    this.setState({edit_contact: !this.state.edit_contact});
-  }
-
-  handleError = () => 
-  {
-    this.setState({loadedImage: true});
-  }
-
-
- fileChangedHandler = (event) => 
- {
+ fileChangedHandler = (event) => {
     event.preventDefault();
     event.persist();
     this.setState({selectedFile: event.target.files[0]})
@@ -638,10 +550,8 @@ export default class MyAccount extends Component {
     });
   }
 
-  renderImage = () => 
-  {
-    if(this.state.image==null) 
-    {
+  renderImage = () => {
+    if(this.state.image==null) {
         return(
         <img className="img-fluid" alt="Foto do Usuário (Vazia)" onError={this.handleError.bind(this)} onLoad={this.loadedImage.bind(this)} src={userImage} />
       );
@@ -651,8 +561,7 @@ export default class MyAccount extends Component {
       );
     }
   }
-  render() 
-  {
+  render() {
     return (
       <div className="pages-my-account">
         <h2 className="text-center title">Minha Conta</h2>
@@ -692,7 +601,7 @@ export default class MyAccount extends Component {
                <div className="card float-left card-my-account">
                   <div className="card-header">Endereço de Entrega<NavLink to="" className="float-right" onClick={e => this.handleEditAddressDelivery(e)}>Editar</NavLink></div>
                   <div className="card-body">
-                      {this.editAddressDelivery()}
+                      {this.addressInfo('delivery')}
                   </div>
                 </div>
             </div>
@@ -700,7 +609,7 @@ export default class MyAccount extends Component {
                <div className="card float-left card-my-account">
                   <div className="card-header">Endereço de Cobrança<NavLink to="" className="float-right" onClick={e => this.handleEditAddressBilling(e)}>Editar</NavLink></div>
                   <div className="card-body">
-                      {this.editAddressBilling()}
+                  {this.addressInfo('billing')}
                   </div>
                 </div>
             </div>
@@ -717,3 +626,5 @@ export default class MyAccount extends Component {
     );
   }
 }
+
+export default LoaderHOC(MyAccount);

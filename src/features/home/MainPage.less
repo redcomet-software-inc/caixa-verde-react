@@ -7,7 +7,12 @@ html, body, .fixed-top {
   padding: 0px !important;
   overflow-x:hidden;
   overflow-y: auto;
-  
+}
+
+a:hover {
+  text-decoration: none;
+  color: #f21b3f;
+  transition: color .2s;
 }
 
 span.tab{
@@ -61,6 +66,15 @@ span.tab{
 
 h2 {
   margin-top: 1rem;
+}
+
+.warning-muted {
+  color: #8e797c;
+  cursor: default;
+  -webkit-user-select: none; /* Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }
 
 .background {
@@ -171,6 +185,7 @@ button:focus {
 .dropdown-menu a:hover {
   color: red !important;
   background-color: inherit;
+  cursor: pointer;
 }
 
 .fixed-top {
@@ -338,8 +353,7 @@ button:focus {
 .btn-primary.focus, .btn-primary:focus {
     -webkit-box-shadow: 0 0 0 0 rgb(242, 27, 63) !important;
     box-shadow: 0 0 0 0 rgb(242, 27, 63) !important;
-    
-     border: floralwhite;
+    border: floralwhite;
 }
 
 .btn-info:not(:disabled):not(.disabled).active, .btn-info:not(:disabled):not(.disabled):active, .show>.btn-info.dropdown-toggle {

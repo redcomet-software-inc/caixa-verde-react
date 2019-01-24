@@ -1,17 +1,27 @@
 import React, { Component } from 'react';
-import CardKits from '../pages/CardKits.js'
+import PropTypes from 'prop-types';
+import CardKits from '../pages/CardKits.js';
+import LoaderHOC from '../../HOC/LoaderHOC.js';
+import * as actions from '../../features/home/redux/actions.js';
 
-export default class Kits extends Component {
+class Kits extends Component {
   static propTypes = {
-
+    pages: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequfired,
   };
 
+  constructor (props) {
+    super(props);
+  }
+
    componentDidMount() {
-    this.props.showComponent(true);
-    window.scroll({top: 0, left: 0, behavior: 'smooth' })
+    window.scroll({top: 0, left: 0, behavior: 'smooth' });
+    console.log("KITS PROPS");
+    console.log(this.props);
+    setTimeout(()=>{this.props.actions.turnOffLoading()}, 5000);
   }
   componentWillUnmount() {
-    this.props.showComponent(false);
+    
   }
 
   /* Get the Product ID and return the quantity from Selected Products */
@@ -62,3 +72,5 @@ export default class Kits extends Component {
     );
   }
 }
+
+export default LoaderHOC(Kits);

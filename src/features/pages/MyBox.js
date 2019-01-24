@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
+import LoaderHOC from '../../HOC/LoaderHOC.js';
+import * as actions from '../../features/home/redux/actions.js';
 
-export default class MyBox extends Component {
+class MyBox extends Component {
+  static propTypes = {
+    pages: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequfired,
+  };
   constructor (props) 
   {
     super(props);
     /* Load Props from MainPage */
-    this.props.turnOffError();
-    this.props.turnOnLoading(); /* Every Component has this one */
     this.props.updateShoppingCart("product");
     this.props.updateShoppingCart("kit");
     let count = this.props.shoppingCartCount;
@@ -15,40 +21,35 @@ export default class MyBox extends Component {
       box_empty = false;
     }
     this.state = {
-        box_empty: box_empty,
-        authorized: true,
+        box_empty: box_empty
     }
   }
 
   /* Mount */
   componentDidMount() 
   {
-    this.setState({authorized: true});
     window.scroll({top: 0, left: 0, behavior: 'smooth' });
-    this.authorize();
-    console.log(this.props.shoppingCartProducts);
-    
-  }
-  /* Clear */
-  componentWillUnmount() 
-  {
-    this.setState({authorized: false});
-  }
-  /*  */
-  authorize = () => 
-  {
-      if(this.state.authorized) 
-      {
-        this.props.turnOffLoading();
-      } else {
-        this.props.turnOnError("Permissão não concedida");
-      }
+    console.log("MY BOX");
+    console.log(this.props.actions);
   }
 
-  renderBox = () => 
-  {
-    if(this.state.box_empty===false) 
-    {
+  componentWillUpdate(prevProps, props) {
+    if(prevProps !== props) {
+      this.props.actions.turnOffLoading();
+      if(props.shoppingCartCount === 0) {
+        this.setState({ box_empty: true});
+      }
+    }
+  }
+
+  /* Clear */
+  componentWillUnmount() {
+    
+  }
+
+
+  renderBox = () => {
+    if(this.state.box_empty===false) {
       return(
         <div className="card-columns">
           { this.props.shoppingCartProducts.map((product, index) => (
@@ -81,9 +82,14 @@ export default class MyBox extends Component {
     } else 
     {
       return(
-        <div>
-          A sua Caixa Está Vazia
-        </div>
+        <React.Fragment>
+           <h4 className="warning-muted text-center">A sua caixa está vazia.</h4>
+            <div className="row">
+                <div className="col-sm-12 text-center">
+                    <NavLink exact to="/kits">Clique aqui</NavLink> para escolher seus produtos.
+                </div>
+            </div>
+        </React.Fragment>
       );
     }
   }
@@ -98,3 +104,5 @@ export default class MyBox extends Component {
     );
   }
 }
+
+export default LoaderHOC(MyBox);

@@ -1,5 +1,5 @@
 import {
-  App, MainPage,
+  App, MainPage
 } from './';
 
 export default {

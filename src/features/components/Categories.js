@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as actions from './redux/actions';
+import * as actions from '../../features/home/redux/actions.js';
 import request from '../../common/configApi.js';
 import {
   NavLink
@@ -27,7 +27,6 @@ export class Categories extends Component {
 
   componentDidMount () {
     this.getCategories();
-    
   }
 
   getCategories = () => {
@@ -41,13 +40,13 @@ export class Categories extends Component {
   }
 
   getProducts = (e) => {
-    this.props.turnOnLoading();
     this.props.resetImgCount();
     let id = '';
     
     if(e==undefined) {
       id = 'all';
-    } 
+    }
+
     if(e!==undefined){
       e.preventDefault();
       e.persist();
@@ -60,22 +59,23 @@ export class Categories extends Component {
       method: 'get',
       url: 'api/v1/categories/' + id + '.json',
     }).then((res) => {
-      this.setState({products_by_category: res});
+        this.setState({products_by_category: res});
         /* Pass products to parent component 'Products' */
-        this.props.refProducts(this.state.products_by_category);
+        this.props.refProducts(res);
+        console.log("CATEGORIES PROPS");
+        console.log(this.props);
+        this.props.turnOffLocalLoading();
+        this.props.actions.turnOffLoading();
     }).catch(error =>{
-        this.turnOffLoading();
+        this.props.actions.turnOffLoading();
+        this.props.turnOffLocalLoading();
       });
   }
 
   renderLoading = () => {
-    if(this.props.isLoading===true) {
+    if(this.props.localLoading===true) {
       return <Loading />
     }
-  }
-
-  turnOffLoading = () => {
-    this.props.turnOffLoading();
   }
 
   render() {

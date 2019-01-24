@@ -8,11 +8,18 @@ import node_rsa from 'node-rsa';
 import qs from 'qs';
 import { getClientInfo } from '../../common/getClientInfo.js';
 import { getOrders } from '../../common/getOrders.js';
-import { getCardToken, getSession, setSession } from '../../common/getSession.js';
+import { getCardToken, getSession, setSession, sendToApi } from '../../common/getSession.js';
 import 'react-credit-cards/es/styles-compiled.css';
+import * as actions from '../../features/home/redux/actions.js';
+import LoaderHOC from '../../HOC/LoaderHOC.js';
+import PropTypes from 'prop-types';
 
 export class PagSeguro extends Component
 {
+  static propTypes = {
+    pages: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequfired,
+  };
   constructor (props) {
     super(props);
     /* Autenticação SandBox */
@@ -93,7 +100,7 @@ export class PagSeguro extends Component
   }
 }
 
-export default class Payment extends Component {
+class Payment extends Component {
   static propTypes = {
 
   };
@@ -103,7 +110,7 @@ export default class Payment extends Component {
     const token = localStorage.getItem('token');
     let order_id = 0;
     if (checkLocalStorage() !== false) {
-      order_id = localStorage.getItem("order_id");
+      order_id = localStorage.getItem("checkout_order_id");
     }
     this.state = { 
       client_token: token || '',
@@ -135,16 +142,7 @@ export default class Payment extends Component {
   }
 
   componentDidMount() {
-    let pagSeguro = new PagSeguro();
-    window.scroll({top: 0, left: 0, behavior: 'smooth' });
-    let data = [];
-    getClientInfo.then(buyer => {
-      pagSeguro.setClient(buyer);
-      pagSeguro.config(buyer);
-      pagSeguro.setShipping(buyer)
-      this.setState({ client_info: buyer});
-      this.getOrder(pagSeguro);
-    });
+    
   }
 
   /* Get Order from API and Set to pagSeguro instance */
@@ -250,9 +248,29 @@ export default class Payment extends Component {
     e.preventDefault();
     e.persist();
     let card = e.currentTarget;
+
+    /* Set Items and Client Infos */
+    let pagSeguro = new PagSeguro();
+    window.scroll({top: 0, left: 0, behavior: 'smooth' });
+    let data = [];
+    getClientInfo.then(buyer => {
+      pagSeguro.setClient(buyer);
+      pagSeguro.config(buyer);
+      pagSeguro.setShipping(buyer)
+      this.setState({ client_info: buyer});
+      this.getOrder(pagSeguro);
+    });
+
     /* Client Side Payment Process */
     getCardToken(card).then(response => {
       this.setState({isLoadingSend: false});
+
+      sendToApi(this.state.order_id).then(res => {
+        console.log("SENT TO API");
+      }).catch(err => {
+        console.log(err);
+      });
+
     });
 
 
@@ -419,3 +437,4 @@ export default class Payment extends Component {
     );
   }
 }
+export default LoaderHOC(Payment);

@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Card from '../pages/Card.js';
 import Categories from '../components/Categories.js';
+import LoaderHOC from '../../HOC/LoaderHOC.js';
 
-export default class Products extends Component {
+class Products extends Component {
   static propTypes = {
     pages: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequfired,
@@ -11,6 +12,7 @@ export default class Products extends Component {
 
   constructor(props) {
     super(props);
+    
     this.state = {
       hide_products: 'hide-products',
       card_active: '',
@@ -18,18 +20,17 @@ export default class Products extends Component {
       products_view:[],
       products_length:0,
       products_mounted:0,
-      isLoading:false,
+      localLoading:false,
     }
   }
 
   componentDidMount() {
     this.props.onRef(this);
-    this.props.showComponent(true);
     window.scroll({top: 0, left: 0, behavior: 'smooth' });
+    
   }
   componentWillUnmount() {
     this.props.onRef(undefined);
-    this.props.showComponent(false);
   }
 
   /* Get the Product ID and return the quantity from Selected Products */
@@ -42,8 +43,7 @@ export default class Products extends Component {
         return selectedProducts[i].quantity;
       }
     }
-    if (checkExistingElement === 0) 
-    {
+    if (checkExistingElement === 0) {
       return 0;
     }
   };
@@ -59,25 +59,26 @@ export default class Products extends Component {
     this.setState({ products_mounted: products_mounted});
     if(products_mounted === this.state.products_length) 
     {
-      this.turnOffLoading();
+      
+      console.log("Mounted");
     }
   }
 
   resetImgCount = () => 
   {
     this.setState({products_mounted: 0});
-    //this.setState({ isLoading: false});
+    this.setState({ localLoading: false});
   }
 
-  turnOnLoading = () => 
+  turnOnLocalLoading = () => 
   {
-    this.setState({isLoading: true});
+    this.setState({localLoading: true});
     this.setState({hide_products: 'hide-products'});
   }
 
-  turnOffLoading = () => 
+  turnOffLocalLoading = () => 
   {
-    this.setState({isLoading: false});
+    this.setState({localLoading: false});
     this.setState({hide_products: 'unhide-products'});
   }
 
@@ -144,9 +145,9 @@ export default class Products extends Component {
         <h3 className="text-left title">Personalizado</h3>
         <div className="ml-auto">
           <Categories refProducts={this.refProducts} 
-          isLoading={this.state.isLoading} 
-          turnOnLoading={this.turnOnLoading} 
-          turnOffLoading={this.turnOffLoading}
+          localLoading={this.state.localLocalLoading} 
+          turnOnLocalLoading={this.turnOnLocalLoading} 
+          turnOffLocalLoading={this.turnOffLocalLoading}
           resetImgCount={this.resetImgCount} />
         </div>
         <div className={"card-columns mx-auto pb-5 " + this.state.hide_products} >
@@ -158,3 +159,6 @@ export default class Products extends Component {
     );
   }
 }
+
+
+export default LoaderHOC(Products);
