@@ -6,7 +6,7 @@ class Kits extends Component {
 
   componentDidMount() {
     window.scroll({top: 0, left: 0, behavior: 'smooth' });
-    setTimeout(()=>{this.props.actions.turnOffLoading()}, 5000);
+    setTimeout(()=>{this.props.actions.turnOffLoading()}, 50);
   }
 
   /* Get the Product ID and return the quantity from Selected Products */
@@ -28,7 +28,7 @@ class Kits extends Component {
     return (
         <div className="card-deck mx-auto">
           {this.props.kits.map((item, index) => (
-              <div key={item.id + "div"} className="m-2">
+              <div className="m-2">
                 {' '}
                 <CardKits
                   id={item.id}

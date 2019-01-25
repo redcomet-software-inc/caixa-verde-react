@@ -257,6 +257,8 @@ export class MainPage extends Component {
 
   /* Add Item to the Shopping List */
   addCardCount = (id, name, delta) => {
+    console.log("Chegou aqui");
+    
     /* name variable can be either kit or product */
     /* delta defines if the value increase or decrease */
     /* this serves to differenciate list of kits and products */
@@ -388,7 +390,7 @@ export class MainPage extends Component {
             <div>
                 <div className="header">
                 <div className="left-margin" />
-                
+                <ShoppingCartButton shoppingCartCount={this.state.shoppingCartCount}/>
                 <NavBar
                   loggedIn={this.state.loggedIn}
                   shoppingCartCount={this.state.shoppingCartCount}
@@ -532,7 +534,7 @@ export class MainPage extends Component {
                   </div>
                 <Footer />
               </div>
-              <ShoppingCartButton shoppingCartCount={this.state.shoppingCartCount}/> 
+               
               <Warning warningMessage={this.state.warningMessage} />
             {this.state.shoppingCartCount > 0 && (
             <ShoppingCart

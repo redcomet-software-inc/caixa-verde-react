@@ -87,16 +87,16 @@ class ShoppingCart extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                 {this.props.shoppingCartKits.forEach(item => (
-                    <tr key={item.id + "ShoppingCart"}>
+                 {this.props.shoppingCartKits.map((item, index) => (
+                    <tr key={index + "ShoppingCart"}>
                       <td className="text-left">{item.name} {item.quantity > 1 ? <small className="text-danger">x{item.quantity}</small> : ' ' }  </td>
                       <td className="text-center">
                         {this.props.setMoneyFormat(item.quantity * item.price)}
                       </td>
                     </tr>
                   ))}
-                  {this.props.shoppingCartProducts.forEach(item => (
-                    <tr key={item.id + "ShoppingCart_2"}>
+                  {this.props.shoppingCartProducts.map((item, index) => (
+                    <tr key={index + "ShoppingCart_2"}>
                       <td className="text-left">{item.name} {item.quantity > 1 ? <small className="text-danger">x{item.quantity}</small> : ' ' } </td>
                       <td className="text-center">
                         {this.props.setMoneyFormat(item.quantity * item.price)}

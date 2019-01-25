@@ -16,13 +16,6 @@ export default class CardKits extends Component {
     };
   }
 
-  addBorder = (e) => {
-    if(this.state.cardCount===0 && this.state.borderClassName==='') {
-      this.setState({ borderClass: 'cardkits-active' });
-      this.setState({cardCount: this.props.quantity});
-      this.props.addCardCount(e);
-    }
-  };
 
   deactivateBorder = e => {
     this.setState({ borderClass:''});
@@ -44,20 +37,32 @@ export default class CardKits extends Component {
     this.selectCard(this.props.quantity);
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({cardCount: props.quantity});
-    this.selectCard(props.quantity);
+  componentWillReceiveProps(prevProps) {
+    if(prevProps.quantity !== this.props.quantity) {
+      console.log(this.state.cardCount);
+      this.setState({cardCount: this.props.quantity});
+      this.selectCard(this.props.quantity);
+    }
   }
+
+  addBorder = (e) => 
+  {
+      if(this.state.cardCount===0 && this.state.borderClassName==='') {
+      this.setState({ borderClass: 'cardkits-active' });
+        this.setState({cardCount: this.props.quantity});
+        this.props.addCardCount(e);
+      }
+   };
 
   render() {
     return (
-      <div id={this.props.id}  onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto card cardkits '+ this.state.borderClass} >
+      <div id={this.props.id} onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto card cardkits '+ this.state.borderClass} >
         <div className="card-body">
           <h5 className="card-title text-center">{this.props.name}</h5>
         </div>
         <ul className="list-group list-group-flush">
           {this.props.products.map((product, index) => (
-            <li key={product.id + "CardKits"} className="list-group-item"> 
+            <li className="list-group-item"> 
               <div className="row">
                 <div className="col p-0">
                   <img alt={"Imagem Kit " + product.name} src={product.thumb} />
@@ -80,7 +85,7 @@ export default class CardKits extends Component {
           <Icon
                 icon={minus}
                 id={this.props.id}
-                onClick={e => this.props.addCardCount(e.currentTarget.id, 'kit', -1)}
+                onClick={e => this.props.addCardCount(this.props.id, 'kit', -1)}
                 className={'btn btn-info ' + this.props.hide_number}   />
           </div>
           <div className={"col-4 " + this.state.show}>
@@ -90,7 +95,7 @@ export default class CardKits extends Component {
           <Icon
                 icon={boxAdd}
                 id={this.props.id}
-                onClick={e => this.props.addCardCount(e.currentTarget.id, 'kit', 1) }
+                onClick={e => this.props.addCardCount(this.props.id, 'kit', 1) }
                 className="btn btn-success btn-lg" />
           </div>
         </div>
