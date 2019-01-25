@@ -3,14 +3,12 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
-import FooterLogo from '../../images/caixaverde-finalizacao-WHITE.png'
-import FooterLogo2 from '../../images/caixaverde-finalizacao-symbol.png';
+import FooterLogo from '../../images/caixaverde-finalizacao-symbol.png';
 import fbIcon from '../../images/fb_icon.png';
 import instaIcon from '../../images/insta_icon.png';
 import {
   NavLink
 } from "react-router-dom";
-
 
 export class Footer extends Component {
   static propTypes = {
@@ -31,7 +29,7 @@ export class Footer extends Component {
             
             <p className="m-3 pl-lg-5 mx-auto my-auto text-center">
               <NavLink exact onClick={this.rollTop} to="/">
-                <img src={ FooterLogo2 } width={150} />
+                <img alt={"Logo Caixa Verde"} src={ FooterLogo } width={150} />
               </NavLink>
             </p>
             </div>
@@ -47,8 +45,8 @@ export class Footer extends Component {
             </div>
             <div className="col-lg-4 my-auto text-center">
               <span className="p-2">Siga-nos nas Redes Sociais</span><br/>
-              <a href="https://www.facebook.com/caixaverdebrasil/"><img src={fbIcon} width={50} /></a>
-              <a href="https://www.instagram.com/caixaverdebrasil"><img src={instaIcon} width={50} /></a>
+              <a href="https://www.facebook.com/caixaverdebrasil/"><img alt={"Link para Facebook"} src={fbIcon} width={50} /></a>
+              <a href="https://www.instagram.com/caixaverdebrasil"><img alt={"Link para Instagram"}  src={instaIcon} width={50} /></a>
 
               <div className="p-5">
                   &copy; {new Date().getFullYear()} copyright {" "}

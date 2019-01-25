@@ -1,14 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { FulfillingSquareSpinner } from 'react-epic-spinners'
 
-export default class Spinner extends Component 
-{
-  static propTypes = 
-  {
-      page: ""
-  };
-
+export default class Spinner extends Component {
   constructor(props) {
     super(props);
     super(props);
@@ -16,10 +9,7 @@ export default class Spinner extends Component
       timeout:false,
     }
   }
-
-
-  render() 
-  {
+  render() {
     return (
       <div className="spinner">
         <FulfillingSquareSpinner className="mx-auto mt-5" color="#2c7957" />

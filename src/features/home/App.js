@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
-import PropTypes from 'prop-types';
 import MainPage from '../home/MainPage.js';
 import logo from '../../images/logo-caixaverde-cube-video.png';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 export default class App extends Component {
   
-  defaultProps = {
-    isLoading: PropTypes.bool,
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -21,8 +16,6 @@ export default class App extends Component {
       timerName2:0,/* Clear SetInterval */
     }
   }
-
-  
 
   /* This functions is called by the MainPage after API request */
   turnOffMainLoading = () => {

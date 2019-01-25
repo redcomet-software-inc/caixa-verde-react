@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
-import PropTypes from 'prop-types';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 
 //import CurrencyInput from 'react-currency-input';
 import request from '../../common/configApi.js';
@@ -33,40 +30,14 @@ import Payment from '../pages/Payment.js';
 import Err from '../common/Err.js';
 import Warning from '../common/Warning.js';
 import Spinner from '../common/Spinner.js';
-
+import NotFound from '../common/NotFound.js';
 import * as actions from '../../features/home/redux/actions.js';
+
 
 export class MainPage extends Component {
   constructor(props) {
     super(props);
-    MainPage.defaultProps = {
-      products: PropTypes.array,
-      selectedProducts: PropTypes.array,
-      kits: PropTypes.array,
-      selectedKits: PropTypes.array,
-      shoppingCartCount: PropTypes.number,
-      productsCount: PropTypes.number,
-      kitsCount: PropTypes.number,
-      shoppingCartProducts: PropTypes.array,
-      shoppingCartKits: PropTypes.array,
-      totalPriceKits: PropTypes.number,
-      totalPriceProducts: PropTypes.number,
-      clientName: PropTypes.string,
-      clientEmail: PropTypes.string,
-      authentication_token: PropTypes.string,
-      signInMessage: PropTypes.string,
-      clientId: PropTypes.string,
-      loggedIn: PropTypes.bool,
-      redirect: PropTypes.bool,
-      redirectTo: PropTypes.string,
-      changeStateTest: PropTypes.string,
-      err_message: PropTypes.string,
-      serviceAvailability: PropTypes.bool,
-      avatar: PropTypes.string,
-      minQuantity: PropTypes.number,
-      warningMessage: PropTypes.string,
-      checkout_order_id: PropTypes.number,
-    }
+
     /* GetItems from LocalStorage */
     if (checkLocalStorage() !== false) {
       var selectedProducts = JSON.parse(localStorage.getItem('selectedProducts'));
@@ -77,8 +48,7 @@ export class MainPage extends Component {
       var productsCount = countProducts(selectedProducts);
       var kitsCount = countKits(selectedKits);
     }
-    this.getProducts();
-    this.getKits();
+    
     this.state = {
       products: [],
       selectedProducts: selectedProducts || [],
@@ -112,8 +82,8 @@ export class MainPage extends Component {
   componentDidMount() {
     this.auth();
     this.getMinQuantity();
-    console.log("prps");
-    console.log(this.props);
+    this.getProducts();
+    this.getKits();
   }
 
   setCheckoutOrderId = (order_id) => {
@@ -376,13 +346,14 @@ export class MainPage extends Component {
 
   turnOffError = () => {
     this.setState({isError: false});
+    this.props.actions.turnOffError();
   }
 
   turnOnError = (err_message) => {
     /* Error Also Turn Off Loading */
     this.props.actions.turnOffLoading();
     this.props.actions.turnOnError();
-    this.redirect('0');
+    this.redirect('');
     this.setState({ err_message: err_message});
   }
 
@@ -410,13 +381,14 @@ export class MainPage extends Component {
   }
 
   render() {
+    
     return (
-        <div>
+        <React.Fragment>
           <Router>
             <div>
-              <div className="header">
+                <div className="header">
                 <div className="left-margin" />
-                <ShoppingCartButton shoppingCartCount={this.state.shoppingCartCount}/>
+                
                 <NavBar
                   loggedIn={this.state.loggedIn}
                   shoppingCartCount={this.state.shoppingCartCount}
@@ -435,10 +407,11 @@ export class MainPage extends Component {
                         <div className="row my-auto mx-0">
                           <div className={"col-lg-12 pt-md-5 mx-auto my-auto pl-0 pr-0 "+ this.visible()}>
                             {this.renderRedirect(this.state.redirectTo)}
-                            <Route exact path="/" component={Option} />
+                            <Switch>
+                            <Route path="/" exact component={Option} />
                             <Route
-                              exact
                               path="/Personalizado"
+                              exact
                               render={props => (
                                 <Products
                                   addCardCount={this.addCardCount}
@@ -451,8 +424,8 @@ export class MainPage extends Component {
                               )}
                             />
                             <Route
-                              exact
                               path="/Kits"
+                              exact
                               render={props => (
                                 <Kits
                                   addCardCount={this.addCardCount}
@@ -466,6 +439,7 @@ export class MainPage extends Component {
                             />
                             <Route
                               path="/login"
+                              exact
                               render={props => (
                                 <Login
                                   setSignIn={this.setSignIn}
@@ -476,6 +450,7 @@ export class MainPage extends Component {
                             />
                             <Route
                               path="/cadastro"
+                              exact
                               render={props => (
                                 <Registration register={this.register} 
                                 component={Registration} 
@@ -484,6 +459,7 @@ export class MainPage extends Component {
                             />
                             <Route
                               path="/checkout"
+                              exact
                               render={props => (
                                 <Checkout
                                   shoppingCartProducts={this.state.shoppingCartProducts}
@@ -504,6 +480,7 @@ export class MainPage extends Component {
                               )}
                             />
                             <Route
+                              exact
                               path="/minhaconta"
                               render={props => (
                                 <MyAccount 
@@ -511,13 +488,15 @@ export class MainPage extends Component {
                               )}
                             />
                             <Route
+                              exact
                               path="/pedidos"
                               render={props => (
                                 <MyOrders />
                               )}
-                             />
+                              />
                             <Route
                               path="/minhacaixa"
+                              exact
                               render={props => (
                                 <MyBox
                                   updateShoppingCart={this.updateShoppingCart}
@@ -529,45 +508,51 @@ export class MainPage extends Component {
                             />
                             <Route
                               path="/pagamento"
+                              exact
                               render={props => (
                                 <Payment 
-                                checkout_order_id={this.state.checkout_order_id} />
+                                checkout_order_id={this.state.checkout_order_id} 
+                                redirect={this.redirect}
+                                />
                               )}
                             />
                             <Route
                               path="/err"
+                              exact
                               render={props => (
                                 <Err errMessage={this.state.errMessage} />
                               )}
                             />
+                            <Route component={NotFound} />
+                            </Switch>
                           </div>
                         </div>
                       </div>
                     </div>
-                </div>
+                  </div>
                 <Footer />
               </div>
-            <Warning warningMessage={this.state.warningMessage} />
+              <ShoppingCartButton shoppingCartCount={this.state.shoppingCartCount}/> 
+              <Warning warningMessage={this.state.warningMessage} />
             {this.state.shoppingCartCount > 0 && (
-              <ShoppingCart
-                shoppingCartProducts={this.state.shoppingCartProducts}
-                shoppingCartKits={this.state.shoppingCartKits}
-                productsCount={this.state.productsCount}
-                kitsCount={this.state.kitsCount}
-                minQuantity={this.state.minQuantity}
-                totalPriceKits={this.state.totalPriceKits}
-                totalPriceProducts={this.state.totalPriceProducts}
-                setMoneyFormat={this.setMoneyFormat}
-                loggedIn={this.state.loggedIn}
-                warning={this.warning}
-                redirect={this.redirect}
-                renderRedirect={this.renderRedirect}
-                onRef={ref => (this.custom = ref)}
-              />
-            )}
+            <ShoppingCart
+              shoppingCartProducts={this.state.shoppingCartProducts}
+              shoppingCartKits={this.state.shoppingCartKits}
+              productsCount={this.state.productsCount}
+              kitsCount={this.state.kitsCount}
+              minQuantity={this.state.minQuantity}
+              totalPriceKits={this.state.totalPriceKits}
+              totalPriceProducts={this.state.totalPriceProducts}
+              setMoneyFormat={this.setMoneyFormat}
+              loggedIn={this.state.loggedIn}
+              warning={this.warning}
+              redirect={this.redirect}
+              renderRedirect={this.renderRedirect}
+              onRef={ref => (this.custom = ref)}
+            />)}
           </div>
-        </Router>
-      </div>
+        </Router>  
+      </React.Fragment>
     );
   }
 }

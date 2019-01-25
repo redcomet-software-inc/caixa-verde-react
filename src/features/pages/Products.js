@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Card from '../pages/Card.js';
 import Categories from '../components/Categories.js';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
 
 class Products extends Component {
-  static propTypes = {
-    pages: PropTypes.object.isRequired,
-    actions: PropTypes.object.isRequfired,
-  };
-
   constructor(props) {
     super(props);
     
@@ -59,8 +53,7 @@ class Products extends Component {
     this.setState({ products_mounted: products_mounted});
     if(products_mounted === this.state.products_length) 
     {
-      
-      console.log("Mounted");
+      this.props.actions.turnOffLoading();
     }
   }
 

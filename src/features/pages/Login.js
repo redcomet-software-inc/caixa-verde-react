@@ -18,7 +18,6 @@ export default class Login extends Component {
 
   componentDidMount() {
     if (this.props.loggedIn) {
-      console.log('redirecionar');
       this.props.redirect('/');
     }
   }

@@ -6,7 +6,6 @@ import { getClientInfo } from '../../common/getClientInfo.js';
 import request from '../../common/configApi.js';
 import { NavLink } from 'react-router-dom';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
-import * as actions from '../../features/home/redux/actions.js';
 
 class MyAccount extends Component {
   static propTypes = {
@@ -117,10 +116,7 @@ class MyAccount extends Component {
 
   getClientInformations = () => {
     /* Get Data from current user based on email and token */
-    getClientInfo().then(res => 
-    {
-      console.log("CLIENT INFO");
-      console.log(res);
+    getClientInfo().then(res => {
       this.setState({ address_delivery: res.address_delivery});
       this.setState({ address_billing: res.address_billing});
       this.setState({ client_data: res});
@@ -157,7 +153,6 @@ class MyAccount extends Component {
 
    loadedData = () => {
     this.setState({loadedData:true});
-    console.log("LOADED DATA");
     if(this.state.loadedImage === true) {
       this.props.actions.turnOffLoading();
     }
@@ -165,7 +160,6 @@ class MyAccount extends Component {
 
   loadedImage = () => {
     this.setState({loadedImage:true});
-    console.log("LOADED IMAGE");
     if(this.state.loadedData === true) {
       this.props.actions.turnOffLoading();
     }
@@ -279,7 +273,6 @@ class MyAccount extends Component {
     /*Avoid multiple Clicks on Submit*/
     if(this.state.isAddressLoading===false) {
       this.setState({isAddressLoading: true});
-      let address_id = e.currentTarget.address_id.value;
       let street = e.currentTarget.street.value;
       let neighbourhood = e.currentTarget.neighbourhood.value;
       let zipcode = e.currentTarget.zipcode.value;
@@ -301,8 +294,7 @@ class MyAccount extends Component {
               kind: kind,
             }
         }
-      }).then(res => 
-      {
+      }).then(res => {
         this.setState({isAddressLoading: false});
         this.setState({["edit_address_" + kind]: false });
         this.setState({["address_" + kind]: res.address });
@@ -313,8 +305,7 @@ class MyAccount extends Component {
     }
   }
 
-  submitAdmRegion = (e) => 
-  {
+  submitAdmRegion = (e) => {
       e.preventDefault();
       e.persist();
       this.setState({isAdmRegionLoading: true});
@@ -331,20 +322,14 @@ class MyAccount extends Component {
             adm_region_id: adm_region_id
           },
         }
-      }).then(res =>
-      {
+      }).then(res => {
           this.setState({isAdmRegionLoading: false});
-          console.log("adm region id");
-          console.log(res);
           this.setState({adm_region_id: res.adm_region_id});
           this.setState({edit_adm_region: false});
           this.setState({adm_region_name: res.address_adm_region_name});
-          console.log("ADM REGION");
-          console.log(res.address_adm_region_name);
-          console.log("AMD_REGION IN");
-          console.log(res.adm_region_id);
       }).catch(error => {
           this.setState({isAdmRegionLoading: false});
+          throw new Error("Failed to Update Administrative Region: " + error);
       });
   }
 

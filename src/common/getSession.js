@@ -17,10 +17,7 @@ export let sendToApi = function(order_id) {
             }
         }).then(response => 
          {
-            console.log("Send To Api");
-            console.log(response);
             resolve(response);
-
         }).catch(err => {
             reject("Failed to Send to Api" + err);
         });
@@ -57,7 +54,6 @@ export let createCardToken = function(card, brand) {
     let card_expmonth = card.expiry_month.value;
     let card_expyear = card.expiry_year.value;
     let card_cvv = card.cvc.value;
-    let card_name = card.card_name.value;
     return new Promise((resolve,reject) => {
         PagSeguroDirectPayment.createCardToken({
             cardNumber: card_number,

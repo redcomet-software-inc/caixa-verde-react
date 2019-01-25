@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import request from '../../common/configApi.js';
-import * as actions from '../../features/home/redux/actions.js';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
 
 class MyOrders extends Component {
@@ -38,15 +37,15 @@ class MyOrders extends Component {
         }
       }).then(res => {
         this.props.actions.turnOffLoading();
-        if(res.length === 0) {
-          this.setState({orders_empty: true});
-        } else {
+        if(res) {
           this.setState({orders_empty: false});
           this.setState({orders: res});
+        } else {
+          this.setState({orders_empty: true});
         }
       }).catch(error =>{
         this.props.actions.turnOffLoading();
-        
+        this.props.actions.turnOnError();
       });
       
   }
@@ -112,10 +111,7 @@ class MyOrders extends Component {
   }
 
   renderOrders = () => {
-    console.log(" render orders");
-    console.log(this.state.orders_empty);
     if(this.state.orders_empty===false) {
-
       return (
         <div>
             <div id="accordion" className="accordion p-0">
@@ -128,10 +124,8 @@ class MyOrders extends Component {
                         
                     </div>
                 </div>
-
                 <div id={"collapse" + index} className="collapse" aria-labelledby={"heading" + index} data-parent="#accordion">
                   <div className="card-body p-0">
-
                       <table className="table table-hover">
                         <thead className="thead-dark">
                           <tr>
@@ -144,7 +138,6 @@ class MyOrders extends Component {
                         { this.renderPayment(order.order_status)}
                         </tbody>
                       </table>
-
                       <table className="table table-hover">
                         <thead className="thead-light">
                           <tr>
@@ -156,7 +149,7 @@ class MyOrders extends Component {
                         </thead>
                         <tbody>
                           { this.renderItens(order.orders_products) }
-                          { this.renderKits(order. orders_kits) }
+                          { this.renderKits(order.orders_kits) }
                         </tbody>
                       </table>
                   </div>
@@ -178,14 +171,11 @@ class MyOrders extends Component {
       )
     }
   }
-
   render() {
     return (
       <div className="pages-my-orders">
         <h2 className="text-center title">Meus Pedidos</h2>
-
         { this.renderOrders() }
-        
       </div>
     );
   }

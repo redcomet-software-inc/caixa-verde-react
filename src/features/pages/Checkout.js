@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import request from '../../common/configApi.js';
-import * as actions from '../../features/home/redux/actions.js';
 import { getClientInfo } from '../../common/getClientInfo.js';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
 import PropTypes from 'prop-types';
@@ -49,8 +48,6 @@ class Checkout extends Component
   }
 
   getPermission = () => {
-    console.log("permission");
-    console.log(this.props);
     this.props.actions.turnOffLoading();
   }
 
@@ -59,30 +56,19 @@ class Checkout extends Component
     e.preventDefault();
     const name = e.currentTarget.name.value;
     const lastname = e.currentTarget.lastname.value;
-    const email = e.currentTarget.email.value;
     const cellphone = e.currentTarget.cellphone.value;
     const address_street = e.currentTarget.address_street.value;
     const address_number = e.currentTarget.address_number.value;
-
     const address_complement = e.currentTarget.address_complement.value;
- 
     const address_neighbourhood = e.currentTarget.address_neighbourhood.value;
-
     const address_adm_region_id = e.currentTarget.adm_region_id.value;
-
     const address_zipcode = e.currentTarget.address_zipcode.value;
- 
-    const token = this.state.token;
     const client_id = e.currentTarget.client_id.value;
-
-    const address_id = e.currentTarget.address_id.value;
     const cpf = e.currentTarget.cpf.value;
     const products = this.props.shoppingCartProducts;
     const kits = this.props.shoppingCartKits;
     //const kits = JSON.stringify(this.props.shoppingCartKits);
     /* Data structure to Create Order */
-    console.log("creating order");
-    console.log(this.state.address_complement)
     var data = {
       client_token: this.state.token,
       client_email: this.state.email,
@@ -113,21 +99,20 @@ class Checkout extends Component
           }
       }
     }
-    products.map((product) =>
-    {
+    products.forEach((product) => {
       data.order.orders_products_attributes.push({
         product_id: product.id,
         quantity: product.quantity
       });
     });
 
-    kits.map((kit) =>
-    {
+    kits.forEach((kit) =>{
       data.order.orders_kits_attributes.push({
         kit_id: kit.id,
         quantity: kit.quantity
       });
     });
+
     request({
       method:'post',
       url: 'api/v1/orders.json',
@@ -138,8 +123,6 @@ class Checkout extends Component
       data: data
     }).then(res => 
     {
-      console.log("Response Data");
-      console.log(res.order.id);
       this.setState({checkout_order_id: res.order.id});
       localStorage.setItem("checkout_order_id", res.order.id);
       this.props.setCheckoutOrderId(res.order.id);
@@ -152,12 +135,11 @@ class Checkout extends Component
 
   getClientInformations = () => {
       /* Get Data from current user based on email and token */
-      console.log(getClientInfo);
       getClientInfo().then(res => {
           this.setState({client_data: res});
           this.setState({address_data: res.address_delivery});
         }).catch(error => {
-          console.log(error);
+          throw new Error("Failed to Get Client Informations: " + error);
       });
   }
 
@@ -165,7 +147,6 @@ class Checkout extends Component
     axios.get('http://localhost:3000/api/v1/adm_regions.json').then(res => 
     {
       const adm_regions = res.data;
-      console.log(adm_regions);
       this.setState({ adm_regions: adm_regions });
     });
   };
@@ -182,7 +163,6 @@ class Checkout extends Component
 
   componentDidUpdate(prevProps) {
     if(prevProps.productsCount !== this.props.productsCount) {
-      console.log("Produtos:"+this.props.productsCount);
     }
   }
 

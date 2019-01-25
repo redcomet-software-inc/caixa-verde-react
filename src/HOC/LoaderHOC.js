@@ -5,25 +5,12 @@ import { connect } from 'react-redux';
 
 // This function takes a component...
 const LoaderHOC = (WrappedComponent) => {
- 
   // ...and returns another component...
   return class extends Component {
-    
-    constructor(props) {
-        super(props);
-        console.log("Actions");
-        console.log(actions.turnOnLoading);
-        console.log(props);
-    }
-
     componentDidMount() {
-        console.log("Actions");
-        console.log(actions.turnOnLoading);
-        console.log(this.props);
         this.props.actions.turnOffError();
         this.props.actions.turnOnLoading();
     }
-
     render() {
       return <WrappedComponent  {...this.props} />;
     }

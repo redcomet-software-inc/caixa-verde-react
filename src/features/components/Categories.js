@@ -4,71 +4,62 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../features/home/redux/actions.js';
 import request from '../../common/configApi.js';
-import {
-  NavLink
-} from "react-router-dom";
 import Loading from '../common/Loading.js';
 
-
-export class Categories extends Component {
-  static propTypes = {
-    components: PropTypes.object.isRequired,
-    actions: PropTypes.object.isRequired,
-  };
-
-  constructor (props) {
-    super(props);
-    this.state = {
-      categories:[],
-      current_category:'Variedades',
-      products_by_category:[],
-    }
-  }
-
-  componentDidMount () {
-    this.getCategories();
-  }
-
-  getCategories = () => {
-    request({
-      method: 'get',
-      url: 'api/v1/categories.json'
-    }).then((res) => {
-      this.setState({categories: res})
-      this.getProducts();
-    })
-  }
-
-  getProducts = (e) => {
-    this.props.resetImgCount();
-    let id = '';
-    
-    if(e==undefined) {
-      id = 'all';
+  export class Categories extends Component {
+    static propTypes = {
+      components: PropTypes.object.isRequired,
+      actions: PropTypes.object.isRequired,
+    };
+    constructor (props) {
+      super(props);
+      this.state = {
+        categories:[],
+        current_category:'Variedades',
+        products_by_category:[],
+      }
     }
 
-    if(e!==undefined){
-      e.preventDefault();
-      e.persist();
-      id = e.target.id;
-      let name = e.target.name;
-      this.setState({ current_category: name});
+    componentDidMount () {
+      this.getCategories();
+    }
+
+    getCategories = () => {
+      request({
+        method: 'get',
+        url: 'api/v1/categories.json'
+      }).then((res) => {
+        this.setState({categories: res})
+        this.getProducts();
+      })
+    }
+
+    getProducts = (e) => {
+      this.props.resetImgCount();
+      let id = '';
+      if(e === undefined) {
+        id = 'all';
+      }
+      if(e !== undefined) {
+        e.preventDefault();
+        e.persist();
+        id = e.target.id;
+        let name = e.target.name;
+        this.setState({ current_category: name});
     }
     
     request({
       method: 'get',
       url: 'api/v1/categories/' + id + '.json',
-    }).then((res) => {
-        this.setState({products_by_category: res});
-        /* Pass products to parent component 'Products' */
-        this.props.refProducts(res);
-        console.log("CATEGORIES PROPS");
-        console.log(this.props);
-        this.props.turnOffLocalLoading();
-        this.props.actions.turnOffLoading();
-    }).catch(error =>{
-        this.props.actions.turnOffLoading();
-        this.props.turnOffLocalLoading();
+      }).then((res) => {
+          this.setState({products_by_category: res});
+          /* Pass products to parent component 'Products' */
+          this.props.refProducts(res);
+          this.props.turnOffLocalLoading();
+          this.props.actions.turnOffLoading();
+      }).catch(error =>{
+          this.props.actions.turnOffLoading();
+          this.props.turnOffLocalLoading();
       });
   }
 
@@ -89,7 +80,7 @@ export class Categories extends Component {
             </button>
                 <div className="dropdown-menu" >
                   { this.state.categories.map((category) => (
-                    <a key={"category" + category.id} id={ category.id } className="dropdown-item" name={category.name} onClick={(e) => this.getProducts(e)} href="#">{ category.name }</a>
+                    <button key={"category" + category.id} id={ category.id } className="dropdown-item" name={category.name} onClick={(e) => this.getProducts(e)} >{ category.name }</button>
                   )) } 
                   <div className="dropdown-divider"></div>
                   <a className="dropdown-item" name="Tudo" id="all" onClick={(e) => this.getProducts(e)}>Tudo</a>

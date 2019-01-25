@@ -6,18 +6,13 @@ import {
   HOME_TURN_ON_LOADING,
 } from './constants';
 
-export function turnOnLoading(state) {
-
-  console.log("chegou aqui uhuuuuuuu");
-  console.log(state);
+export function turnOnLoading() {
   return {
     type: HOME_TURN_ON_LOADING,
   };
 }
 
 export function reducer(state, action) {
-  console.log("state");
-  console.log(state);
   switch (action.type) {
     case HOME_TURN_ON_LOADING:
       return {

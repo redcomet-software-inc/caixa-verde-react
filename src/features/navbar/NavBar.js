@@ -31,14 +31,11 @@ class NavBar extends Component {
     this.props.updateShoppingCart("kit");
     this.props.updateShoppingCart("product");
     document.addEventListener('scroll', this.handleScroll, {passive: true} );
-
-     
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.shoppingCartCount !== prevProps.shoppingCartCount) {
       this.changeDialog();
-      
     }
   }
 
@@ -48,7 +45,6 @@ class NavBar extends Component {
     } else {
       this.setState({ fixedTop: ''});
     }
-    //return el.getBoundingClientRect().bottom <= window.innerHeight;
   }
 
   componentWillUnmount() {
@@ -58,10 +54,9 @@ class NavBar extends Component {
   render() {
     return (
       <div id="caixa-verde-header">
-
         <nav className="navbar navbar-primary navbar-expand-lg navbar-light shadow">
           <NavLink className="navbar-brand" exact to="/">
-            <img src={appLogo} width={200} />
+            <img alt={"Logo Caixa Verde"} src={appLogo} width={200} />
           </NavLink>
           <button
             className="navbar-toggler"
@@ -106,8 +101,9 @@ class NavBar extends Component {
               )}
             </ul>
           </div>
+       
         </nav>
-
+            
 
         <nav className={"navbar-options bg-dark shadow " + this.state.fixedTop}>
           <div className="w-100">

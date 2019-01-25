@@ -5,7 +5,6 @@ import commonReducer from '../features/common/redux/reducer';
 import pagesReducer from '../features/pages/redux/reducer';
 import footerReducer from '../features/footer/redux/reducer';
 import componentsReducer from '../features/components/redux/reducer';
-import loaderHOCReducer from '../HOC/redux/reducer.js';
 
 // NOTE 1: DO NOT CHANGE the 'reducerMap' name and the declaration pattern.
 // This is used for Rekit cmds to register new features, remove features, etc.

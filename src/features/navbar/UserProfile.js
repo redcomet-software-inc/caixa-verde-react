@@ -18,17 +18,14 @@ export default class UserProfile extends Component
       };
       // check the structure here: https://github.com/axios/axios#request-config
       const axiosConfigObject = {headers: httpReqHeaders}; 
-      axios.delete(deleteUrl, axiosConfigObject).then(res=> 
-      {
+      axios.delete(deleteUrl, axiosConfigObject).then(res=> {
          if (res.status === 200) {
              this.props.changeToLoggedOut();
           } else {
-            // throw error and go to catch block
             throw new Error('Error');
           }
-
       }).catch(error => {
-        console.log('Error', error);
+        throw new Error('Error: ' + error);
       })
     };
 
@@ -50,24 +47,24 @@ export default class UserProfile extends Component
     }
 
     render() {
-        return (
-          <div>
-            <li className="nav-item dropdown">
-              <a className="nav-link dropdown-toggle" data-target="navbarDropdown" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              {this.image()}
-              {this.props.clientName}
-              </a>
-              <div className="dropdown-menu dropdown-menu-right m-2 shadow text-center" aria-labelledby="navbarDropdown">
-                <NavLink className="dropdown-item" exact to="/minhaconta">Minha Conta</NavLink>
-                <div className="dropdown-divider"></div>
-                <a className="dropdown-item" href="/">Opções</a>
-                <div className="dropdown-divider"></div>
-                <NavLink className="dropdown-item" exact to="/orders">Histórico</NavLink>
-                <div className="dropdown-divider"></div>
-                <a className="dropdown-item" onClick={this.signOut} href="/">Sair</a>
-              </div>
-            </li>
-          </div>
-        );
+      return (
+        <div>
+          <li className="nav-item dropdown">
+            <a className="nav-link dropdown-toggle" data-target="navbarDropdown" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            {this.image()}
+            {this.props.clientName}
+            </a>
+            <div className="dropdown-menu dropdown-menu-right m-2 shadow text-center" aria-labelledby="navbarDropdown">
+              <NavLink className="dropdown-item" exact to="/minhaconta">Minha Conta</NavLink>
+              <div className="dropdown-divider"></div>
+              <a className="dropdown-item" href="/">Opções</a>
+              <div className="dropdown-divider"></div>
+              <NavLink className="dropdown-item" exact to="/orders">Histórico</NavLink>
+              <div className="dropdown-divider"></div>
+              <a className="dropdown-item" onClick={this.signOut} href="/">Sair</a>
+            </div>
+          </li>
+        </div>
+      );
     }
 }

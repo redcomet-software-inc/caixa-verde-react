@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
-import * as actions from '../../features/home/redux/actions.js';
 
 class MyBox extends Component {
   static propTypes = {
     pages: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequfired,
   };
-  constructor (props) 
-  {
+  constructor (props) {
     super(props);
     /* Load Props from MainPage */
     this.props.updateShoppingCart("product");
@@ -26,11 +24,8 @@ class MyBox extends Component {
   }
 
   /* Mount */
-  componentDidMount() 
-  {
+  componentDidMount() {
     window.scroll({top: 0, left: 0, behavior: 'smooth' });
-    console.log("MY BOX");
-    console.log(this.props.actions);
   }
 
   componentWillUpdate(prevProps, props) {
@@ -41,12 +36,6 @@ class MyBox extends Component {
       }
     }
   }
-
-  /* Clear */
-  componentWillUnmount() {
-    
-  }
-
 
   renderBox = () => {
     if(this.state.box_empty===false) {
@@ -61,7 +50,6 @@ class MyBox extends Component {
                   <p className="card-text"></p>
                 </div>
               </div>
-
           ))}
 
           { this.props.shoppingCartKits.map((kit, index) => (
@@ -79,8 +67,7 @@ class MyBox extends Component {
           ))}
         </div>
       );
-    } else 
-    {
+    } else {
       return(
         <React.Fragment>
            <h4 className="warning-muted text-center">A sua caixa está vazia.</h4>
@@ -94,8 +81,7 @@ class MyBox extends Component {
     }
   }
 
-  render() 
-  {
+  render() {
     return (
       <div className="pages-my-box">
         <h2 className="text-center title">Minha Caixa</h2>

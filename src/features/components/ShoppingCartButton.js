@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import { Icon } from 'react-icons-kit';
 import {threeDCube} from 'react-icons-kit/metrize/threeDCube';
-import {
-  NavLink,
-} from "react-router-dom";
 import * as actions from './redux/actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 
 export class ShoppingCartButton extends Component {
-
   constructor (props) {
     super(props);
     let count = this.props.shoppingCartCount;
@@ -38,11 +34,11 @@ export class ShoppingCartButton extends Component {
   render() {
     return (
       <React.Fragment>
-        <NavLink  className="" data-toggle="modal" data-target='#shoppingCartDialog' exact to="/" >
+        <div className="" data-toggle="modal" data-target='#shoppingCartDialog'>
           <div onClick={this.handleClick} className={"shopping-cart-button shadow " + this.state.invisible}>
               <Icon className="ico" icon={threeDCube} size={40} />
           </div>
-        </NavLink>
+        </div>
       </React.Fragment>
     );
   }

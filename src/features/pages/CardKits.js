@@ -1,26 +1,10 @@
 import React, { Component } from 'react';
-import stardardImage from '../../images/standard.jpg';
 import { Icon } from 'react-icons-kit';
 import { boxAdd } from 'react-icons-kit/icomoon/boxAdd';
 import { minus } from 'react-icons-kit/icomoon/minus';
 
-const Image = (props) => {
-  let src='';
-  if(props.thumb) {
-    src = "http://localhost:3000"+ props.image;
-  } else {
-    src = stardardImage;
-  }
-  return (<img alt="kit" className="card-img-top" src={src} width={200} />);
-}
-
 export default class CardKits extends Component {
-  static propTypes = {
-
-  };
-
-  constructor(props) 
-  {
+  constructor(props) {
     super(props);
     this.myClass = 'cardkits-active';
     this.state = {
@@ -32,8 +16,7 @@ export default class CardKits extends Component {
     };
   }
 
-  addBorder = (e) => 
-  {
+  addBorder = (e) => {
     if(this.state.cardCount===0 && this.state.borderClassName==='') {
       this.setState({ borderClass: 'cardkits-active' });
       this.setState({cardCount: this.props.quantity});
@@ -41,37 +24,32 @@ export default class CardKits extends Component {
     }
   };
 
-  deactivateBorder = e => 
-  {
+  deactivateBorder = e => {
     this.setState({ borderClass:''});
   }
 
-   selectCard = (quantity) => 
-   {
+   selectCard = (quantity) => {
     if(quantity === 0) 
     {
       this.setState({borderClass:'standard'});
       this.setState({show:'hide'});
-    } else 
-    {
+    } else {
       this.setState({borderClass:this.myClass});
       this.setState({show:'show'});
     }
   }
 
-  componentDidMount()
-  {
+  componentDidMount() {
     this.setState({cardCount: this.props.quantity});
     this.selectCard(this.props.quantity);
   }
-  componentWillReceiveProps(props)
-  {
+
+  componentWillReceiveProps(props) {
     this.setState({cardCount: props.quantity});
     this.selectCard(props.quantity);
   }
 
-  render()
-  {
+  render() {
     return (
       <div id={this.props.id}  onClick={this.addBorder} className={'p-0 mt-2 m-2 mx-auto card cardkits '+ this.state.borderClass} >
         <div className="card-body">
@@ -79,16 +57,16 @@ export default class CardKits extends Component {
         </div>
         <ul className="list-group list-group-flush">
           {this.props.products.map((product, index) => (
-          <li className="list-group-item"> 
-            <div className="row">
-              <div className="col p-0">
-                <img alt={"Imagem Kit " + product.name} src={product.thumb} />
+            <li key={product.id + "CardKits"} className="list-group-item"> 
+              <div className="row">
+                <div className="col p-0">
+                  <img alt={"Imagem Kit " + product.name} src={product.thumb} />
+                </div>
+                <div className="col my-auto">
+                  { product.name }
+                </div>
               </div>
-              <div className="col my-auto">
-                { product.name }
-              </div>
-            </div>
-          </li>
+            </li>
             ))}
         </ul>
         <div className="card-body text-center">
@@ -114,7 +92,6 @@ export default class CardKits extends Component {
                 id={this.props.id}
                 onClick={e => this.props.addCardCount(e.currentTarget.id, 'kit', 1) }
                 className="btn btn-success btn-lg" />
-            
           </div>
         </div>
       </div>

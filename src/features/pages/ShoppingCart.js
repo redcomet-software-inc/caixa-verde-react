@@ -1,14 +1,7 @@
 import React, { Component } from 'react';
-
-import {
-  NavLink,
-  HashRouter
-} from "react-router-dom";
-
 import {withRouter} from 'react-router-dom';
 
-class ShoppingCart extends Component 
-{
+class ShoppingCart extends Component {
   static propTypes = {};
   constructor(props) 
   {
@@ -27,56 +20,45 @@ class ShoppingCart extends Component
     this.setState({accepted:false});
   }
 
-  checkQuantity = () =>
-  {
+  checkQuantity = () =>{
     if((this.props.productsCount < this.props.minQuantity) && this.props.kitsCount===0)
     {
       this.setState({dialog:'warningDialog'});
       this.setState({modal: 'modal'});
-    } else 
-    {
+    } else {
       this.setState({dialog: ''});
       this.setState({modal: ''});
       this.setState({accepted: true});
     }
   }
 
-  componentDidUpdate(prevProps, prevState) 
-  {
-  if ((prevProps.productsCount !== this.props.productsCount) || (prevProps.kitsCount !== this.props.kitsCount))
-  {
-    this.setState({accepted:false});
-    this.setState({quantity: this.props.productsCount});
-    this.checkQuantity();
+  componentDidUpdate(prevProps) {
+    if ((prevProps.productsCount !== this.props.productsCount) ||
+        (prevProps.kitsCount !== this.props.kitsCount)) {
+      this.setState({accepted:false});
+      this.setState({quantity: this.props.productsCount});
+      this.checkQuantity();
+    }
   }
-}
-  //t.integer "client_id"
-  //t.integer "address_id"
 
-  clickHandle = (e) =>
-  {
+  clickHandle = (e) => {
     e.preventDefault();
     e.persist();
     /* Check if number of products is at the minimal accepted */
-    if (this.props.loggedIn===false) 
-    {
+    if (this.props.loggedIn===false) {
       this.props.redirect('cadastro');
-    } else 
-    {
+    } else {
       this.props.redirect('checkout');
     }
   }
-  
 
-  clickHandleDetails = (e) =>
-  {
+  clickHandleDetails = (e) => {
     e.preventDefault();
     e.persist();
     this.props.redirect('minhacaixa');
   }
 
-  render() 
-  {
+  render() {
     return (
       <div
         className="modal fade"
@@ -105,16 +87,16 @@ class ShoppingCart extends Component
                   </tr>
                 </thead>
                 <tbody>
-                 {this.props.shoppingCartKits.map(item => (
-                    <tr key={item.id}>
+                 {this.props.shoppingCartKits.forEach(item => (
+                    <tr key={item.id + "ShoppingCart"}>
                       <td className="text-left">{item.name} {item.quantity > 1 ? <small className="text-danger">x{item.quantity}</small> : ' ' }  </td>
                       <td className="text-center">
                         {this.props.setMoneyFormat(item.quantity * item.price)}
                       </td>
                     </tr>
                   ))}
-                  {this.props.shoppingCartProducts.map(item => (
-                    <tr key={item.id}>
+                  {this.props.shoppingCartProducts.forEach(item => (
+                    <tr key={item.id + "ShoppingCart_2"}>
                       <td className="text-left">{item.name} {item.quantity > 1 ? <small className="text-danger">x{item.quantity}</small> : ' ' } </td>
                       <td className="text-center">
                         {this.props.setMoneyFormat(item.quantity * item.price)}
@@ -147,4 +129,4 @@ class ShoppingCart extends Component
   }
 }
 
-export default withRouter(ShoppingCart)
+export default withRouter(ShoppingCart);

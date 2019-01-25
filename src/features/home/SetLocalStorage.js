@@ -12,4 +12,18 @@ export const checkLocalStorage = () => {
     } else {
       return true;
     }
+}
+
+export const getLocalStorage = () => {
+  if(localStorage.getItem("email") !== null && localStorage.getItem("token") !== null ) {
+    const email = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    const client_credentials = {
+      email: email,
+      token: token,
+    }
+    return client_credentials;
+  } else {
+    return false;
   }
+}

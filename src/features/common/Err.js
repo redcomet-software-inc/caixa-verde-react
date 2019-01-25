@@ -14,7 +14,6 @@ export default class Err extends Component {
   }
 
   sendReport = () => {
-    console.log("sending report");
     this.setState({report_form_visible:false});
     this.setState({report_thanks_visible:true});
   }
@@ -62,7 +61,6 @@ export default class Err extends Component {
   }
 
   handleClick = () => {
-    console.log("clicked");
     this.setState({ report_form_visible: !this.state.report_form_visible});
   }
 
