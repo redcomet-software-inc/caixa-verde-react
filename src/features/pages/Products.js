@@ -20,9 +20,8 @@ class Products extends Component {
 
   componentDidMount() {
     this.props.onRef(this);
-    window.scroll({top: 0, left: 0, behavior: 'smooth' });
-    
   }
+  
   componentWillUnmount() {
     this.props.onRef(undefined);
   }

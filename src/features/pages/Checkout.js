@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import request from '../../common/configApi.js';
+import { setOrder } from '../../common/setOrder.js';
 import { getClientInfo } from '../../common/getClientInfo.js';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
 import PropTypes from 'prop-types';
@@ -8,17 +8,13 @@ import PropTypes from 'prop-types';
 
 class Checkout extends Component 
 {
-  static propTypes = {
-    pages: PropTypes.object.isRequired,
-    actions: PropTypes.object.isRequfired,
-  };
-
+  
   constructor(props) {
     super(props);
-    const email = localStorage.getItem('email');
-    const token = localStorage.getItem('token');
+    
     this.props.updateShoppingCart("kit");
     this.props.updateShoppingCart("product");
+    
     this.state = {
       adm_regions: [],
       adm_region_name: '',
@@ -28,18 +24,16 @@ class Checkout extends Component
       client_id: 0,
       client_data: [],
       address_data: [],
-      email: email || '',
-      token: token || '',
     };
-
-    this.redirect = this.redirect.bind(this);
   }
 
   componentDidMount() {
+      if(this.props.loggedIn === false) {
+        
+      }
       this.getClientInformations();
       this.getAdmRegions();
       this.getPermission();
-      window.scroll({top: 0, left: 0, behavior: 'smooth' });
       setTimeout(()=>{ this.props.actions.turnOffLoading()}, 5000);
   }
 
@@ -57,6 +51,7 @@ class Checkout extends Component
     const name = e.currentTarget.name.value;
     const lastname = e.currentTarget.lastname.value;
     const cellphone = e.currentTarget.cellphone.value;
+    const address_kind = e.currentTarget.kind.value;
     const address_street = e.currentTarget.address_street.value;
     const address_number = e.currentTarget.address_number.value;
     const address_complement = e.currentTarget.address_complement.value;
@@ -73,11 +68,12 @@ class Checkout extends Component
       client_token: this.state.token,
       client_email: this.state.email,
       order: {
-        client_id: client_id,
-        order_price: this.state.order_price,
-        price_table_id: 1,
-        orders_products_attributes: [],
-        orders_kits_attributes:[],
+          order_price: this.state.order_price,
+          price_table_id: 5,
+          client_id: client_id,
+          orders_kits_attributes:[],
+          orders_products_attributes: [],
+        },
         client_attributes: 
         {
           name: name,
@@ -95,40 +91,37 @@ class Checkout extends Component
             adm_region_id: address_adm_region_id,
             complement: address_complement,
             neighbourhood: address_neighbourhood,
-            kind: this.state.address_kind
+            kind: address_kind
           }
       }
-    }
-    products.forEach((product) => {
+    
+    products.map((product) => {
       data.order.orders_products_attributes.push({
         product_id: product.id,
+        name: product.name,
+        price: product.price,
         quantity: product.quantity
       });
     });
 
-    kits.forEach((kit) =>{
+    kits.map((kit) =>{
       data.order.orders_kits_attributes.push({
         kit_id: kit.id,
+        name: kit.name,
+        price: kit.price,
         quantity: kit.quantity
       });
     });
 
-    request({
-      method:'post',
-      url: 'api/v1/orders.json',
-      header: {
-        'X-Client-Email': this.state.email,
-        'X-Client-Token': this.state.token,
-      },
-      data: data
-    }).then(res => 
-    {
+    setOrder(data).then(res => {
       this.setState({checkout_order_id: res.order.id});
       localStorage.setItem("checkout_order_id", res.order.id);
       this.props.setCheckoutOrderId(res.order.id);
-      this.props.redirect('pagamento');
+      this.props.actions.redirect('pagamento');
       this.getPermission();
     }).catch(error => {
+      console.log(error);
+      throw new Error("Impossible to Create Order: ");
       
     });
   }
@@ -139,7 +132,7 @@ class Checkout extends Component
           this.setState({client_data: res});
           this.setState({address_data: res.address_delivery});
         }).catch(error => {
-          throw new Error("Failed to Get Client Informations: " + error);
+          
       });
   }
 
@@ -150,10 +143,6 @@ class Checkout extends Component
       this.setState({ adm_regions: adm_regions });
     });
   };
-
-  redirect() {
-    return this.props.redirect('login');
-  }
 
   renderQuantity = quantity => {
     if (quantity > 1) {
@@ -239,8 +228,8 @@ class Checkout extends Component
           <div className="col-md-8 order-md-1">
             <h4 className="mb-3">Endereço para Entrega</h4>
             <form onSubmit={e => this.checkOut(e)} className="needs-validation mt-3" novalidate>
-              <input id="client_id" name="client_id" type="hidden" value={this.state.client_id} />
-              <input id="address_kind" name="address_kind" type="hidden" value={ this.state.address_kind } />
+              <input id="client_id" name="client_id" type="hidden" value={this.state.client_data.id} />
+              <input id="kind" name="kind" type="hidden" value={ this.state.client_data.kind } />
               <input
                 id="address_id"
                 name="address_id"

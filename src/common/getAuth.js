@@ -2,7 +2,7 @@ import request from './configApi.js';
 import { getLocalStorage } from '../features/home/SetLocalStorage.js';
 
 /* Check if User has Authorization to Access Restrict Pages */
-export let getAuth = function(order_id) {
+export let getAuth = function() {
     return new Promise((resolve, reject) => {
         const credentials = getLocalStorage();
 
@@ -15,7 +15,7 @@ export let getAuth = function(order_id) {
                     client_token: credentials.token,
                 },
             }).then(res => {
-                resolve(true);
+                resolve(res);
             }).catch(error => {
                 reject("Security Check Error: " + error);
             });

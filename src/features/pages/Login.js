@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import Loading from '../common/Loading.js';
 import { signIn } from '../../common/signIn.js';
 import { NavLink } from 'react-router-dom';
+import LoaderHOC from '../../HOC/LoaderHOC.js';
 
-export default class Login extends Component {
+class Login extends Component {
   static propTypes = {};
 
   constructor(props) 
@@ -17,8 +18,10 @@ export default class Login extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
+    console.log("props");
     if (this.props.loggedIn) {
-      this.props.redirect('/');
+      this.props.actions.redirect();
     }
   }
   
@@ -31,13 +34,14 @@ export default class Login extends Component {
       this.setState({ isLoading: true});
       this.setState({ disable: true});
       signIn(email, password).then(response => {
+        console.log("this here");
         this.setState({ isLoading: false});
         const client_id = response['id'];
         const client_name = response['name'];
         const client_email = response['email'];
         const token = response['authentication_token'];
         this.props.setSignIn(client_id, client_name, client_email, token);
-        this.props.redirect('/');
+        this.props.actions.redirect('/');
         this.setState({ message: 'Você está logado' });
       }).catch(error => {
         this.setState({ isLoading: false});
@@ -81,23 +85,23 @@ export default class Login extends Component {
         <form className="form-group" onSubmit={this.handleClick} disabled={this.props.disable}>
           <div className="row justify-content-center">
             <div className="col-md-6 mb-3 form-group  text-center">
-              <label for="inp" className="inp">
+              <label htmlFor="inp" className="inp">
                 <input type="text" id="inp" name="email" placeholder="&nbsp;" required />
-                <span class="label">Email</span>
+                <span className="label">Email</span>
               </label>
             </div>
           </div>
           <div className="row justify-content-center">
             <div className="col-md-6 mb-3 form-group text-center">
-              <label for="inp" className="inp">
+              <label htmlFor="inp" className="inp">
                 <input type="password" id="inp" name="password" placeholder="&nbsp;" required />
-                <span class="label">Senha</span>
+                <span className="label">Senha</span>
               </label>
             </div>
           </div>
-          <div class="text-center mx-auto w-100">
-          <div class="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" disabled={this.props.disable} >Entrar</button></div>
-          <div class="d-inline p-1 text-white position-absolute">{this.renderLoading()}</div>
+          <div className="text-center mx-auto w-100">
+          <div className="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" disabled={this.props.disable} >Entrar</button></div>
+          <div className="d-inline p-1 text-white position-absolute">{this.renderLoading()}</div>
           </div>  
             <div className="text-center p-4">
              <p className="text-danger">{this.state.message}</p>
@@ -109,3 +113,6 @@ export default class Login extends Component {
     );
   }
 }
+
+
+export default LoaderHOC(Login);

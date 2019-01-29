@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom';
+import * as actions from '../../features/home/redux/actions.js';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-class ShoppingCart extends Component {
+export class ShoppingCart extends Component {
   static propTypes = {};
   constructor(props) 
   {
@@ -46,9 +49,9 @@ class ShoppingCart extends Component {
     e.persist();
     /* Check if number of products is at the minimal accepted */
     if (this.props.loggedIn===false) {
-      this.props.redirect('cadastro');
+      this.props.actions.redirect('cadastro');
     } else {
-      this.props.redirect('checkout');
+      this.props.actions.redirect('checkout');
     }
   }
 
@@ -129,4 +132,22 @@ class ShoppingCart extends Component {
   }
 }
 
-export default withRouter(ShoppingCart);
+/* istanbul ignore next */
+function mapStateToProps(state) {
+  return {
+    home: state.home,
+  };
+}
+
+/* istanbul ignore next */
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...actions }, dispatch)
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ShoppingCart);
+

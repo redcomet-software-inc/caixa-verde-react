@@ -23,11 +23,6 @@ class MyBox extends Component {
     }
   }
 
-  /* Mount */
-  componentDidMount() {
-    window.scroll({top: 0, left: 0, behavior: 'smooth' });
-  }
-
   componentWillUpdate(prevProps, props) {
     if(prevProps !== props) {
       this.props.actions.turnOffLoading();

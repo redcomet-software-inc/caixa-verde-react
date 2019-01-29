@@ -5,7 +5,6 @@ import LoaderHOC from '../../HOC/LoaderHOC.js';
 class Kits extends Component {
 
   componentDidMount() {
-    window.scroll({top: 0, left: 0, behavior: 'smooth' });
     setTimeout(()=>{this.props.actions.turnOffLoading()}, 50);
   }
 

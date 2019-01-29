@@ -3,53 +3,62 @@ import request from './configApi.js';
 let PagSeguroDirectPayment = window.PagSeguroDirectPayment;
 
 /* After Client Side, Back End Executes */
-export let sendToApi = function(order_id) {
-    return new Promise((resolve, reject) => {
-        const client_email = localStorage.getItem("email");
-        const client_token  = localStorage.getItem("token");
-        request({
-            url:'api/v1/pagseguro/payment.json',
-            method:'post',
-            params: {
-                client_email: client_email,
-                client_token: client_token,
-                order_id: order_id,
-            }
-        }).then(response => 
-         {
-            resolve(response);
-        }).catch(err => {
-            reject("Failed to Send to Api" + err);
-        });
-    });
-}
+let sendToApi = function(order_id, token, hash, brand) {
+    console.log("Result");
+    console.log("Order ID");
+    console.log(order_id);
+    console.log("Token");
+    console.log(token);
+    console.log("Hash");
+    console.log(hash);
+    console.log("brand");
+    console.log(brand);
 
-/* The First to be Executed by Get Session.js */
-export let getCardToken = function(card) {
-    return new Promise(function(resolve, reject) {
-        startPaymentProcess(card).then( card_token => {
-            console.log("Payment Process");
-            resolve(card_token);
-        }).catch(error => {
-            console.log("Get Card Token Failed: " + error);
+    if (order_id && token && hash && brand) {
+        return new Promise((resolve, reject) => {
+            const client_email = localStorage.getItem("email");
+            const client_token  = localStorage.getItem("token");
+            request({
+                url:'api/v1/pagseguro/payment.json',
+                method:'post',
+                data: {
+                    client_email: client_email,
+                    client_token: client_token,
+                    order_id: order_id,
+                    sender_hash: hash,
+                    card_token: token,
+                }
+            }).then(response => 
+            {
+                resolve(response);
+            }).catch(err => {
+                reject("Failed to Send to Api" + err);
+            });
         });
-    })
-    
+    } else {
+        throw new Error("Failed to Gather all Data... Sorry.");
+    }
 }
 
 /* Chain with all ordered Promises */
-let startPaymentProcess = function (card) {
-    return new Promise(function(resolve, reject) {
-        getSession().then(res => setSession(res.id)
-                    .then(res => senderHash())
-                    .then(res => getBrand(card.card_number.value))
-                    .then(brand => createCardToken(card, brand))
-                    .then(res => resolve(res)));
-    })
+export let startPaymentProcess = function (card, order_id) {
+    let _sender_hash = "";
+    let _brand = "";
+    return new Promise((resolve,reject) => {
+        getSession()
+        .then(res => { return setSession(res.id)} )
+        .then(res => { return senderHash()} )
+        .then(sender_hash => { _sender_hash = sender_hash; return getBrand(card.card_number.value)})
+        .then(brand => { _brand = brand; return createCardToken(card, brand)})
+        .then(card_token => { return sendToApi(order_id, card_token, _sender_hash, _brand) })
+        .then(response => { return resolve(response) })
+        .catch(err => { return reject("Failed: " + err) });
+    });
+
 }
 
 /* 5. Create Card Token based on Session ID and User Hash */
-export let createCardToken = function(card, brand) {
+let createCardToken = function(card, brand) {
     let card_number = card.card_number.value;
     let card_expmonth = card.expiry_month.value;
     let card_expyear = card.expiry_year.value;
@@ -62,85 +71,70 @@ export let createCardToken = function(card, brand) {
             expirationMonth: card_expmonth,
             expirationYear: card_expyear,
             success: function (response) {
-                console.log("Cardtoken Response");
                 resolve(response.card.token);
             },
             error: function (error) {
-                console.log(error);
                 reject("Create Card Token Failed: "+ error);
             },
-            complete: function (complete) {
-                console.log("cardtoken complete");
-                console.log(complete);
-            }
         });
     });
 }
 
 /* 4.5 (Optional) Get PaymentMethods */
-export let getPaymentMethods = function() {
+    let getPaymentMethods = function() {
     return new Promise((resolve, reject) => {
         PagSeguroDirectPayment.getPaymentMethods({
             success: function(response) {
-                console.log("Get Payment Methods Success");
                 resolve(response);
             },
             error: function(error) {
-                console.log("Get Payment Methods Error");
                 reject("Get Payment Methods Failed: " + error)
             },
-            complete: function(response) {
-                console.log("Get Payment Methods Complete");
-                console.log(response);
-            }
         });
     });
 }
 
 /* 4. Get Brand from Card Bin */
-export let getBrand = function(card_number) {
+    let getBrand = function(card_number) {
     return new Promise((resolve, reject) => {
         let card_bin = card_number.toString(2).substring(0,6);
         PagSeguroDirectPayment.getBrand({
             cardBin: card_bin.toString(2),
             success: function(response) {
-                console.log("Get Brand Success");
-                return resolve(response.brand.name);
+                console.log(response);
+                resolve(response.brand.name);
             },
             error: function(error) {
-                console.log("Get Brand Err");
-                return reject("Get Brande Failed: " + error);
+                reject("Get Brande Failed: " + error);
             },
-            complete: function(response) {
-                console.log("complete brand");
-                return response;
-            }
         });
     });
 }
 
 /* 3. Create a Hash with User Data */
-export let senderHash = function() {
+    let senderHash = function() {
     return new Promise((resolve,reject) => {
-        console.log("Get Sender Hash");
         let sender_hash = PagSeguroDirectPayment.getSenderHash();
-        resolve(sender_hash);
-        reject("Get Sender Hash Failed: " + sender_hash);
+        if(sender_hash) {
+            resolve(sender_hash);
+        } else {
+            reject("Get Sender Hash Failed: " + sender_hash);
+        }
     });
 }
 
 /* 2. Set Session with the Obtained Session ID */
-export let setSession = function(session_id){
+    let setSession = function(session_id){
     return new Promise((resolve, reject) => {
         let session = PagSeguroDirectPayment.setSessionId(session_id);
-        console.log(session_id);
         resolve(session);
         reject("Set Session Failed: " + session);
+
     });
 }
 
 /* 1. Get PagSeguro Session from Backend */
-export let getSession = function() {
+    let getSession = function() {
     return new Promise((resolve, reject) => {
         const pagseguro_email = 'guilhermewnunes@gmail.com' ;
         const pagseguro_token = '3774B1301F034CDAA8900429ACCB394B';
@@ -157,13 +151,11 @@ export let getSession = function() {
             }
         }).then(session => 
          {
-            console.log("Get Session");
-            console.log(session);
             resolve(session);
 
         }).catch(err => 
          {
-            reject("Get Session Failed: " + err);
+           reject("Get Session Failed: " + err);
         });
     });
 }

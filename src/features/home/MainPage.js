@@ -13,6 +13,7 @@ import { countProducts } from './CountProducts';
 import { countKits } from './CountProducts';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { getAuth } from '../../common/getAuth.js';
 
 /* Pages and render components */
 import Products from '../pages/Products.js';
@@ -48,7 +49,7 @@ export class MainPage extends Component {
       var productsCount = countProducts(selectedProducts);
       var kitsCount = countKits(selectedKits);
     }
-    
+
     this.state = {
       products: [],
       selectedProducts: selectedProducts || [],
@@ -66,8 +67,6 @@ export class MainPage extends Component {
       authentication_token: authentication_token || '',
       clientId: '',
       loggedIn: false,
-      redirect: false,
-      redirectTo:'',
       changeStateTest:'state1',
       err_message:'',
       serviceAvailability:true,
@@ -76,7 +75,6 @@ export class MainPage extends Component {
       warningMessage:'A sua caixa está vazia.',
       checkout_order_id:0,
     };
-    this.redirect = this.redirect.bind(this);
   }
 
   componentDidMount() {
@@ -101,25 +99,22 @@ export class MainPage extends Component {
 
   /*Check if user is LoggedIn */
   auth = () => {
-    const token = localStorage.getItem('token');
-    const email = localStorage.getItem('email');
-    request({
-      method:'get',
-      url: 'api/v1/sessions/check.json',
-      params: {
-        client_email: email,
-        client_token: token,
-      },
-    }).then(res => {
+    getAuth().then(res => {
+       console.log("get Auth");
+       console.log(res);
+      if(res) {
+        console.log("response");
+        console.log(res);
         this.setState({loggedIn: true});
         this.setState({avatar: res.thumb});
         this.setState({clientId: res.client.id});
         this.setState({clientName: res.client.name});
         this.props.turnOffMainLoading();
         setTimeout(()=>{this.props.turnOffMainLoading()}, 500);
-    }).catch(err => {
-      this.setState({loggedIn: false});
-      setTimeout(()=>{this.props.turnOffMainLoading()}, 500);
+      }
+    }).catch(err=>{
+        this.setState({loggedIn: false});
+        setTimeout(()=>{this.props.turnOffMainLoading()}, 500);
     });
   };
 
@@ -187,20 +182,18 @@ export class MainPage extends Component {
     localStorage.removeItem('selectedProducts');
     localStorage.removeItem('selectedKits');
     /* Redirect to the MainPage */
-    this.redirect('/');
     /* Reload to Make Sure Everything is cleaned up */
     window.location.reload();
   }
 
-  /* Redirect and Render */
-  redirect = (targetUrl) => {
-    this.setState({redirectTo:targetUrl});
-    this.setState({redirect: true});
-  }
   renderRedirect = () => {
-      if(this.state.redirect === true) {
-        this.setState({redirect: false});
-        return <Redirect exact to={this.state.redirectTo} />;
+      if(this.props.home.redirect === true) {
+        console.log("???");
+       
+        this.props.actions.resetRedirect();
+        //this.setState({redirect: false});
+         console.log(this.props.home.redirect);
+        return <Redirect exact to={this.props.home.redirectTo} />;
       }
   };
   
@@ -212,12 +205,10 @@ export class MainPage extends Component {
       let totalPriceItems = 0;
       let items = [];
       let selectedItems = [];
-    if (name==="kit") 
-    {
+    if (name==="kit") {
       items = this.state.kits;
       selectedItems = this.state.selectedKits;
-    } else if (name==="product") 
-    {
+    } else if (name==="product") {
       items = this.state.products;
       selectedItems = this.state.selectedProducts;
     }
@@ -230,6 +221,7 @@ export class MainPage extends Component {
           var selectedItem = items[i];
           var quantity = selectedItems[j].quantity;
           var price_table_id = selectedItems[j].price_table_id;
+          selectedItem['name'] = selectedItem['name'];
           selectedItem['quantity'] = quantity;
           selectedItem['price_table_id'] = price_table_id;
           selectedItem['unit_price'] = selectedItem['price']; //Mercado Pago Format
@@ -263,14 +255,13 @@ export class MainPage extends Component {
     /* delta defines if the value increase or decrease */
     /* this serves to differenciate list of kits and products */
     let priceTableId = "";
+    let itemName = "";
     let selectedItems = [];
     let items = [];
     if (name==="kit") {
-      priceTableId = '';
       selectedItems = this.state.selectedKits;
       items = this.state.kits;
     } else if (name==="product") {
-      priceTableId = '';
       selectedItems = this.state.selectedProducts;
       items = this.state.products;
     }
@@ -279,6 +270,7 @@ export class MainPage extends Component {
     for (let i = 0; i <= items.length - 1; i++) {
       if (items[i].id === id) {
         priceTableId = items[i].price_table_id;
+        itemName = items[i].name;
       }
     }
 
@@ -293,6 +285,7 @@ export class MainPage extends Component {
           
           var newItem = {
             id: id,
+            name: selectedItems[x].name,
             quantity: selectedItems[x].quantity + delta,
             price_table_id: selectedItems[x].price_table_id,
           };
@@ -304,6 +297,7 @@ export class MainPage extends Component {
     if (checkExistingElement === 0) {
       var newItemZero = {
         id: id,
+        name: itemName,
         quantity: 1,
         price_table_id: priceTableId,
       };
@@ -345,7 +339,6 @@ export class MainPage extends Component {
     this.setState({warningMessage: text});
   }
 
-
   turnOffError = () => {
     this.setState({isError: false});
     this.props.actions.turnOffError();
@@ -355,7 +348,7 @@ export class MainPage extends Component {
     /* Error Also Turn Off Loading */
     this.props.actions.turnOffLoading();
     this.props.actions.turnOnError();
-    this.redirect('');
+    this.props.actions.redirect('');
     this.setState({ err_message: err_message});
   }
 
@@ -370,7 +363,7 @@ export class MainPage extends Component {
   renderSpinner = () => {
     if(this.props.home.isLoading===true) 
     {
-      return <Spinner redirect={this.redirect} />
+      return <Spinner />
     }
   }
 
@@ -396,7 +389,6 @@ export class MainPage extends Component {
                   shoppingCartCount={this.state.shoppingCartCount}
                   clientName={this.state.clientName}
                   warning={this.warning}
-                  redirect={this.redirect}
                   changeToLoggedOut={this.changeToLoggedOut}
                   updateShoppingCart={this.updateShoppingCart}
                   image={this.state.avatar}
@@ -408,7 +400,7 @@ export class MainPage extends Component {
                         {this.renderSpinner()}
                         <div className="row my-auto mx-0">
                           <div className={"col-lg-12 pt-md-5 mx-auto my-auto pl-0 pr-0 "+ this.visible()}>
-                            {this.renderRedirect(this.state.redirectTo)}
+                            {this.renderRedirect(this.props.home.redirectTo)}
                             <Switch>
                             <Route path="/" exact component={Option} />
                             <Route
@@ -421,6 +413,7 @@ export class MainPage extends Component {
                                   subtractCardCount={this.subtractCardCount}
                                   selectedProducts={this.state.selectedProducts}
                                   products={this.state.products}
+                                  permit={true}
                                   onRef={ref => (this.custom = ref)}
                                 />
                               )}
@@ -434,6 +427,7 @@ export class MainPage extends Component {
                                   subtractCardCountKit={this.subtractCardCountKit}
                                   selectedKits={this.state.selectedKits}
                                   kits={this.state.kits}
+                                  permit={true}
                                   onRef={ref => (this.custom = ref)}
                                   setMoneyFormat={this.setMoneyFormat}
                                 />
@@ -446,7 +440,7 @@ export class MainPage extends Component {
                                 <Login
                                   setSignIn={this.setSignIn}
                                   loggedIn={this.state.loggedIn}
-                                  redirect={this.redirect}
+                                  permit={true}
                                 />
                               )}
                             />
@@ -455,8 +449,9 @@ export class MainPage extends Component {
                               exact
                               render={props => (
                                 <Registration register={this.register} 
-                                component={Registration} 
-                                redirect={this.redirect} />
+                                component={Registration}
+                                permit={true} 
+                                />
                               )}
                             />
                             <Route
@@ -476,8 +471,9 @@ export class MainPage extends Component {
                                   setMoneyFormat={this.setMoneyFormat}
                                   clientId={this.state.clientId}
                                   clientEmail={this.state.clientEmail}
-                                  redirect={this.redirect}
                                   setCheckoutOrderId={this.setCheckoutOrderId}
+                                  loggedIn={this.state.loggedIn}
+                                  redirectTo={'login'}
                                 />
                               )}
                             />
@@ -505,6 +501,7 @@ export class MainPage extends Component {
                                   shoppingCartCount={this.state.shoppingCartCount}
                                   shoppingCartProducts={this.state.shoppingCartProducts} 
                                   shoppingCartKits={this.state.shoppingCartKits}
+                                  permit={true}
                                   />
                               )}
                             />
@@ -514,7 +511,6 @@ export class MainPage extends Component {
                               render={props => (
                                 <Payment 
                                 checkout_order_id={this.state.checkout_order_id} 
-                                redirect={this.redirect}
                                 />
                               )}
                             />
@@ -548,8 +544,6 @@ export class MainPage extends Component {
               setMoneyFormat={this.setMoneyFormat}
               loggedIn={this.state.loggedIn}
               warning={this.warning}
-              redirect={this.redirect}
-              renderRedirect={this.renderRedirect}
               onRef={ref => (this.custom = ref)}
             />)}
           </div>

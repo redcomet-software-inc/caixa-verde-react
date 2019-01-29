@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import request from '../../common/configApi.js';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
+import { getOrders } from '../../common/getOrders.js';
 
 class MyOrders extends Component {
   static propTypes = {
@@ -16,41 +17,30 @@ class MyOrders extends Component {
     this.state = {
       client_email: email || '',
       client_token: token || '',
-      orders_empty: false,
+      orders_empty: true,
       error:false,
       orders:[],
     }
   }
 
   componentDidMount () {
-    window.scroll({top: 0, left: 0, behavior: 'smooth' });
     this.getOrders();
   }
 
   getOrders = () => {
-      request({
-        method: 'get',
-        url: '/api/v1/orders/1.json',
-        params: {
-          client_email: this.state.client_email,
-          client_token: this.state.client_token,
-        }
-      }).then(res => {
-        this.props.actions.turnOffLoading();
-        if(res) {
-          this.setState({orders_empty: false});
-          this.setState({orders: res});
-        } else {
-          this.setState({orders_empty: true});
-        }
-      }).catch(error =>{
-        this.props.actions.turnOffLoading();
-        this.props.actions.turnOnError();
-      });
-      
+    getOrders().then(res=>{
+      this.props.actions.turnOffLoading();
+      if(res) {
+        this.setState({orders_empty: false});
+        this.setState({orders: res});
+      } else {
+        return this.setState({orders_empty: true});
+      }
+    }).catch(error =>{
+      this.props.actions.turnOffLoading();
+      //this.props.actions.turnOnError();
+    }); 
   }
-
-  
 
   renderPayment = (order_status) => {
     let payment = ""
@@ -171,6 +161,7 @@ class MyOrders extends Component {
       )
     }
   }
+  
   render() {
     return (
       <div className="pages-my-orders">

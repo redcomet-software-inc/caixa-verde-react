@@ -8,10 +8,7 @@ import { NavLink } from 'react-router-dom';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
 
 class MyAccount extends Component {
-  static propTypes = {
-    pages: PropTypes.object.isRequired,
-    actions: PropTypes.object.isRequfired,
-  };
+ 
    constructor(props) {
     super(props);
     const email = localStorage.getItem('email');
@@ -148,7 +145,6 @@ class MyAccount extends Component {
   componentDidMount() {
     this.getClientInformations();
     this.getAdmRegions();
-    window.scroll({top: 0, left: 0, behavior: 'smooth' })
   }
 
    loadedData = () => {
