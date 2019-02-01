@@ -7,20 +7,29 @@ export default class Card extends Component {
   static propTypes = {};
   constructor(props) {
     super(props);
+
+    let itemData = {
+      product_id: this.props.id,
+      name: this.props.name,
+      price: this.props.price,
+      quantity: this.props.quantity
+    }
+    this.props.refItem(itemData);
+    let hide = null;
+    let card_active = null;
+    if(this.props.quantity > 0) {
+      hide = "show";
+      card_active = "card-active";
+    } else {
+      itemData.quantity = 0;
+    }
+
     this.state = {
       borderClass: 'standard',
-      show: 'hide',
+      itemData: itemData || {},
+      card_active: card_active || '',
+      hide: hide || 'hide',
     };
-  }
-
-  componentWillUpdate(prevProps) {
-    if (prevProps.quantity !== this.props.quantity) {
-      if (this.props.quantity > 0) {
-        this.setState({ show: '' });
-      } else {
-        this.setState({ show: 'hide' });
-      }
-    }
   }
 
   handleLoad = () => {
@@ -37,9 +46,52 @@ export default class Card extends Component {
     window.location.reload();
   };
 
+  /* Add Item to the Shopping List */
+  addCardCount = (delta) => {
+    console.log("delta");
+    console.log(delta);
+    /* name variable can be either kit or product */
+      let item = this.state.itemData;
+      let quantity = item.quantity;
+      let nextQuantity = item.quantity + delta;
+      console.log(item);
+      console.log(this.state.itemData);
+      console.log("quantity: " + quantity);
+      console.log("next quantity: " + nextQuantity);
+
+      if (quantity === 0 && delta === 1 || nextQuantity > 0) {
+        item.quantity += delta;
+        this.setState({card_active: "card-active"});
+        this.setState({ hide: 'show' });
+        console.log("plus");
+      }
+
+      if(nextQuantity === 0) {
+        item.quantity = 0;
+        console.log(quantity);
+        this.setState({card_active: ""});
+        this.setState({ hide: 'hide' });
+        console.log("minus");
+      }
+      this.setState({ itemData: item});
+      this.props.refItem(item);
+  };
+
+  handleClickPlus = () => {
+    this.addCardCount(1);
+    this.props.productPlus("product", this.state.itemData);
+  }
+
+  handleClickMinus = () => {
+    if(this.state.itemData.quantity > 0) {
+      this.addCardCount(-1);
+      this.props.productMinus("product", this.state.itemData);
+    }
+  }
+
   render() {
     return (
-      <React.Fragment>
+      <div key={"div" + this.state.itemData.id} className={"card m-2 mx-auto " + this.state.card_active} style={{maxWidth:200}}>
         <img
           alt={"Image" + this.props.name}
           className="card-img-top"
@@ -48,9 +100,9 @@ export default class Card extends Component {
           onError={this.handleError}
         />
         <div className="card-body text-center pb-0">
-          <span className="card-text">{this.props.name}</span>
+          <span className="card-text">{this.state.itemData.name}</span>
           <br />
-          <small className="text-success">{this.props.setMoneyFormat(this.props.price)}</small>
+          <small className="text-success">{this.props.setMoneyFormat(this.state.itemData.price)}</small>
           <br />
           <small className="card-text">{this.props.kind}</small>
         </div>
@@ -60,24 +112,24 @@ export default class Card extends Component {
               <Icon
                 icon={minus}
                 id={this.props.id}
-                onClick={e => this.props.addCardCount(e.currentTarget.id, 'product', -1)}
-                className={'btn btn-info ' + this.props.hide_number}   />
+                onClick={e => this.handleClickMinus(e)}
+                className={'btn btn-info ' + this.state.hide}   />
             </div>
-            <div className={'col-4 ' + this.props.hide_number}>
-              <div id={this.props.id} className={'btn ' + this.props.hide_number}>
-                {this.props.quantity}
+            <div className={'col-4 ' + this.state.hide}>
+              <div id={this.props.id} className={'btn ' + this.state.hide}>
+                {this.state.itemData.quantity}
               </div>
             </div>
             <div className="col-4">
               <Icon
                 icon={boxAdd}
                 id={this.props.id}
-                onClick={e => this.props.addCardCount(e.currentTarget.id, 'product', 1)}
+                onClick={e => this.handleClickPlus(e)}
                 className="btn btn-success" />
             </div>
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

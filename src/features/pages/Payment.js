@@ -18,9 +18,9 @@ class Payment extends Component {
     const email = localStorage.getItem('email');
     const token = localStorage.getItem('token');
     let order_id = 0;
-    if (checkLocalStorage() !== false) {
+   
       order_id = localStorage.getItem("checkout_order_id");
-    }
+   
     this.state = { 
       client_token: token || '',
       client_email: email || '',

@@ -5,7 +5,31 @@
   transition: border-color 2s;
 }
 
+show {
+  opacity: 1;
+}
+
+.hide-products {
+  opacity: 0;
+}
+.unhide-products {
+  opacity: 100;
+  transition: opacity 1s;
+}
+
+.card-active {
+  border-color: #f21b3f;
+  transition: border-color 2s;
+}
+
 .hide {
   opacity: 0;
-  
+  cursor: default !important;
 }
+
+.show-product {
+  opacity: 1;
+  transition: opacity .5s;
+  cursor: pointer;
+}
+

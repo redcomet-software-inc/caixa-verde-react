@@ -3,7 +3,6 @@ import axios from 'axios';
 import { setOrder } from '../../common/setOrder.js';
 import { getClientInfo } from '../../common/getClientInfo.js';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
-import PropTypes from 'prop-types';
 
 
 class Checkout extends Component 
@@ -14,13 +13,14 @@ class Checkout extends Component
     
     this.props.updateShoppingCart("kit");
     this.props.updateShoppingCart("product");
+    let order_price = this.props.totalPriceProducts + this.props.totalPriceKits
     
     this.state = {
       adm_regions: [],
       adm_region_name: '',
       adm_region_id: '',
       checkout_order_id:0,
-      order_price: 0,
+      order_price: order_price || 0,
       client_id: 0,
       client_data: [],
       address_data: [],
@@ -117,6 +117,8 @@ class Checkout extends Component
       this.setState({checkout_order_id: res.order.id});
       localStorage.setItem("checkout_order_id", res.order.id);
       this.props.setCheckoutOrderId(res.order.id);
+      /* Good bye Cart */
+      this.props.resetItems();
       this.props.actions.redirect('pagamento');
       this.getPermission();
     }).catch(error => {

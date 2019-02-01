@@ -15,7 +15,18 @@ export const countProductsAndKits = (productsList, kitsList) => {
   };
 
 export const getTotalPrice = (productsList, kitsList) => {
-
+    var products = 0;
+    var kits = 0;
+    for (var i = 0; i <= productsList.length - 1; i++) {
+      products +=  productsList[i].price * productsList[i].quantity;
+    }
+    for (var j = 0; j <= kitsList.length - 1; j++) {
+      kits += kitsList[j].price * kitsList[j].quantity;
+    }
+    console.log("soma");
+    console.log(products);
+    console.log(kits);
+    return products + kits;
 }
 
 export const countProducts = (productsList) => {

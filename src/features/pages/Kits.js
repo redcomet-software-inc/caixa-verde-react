@@ -4,48 +4,52 @@ import LoaderHOC from '../../HOC/LoaderHOC.js';
 
 class Kits extends Component {
 
-  componentDidMount() {
-    setTimeout(()=>{this.props.actions.turnOffLoading()}, 50);
+  constructor(props) {
+    super(props);
+    this.state = {
+      itemData:[],
+    }
   }
 
-  /* Get the Product ID and return the quantity from Selected Products */
-  getIndexReturnQtd = index => {
-    var selectedKits = this.props.selectedKits;
-    var checkExistingElement = 0;
-    for (var i = 0; i <= selectedKits.length - 1; i++) {
-      if (parseInt(selectedKits[i].id,10) === index) {
-        checkExistingElement += 1;
-        return selectedKits[i].quantity;
-      }
+  refItem = (itemData) => {
+    this.setState({itemData: itemData});
+    console.log("item data");
+    console.log(itemData);
+  }
+
+  getQuantity = (id) => {
+    let items = this.props.items;
+    let quantity = 0;
+    if (items["kit" + id] !== undefined ) {
+      quantity = items["kit" + id].quantity;
     }
-    if (checkExistingElement === 0) {
-      return 0;
-    }
-  };
+    return quantity;
+  }
 
   render() {
     return (
         <div className="card-deck mx-auto">
-          {this.props.kits.map((item, index) => (
+        { this.props.kits === undefined || (
+          this.props.kits.map((item, index) => (
               <div className="m-2">
                 {' '}
                 <CardKits
+                  key={"cardkit" + item.id}
                   id={item.id}
                   setMoneyFormat={this.props.setMoneyFormat}
                   name={item.name}
                   description={item.description}
-                  price={item.price}
+                  price={item.price_kit}
                   products={item.products}
-                  quantity={this.getIndexReturnQtd(item.id)}
+                  quantity={this.getQuantity(item.id)}
+                  refItem={this.refItem}
                   addCardCount={this.props.addCardCount}
-                  subtractCardCountKit={this.props.subtractCardCountKit}
-                  ref={instance => {
-                    this.card = instance;
-                  }}
-                />
-              </div>
-            ))}
-          </div>
+                  productPlus={this.props.actions.productPlus}
+                  productMinus={this.props.actions.productMinus}
+                  ref={instance => {this.card = instance; }} />
+                </div>
+            )))}
+            </div>
       );
   }
 }

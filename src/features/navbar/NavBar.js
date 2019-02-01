@@ -28,8 +28,6 @@ class NavBar extends Component {
 
   componentDidMount() {
     this.changeDialog();
-    this.props.updateShoppingCart("kit");
-    this.props.updateShoppingCart("product");
     document.addEventListener('scroll', this.handleScroll, {passive: true} );
   }
 
@@ -126,7 +124,7 @@ class NavBar extends Component {
               <div className="p-0 bd-highlight">
                 <span className="nav-item">
                   <NavLink  className="nav-link" exact to="/minhacaixa" > Minha Caixa{' '} 
-                  {this.props.shoppingCartCount > 0 ? ( <div className="badge badge-success ">{this.props.shoppingCartCount}</div>  ) : null} 
+                  {this.props.productsCount > 0 ? ( <div className="badge badge-success ">{this.props.productsCount}</div>  ) : null} 
                   </NavLink>
                 </span>
               </div>

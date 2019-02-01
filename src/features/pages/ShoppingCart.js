@@ -24,8 +24,7 @@ export class ShoppingCart extends Component {
   }
 
   checkQuantity = () =>{
-    if((this.props.productsCount < this.props.minQuantity) && this.props.kitsCount===0)
-    {
+    if(this.props.home.productsCount < this.props.minQuantity) {
       this.setState({dialog:'warningDialog'});
       this.setState({modal: 'modal'});
     } else {
@@ -90,7 +89,7 @@ export class ShoppingCart extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                 {this.props.shoppingCartKits.map((item, index) => (
+                 {this.props.home.items.map((item, index) => (
                     <tr key={index + "ShoppingCart"}>
                       <td className="text-left">{item.name} {item.quantity > 1 ? <small className="text-danger">x{item.quantity}</small> : ' ' }  </td>
                       <td className="text-center">
@@ -98,7 +97,7 @@ export class ShoppingCart extends Component {
                       </td>
                     </tr>
                   ))}
-                  {this.props.shoppingCartProducts.map((item, index) => (
+                  {this.props.home.items.map((item, index) => (
                     <tr key={index + "ShoppingCart_2"}>
                       <td className="text-left">{item.name} {item.quantity > 1 ? <small className="text-danger">x{item.quantity}</small> : ' ' } </td>
                       <td className="text-center">
@@ -117,7 +116,7 @@ export class ShoppingCart extends Component {
             <div className="modal-footer">
               <div className="row w-100">
                 <div className="col my-auto text-center mx-auto">
-                  Total: {this.props.setMoneyFormat( this.props.totalPriceProducts + this.props.totalPriceKits)}
+                  Total: {this.props.setMoneyFormat( this.props.totalPrice)}
                 </div>
                 <div className="col text-right pr-0">
                     <button className="btn btn-primary" data-dismiss="modal" data-toggle={this.state.modal} data-target={"#"+this.state.dialog } onClick={this.clickHandle} type="button">Finalizar Compra</button>

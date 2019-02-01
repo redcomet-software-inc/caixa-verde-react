@@ -3,26 +3,24 @@
 // https://medium.com/@nate_wang/a-new-approach-for-managing-redux-actions-91c26ce8b5da
 
 import {
-  HOME_REDIRECT,
+  HOME_PRODUCT_MINUS,
 } from './constants';
 
-/* Accepts Params */
-export function redirect(value) {
-  console.log("value");
-  console.log(value);
+export function productMinus() {
   return {
-    type: HOME_REDIRECT,
-    value
+    type: HOME_PRODUCT_MINUS,
   };
 }
 
 export function reducer(state, action) {
+  let value = state.productsCount
+  value - 1 <= 0 ? value = 0 : value -= 1;
   switch (action.type) {
-    case HOME_REDIRECT:
+  
+    case HOME_PRODUCT_MINUS:
       return {
         ...state,
-        redirect:true,
-        redirectTo: action.value,
+        productsCount: value,
       };
 
     default:

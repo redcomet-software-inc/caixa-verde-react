@@ -1,13 +1,17 @@
-export const setLocalStorage = (products, kits) => {
+export const storageProduct = (products) => {
 /* Add List of Selected Products and Kits to Local Storage */
-    //this.countProducts(products, kits);
-    localStorage.setItem('selectedProducts', JSON.stringify(products));
-    localStorage.setItem('selectedKits', JSON.stringify(kits));
+  let ls = localStorage.setItem('selectedProducts', JSON.stringify(products));
+  ls ? true : false
+}
+
+export const storageKit = (kits) => {
+  let ls = localStorage.setItem('selectedKits', JSON.stringify(kits));
+  ls ? true : false
 }
 
 /* Verify if a localStore key is available */
 export const checkLocalStorage = () => {
-    if (localStorage.getItem('selectedProducts') === null || localStorage.getItem('selectedKits') === null) {
+    if (localStorage.getItem('selectedProducts') === null && localStorage.getItem('selectedKits') === null) {
       return false;
     } else {
       return true;
@@ -26,4 +30,9 @@ export const getLocalStorage = () => {
   } else {
     return false;
   }
+}
+
+export const destroyShoppingCart = () => {
+  localStorage.removeItem("selectedKits");
+  localStorage.removeItem("selectedProducts");
 }
