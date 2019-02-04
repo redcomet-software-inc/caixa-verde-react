@@ -1,8 +1,8 @@
     
 import React, {Component} from 'react';
 import Cards from 'react-credit-cards';
-import Loading from '../../common/Loading.js';
-import { startPaymentProcess } from '../../../common/getSession.js';
+import Loading from '../../common/loading.js';
+import { startPaymentProcess } from '../../../common/get-session.js';
 
 export default class CreditCardForm extends Component {
     constructor (props) {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MainPage from '../home/MainPage.js';
+import MainPage from '../home/mainpage.js';
 import logo from '../../images/logo-caixaverde-cube-video.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';

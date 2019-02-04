@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import request from '../../common/configApi.js';
+import { NavLink } from 'react-router-dom';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
-import { getOrders } from '../../common/getOrders.js';
+import { getOrders } from '../../common/get-orders.js';
 
 class MyOrders extends Component {
   static propTypes = {
@@ -42,9 +42,17 @@ class MyOrders extends Component {
     }); 
   }
 
+  handlePayment = (id) => {
+    this.props.setCheckoutOrderId(id);
+    this.props.redirect('pagamento');
+  }
+
   renderPayment = (order_status) => {
+
     let payment = ""
     let received = ""
+    console.log("Código de Pagamento");
+    console.log(order_status.pagseguro_code)
     const order_number = order_status.id
     if(order_status.paid === false) {
       payment = "Pendente"
@@ -110,8 +118,8 @@ class MyOrders extends Component {
                 <div className="" id={"heading" + index}>
                     <div className="row">
                         <div className="col"><button className="btn btn-info nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</button></div>
-                        <div className="col my-auto">{ 'Pedido nº ' + order.order_status.id}</div>
-                        
+                        <div className="col my-auto"><NavLink to='pedidos/${order_id}'>{ 'Pedido nº ' + order.order_status.id}</NavLink></div>
+                        <div className="col my-auto"><button onClick={e => this.handlePayment(order.id)} className="btn btn-info nav-link collapsed" >Pagar</button></div>    
                     </div>
                 </div>
                 <div id={"collapse" + index} className="collapse" aria-labelledby={"heading" + index} data-parent="#accordion">
@@ -125,7 +133,7 @@ class MyOrders extends Component {
                           </tr>
                         </thead>
                         <tbody>
-                        { this.renderPayment(order.order_status)}
+                        { this.renderPaymement(order.order_status)}
                         </tbody>
                       </table>
                       <table className="table table-hover">

@@ -6,21 +6,38 @@ import {
   HOME_PRODUCT_MINUS,
 } from './constants';
 
-export function productMinus() {
+export function productMinus(kind, value, mybox) {
+  let id;
+  if(kind === "product") {
+    id = value.product_id
+  } else if(kind === "kit") {
+    id = value.kit_id
+  }
   return {
     type: HOME_PRODUCT_MINUS,
+    kind,
+    value,
+    id,
+    mybox,
   };
 }
 
 export function reducer(state, action) {
-  let value = state.productsCount
-  value - 1 <= 0 ? value = 0 : value -= 1;
+  let items = state.items;
+  let box = state.myBox;
+  if(action.id === undefined) {
+    return state;
+  }
+  items[action.kind + action.id] =  action.value;
+  box["mybox" + action.kind + action.id] = action.mybox;
   switch (action.type) {
   
     case HOME_PRODUCT_MINUS:
       return {
         ...state,
-        productsCount: value,
+        items,
+        box,
+        
       };
 
     default:

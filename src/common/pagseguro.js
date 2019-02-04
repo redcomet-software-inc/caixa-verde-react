@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import request from './configApi.js';
+import request from './config-api.js';
 
 export let getSession = function() {
     return new Promise((resolve, reject) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppContainer } from 'react-hot-loader';
 import { render } from 'react-dom';
-import configStore from './common/configStore';
+import configStore from './common/config-store';
 import routeConfig from './common/routeConfig';
 import Root from './Root';
 

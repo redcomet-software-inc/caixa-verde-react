@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as actions from '../features/home/redux/actions.js';
 import { bindActionCreators, compose } from 'redux';
-import { getAuth } from '../common/getAuth.js';
+import { getAuth } from '../common/get-auth.js';
 import { connect } from 'react-redux';
 
 // This function takes a component...
@@ -10,13 +10,9 @@ const LoaderHOC = (WrappedComponent) => {
   return class extends Component {
 
     redirect = () => {
-      console.log("redirect");
       if(!this.props.permit) {
-        console.log("redirected");
-        console.log(this.props.permit);
         let url = "";
         if(this.props.redirectTo) {
-          console.log("detectado");
           url=this.props.redirectTo;
         } else {
           url="/"

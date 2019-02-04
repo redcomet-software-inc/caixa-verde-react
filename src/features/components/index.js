@@ -1,1 +1,1 @@
-export { default as Categories } from './Categories';export { default as ShoppingCartButton } from './ShoppingCartButton';
+export { default as Categories } from './categories';export { default as ShoppingCartButton } from './shoppingcart-button';

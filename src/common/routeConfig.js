@@ -1,8 +1,8 @@
 import App from '../features/home/App.js';
-import { PageNotFound } from '../features/common';
 import homeRoute from '../features/home/route';
 import commonRoute from '../features/common/route';
 import mainPageRoute from '../features/common/route';
+import NotFound from '../features/common/not-found'
 import _ from 'lodash';
 import pagesRoute from '../features/pages/route';
 import footerRoute from '../features/footer/route';
@@ -26,7 +26,7 @@ const routes = [{
   component: App,
   childRoutes: [
     ...childRoutes,
-    { path: '*', name: 'Page not found', component: PageNotFound },
+    { path: '*', name: 'Page not found', component: NotFound },
   ].filter(r => r.component || (r.childRoutes && r.childRoutes.length > 0)),
 }];
 

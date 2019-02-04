@@ -3,8 +3,8 @@ const initialState = {
   isError: false,
   redirect:false,
   redirectTo:'/',
-  productsCount: 0,
-  items: {},
+  items: {}, // Products Info Directive
+  myBox: {}, // Detailed Selected Products Info
 };
 
 export default initialState;
