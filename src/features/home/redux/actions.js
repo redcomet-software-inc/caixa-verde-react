@@ -6,3 +6,5 @@ export { redirect } from './redirect';
 export { resetRedirect } from './resetRedirect';
 export { productPlus } from './productPlus';
 export { productMinus } from './productMinus';
+export { kitPlus } from './kitPlus';
+export { kitMinus } from './kitMinus';

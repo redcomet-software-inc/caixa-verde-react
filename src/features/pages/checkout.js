@@ -11,9 +11,9 @@ class Checkout extends Component
   constructor(props) {
     super(props);
     
-    this.props.updateShoppingCart("kit");
-    this.props.updateShoppingCart("product");
-    let order_price = this.props.totalPriceProducts + this.props.totalPriceKits
+    let products = this.props.products;
+    let kits = this.props.kits;
+    let order_price = this.props.order_price;
     
     this.state = {
       adm_regions: [],
@@ -24,6 +24,8 @@ class Checkout extends Component
       client_id: 0,
       client_data: [],
       address_data: [],
+      products: products || [],
+      kits: kits || [],
     };
   }
 
@@ -60,9 +62,6 @@ class Checkout extends Component
     const address_zipcode = e.currentTarget.address_zipcode.value;
     const client_id = e.currentTarget.client_id.value;
     const cpf = e.currentTarget.cpf.value;
-    const products = this.props.shoppingCartProducts;
-    const kits = this.props.shoppingCartKits;
-    //const kits = JSON.stringify(this.props.shoppingCartKits);
     /* Data structure to Create Order */
     var data = {
       client_token: this.state.token,
@@ -72,7 +71,7 @@ class Checkout extends Component
           price_table_id: 5,
           client_id: client_id,
           orders_kits_attributes:[],
-          orders_products_attributes: [],
+          orders_products_attributes: this.state.products,
         },
         client_attributes: 
         {
@@ -94,24 +93,8 @@ class Checkout extends Component
             kind: address_kind
           }
       }
-    
-    products.map((product) => {
-      data.order.orders_products_attributes.push({
-        product_id: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: product.quantity
-      });
-    });
-
-    kits.map((kit) =>{
-      data.order.orders_kits_attributes.push({
-        kit_id: kit.id,
-        name: kit.name,
-        price: kit.price,
-        quantity: kit.quantity
-      });
-    });
+    console.log("CHECKOUT DATA<<<<<<<<<<<<<<<<<<<<<<<");
+    console.log(data);
 
     setOrder(data).then(res => {
       this.setState({checkout_order_id: res.order.id});
@@ -158,7 +141,51 @@ class Checkout extends Component
   }
 
   change = (e) => {
-    this.setState({adm_region_id: e.currentTarget})
+    this.setState({adm_region_id: e.currentTarget});
+  }
+
+  renderKits = () => {
+    let table = []
+    let kits = this.props.kits;
+    if(kits !== undefined) {
+      for(let item in kits) {
+        table.push(
+        <li className="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 className="my-0">
+              {kits[item].name} {this.renderQuantity(kits[item].quantity)}
+            </h6>
+            <small className="text-muted">{kits[item].description}</small>
+          </div>
+          <span className="text-muted">
+            {this.props.setMoneyFormat(kits[item].price * kits[item].quantity)}
+          </span>
+        </li>)
+      } 
+    }
+    return table;
+  }
+
+  renderProducts = () => {
+    let table = []
+    let products = this.props.products;
+    if(products !== undefined) {
+      for(let item in this.props.products) {
+        table.push(
+        <li className="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 className="my-0">
+              {products[item].name} {this.renderQuantity(products[item].quantity)}
+            </h6>
+            <small className="text-muted">{products[item].description}</small>
+          </div>
+          <span className="text-muted">
+            {this.props.setMoneyFormat(products[item].price * products[item].quantity)}
+          </span>
+        </li>)
+      } 
+    }
+    return table;
   }
 
   render() {
@@ -166,39 +193,15 @@ class Checkout extends Component
       <div className="pages-checkout pb-5 mb-5">
         <div className="row">
           <div className="col-md-4 order-md-2 mb-4">
-            <h4 className="d-flex justify-content-between align-items-center mb-3">
+            <h4 className="d-flex justify-content-between align-products-center mb-3">
               <span className="text-muted">Sua Caixa</span>
               <span className="badge badge-secondary badge-pill">
-                {this.props.shoppingCartCount}
+                {this.props.count}
               </span>
             </h4>
             <ul className="list-group mb-3">
-              {this.props.shoppingCartProducts.map((item, index) => (
-                  <li className="list-group-item d-flex justify-content-between lh-condensed">
-                    <div>
-                      <h6 className="my-0">
-                        {item.name} {this.renderQuantity(item.quantity)}
-                      </h6>
-                      <small className="text-muted">{item.description}</small>
-                    </div>
-                    <span className="text-muted">
-                      {this.props.setMoneyFormat(item.price * item.quantity)}
-                    </span>
-                  </li>
-              ))}
-              { this.props.shoppingCartKits.map((item, index) => (
-                  <li className="list-group-item d-flex justify-content-between lh-condensed">
-                    <div>
-                      <h6 className="my-0">
-                        {item.name} {this.renderQuantity(item.quantity)}
-                      </h6>
-                      <small className="text-muted">{item.description}</small>
-                    </div>
-                    <span className="text-muted">
-                      {this.props.setMoneyFormat(item.price * item.quantity)}
-                    </span>
-                  </li>
-                ))}
+              {this.renderProducts()}
+              {this.renderKits()}
               <li className="list-group-item d-flex justify-content-between bg-light">
                 <div className="text-info">
                   <h6 className="my-0">Valor do Frete</h6>
@@ -211,7 +214,7 @@ class Checkout extends Component
                 <span>Total</span>
                 <strong>
                   {this.props.setMoneyFormat(
-                    this.state.order_price
+                    this.props.order_price
                   )}
                 </strong>
               </li>

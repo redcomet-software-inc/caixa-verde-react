@@ -47,11 +47,6 @@ export default class Index extends Component {
         }
     }
 
-    handlePayment = (id) => {
-        this.props.setCheckoutOrderId(id);
-        this.props.redirect('pagamento');
-    }
-
     renderPayment = (order_status) => {
 
         let payment = ""
@@ -88,7 +83,7 @@ export default class Index extends Component {
                     <div className="row">
                         <div className="col"><button className="btn btn-info nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</button></div>
                         <div className="col my-auto"><NavLink to={"pedidos/" + order.id}>{ 'Pedido nº ' + order.order_status.id}</NavLink></div>
-                        <div className="col my-auto"><button onClick={e => this.handlePayment(order.id)} className="btn btn-info nav-link collapsed" >Pagar</button></div>    
+                        <div className="col my-auto"><button className="btn btn-info nav-link collapsed" >Pagar</button></div>    
                     </div>
                 </div>
                 <div id={"collapse" + index} className="collapse" aria-labelledby={"heading" + index} data-parent="#accordion">

@@ -3,8 +3,9 @@ const initialState = {
   isError: false,
   redirect:false,
   redirectTo:'/',
-  items: {}, // Products Info Directive
-  myBox: {}, // Detailed Selected Products Info
+  products: {}, // Products Info Directive
+  kits: {}, //Kits Info Directive
+  box: {}, // Detailed Selected Products Info
 };
 
 export default initialState;

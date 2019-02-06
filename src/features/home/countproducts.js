@@ -23,9 +23,6 @@ export const getTotalPrice = (productsList, kitsList) => {
     for (var j = 0; j <= kitsList.length - 1; j++) {
       kits += kitsList[j].price * kitsList[j].quantity;
     }
-    console.log("soma");
-    console.log(products);
-    console.log(kits);
     return products + kits;
 }
 

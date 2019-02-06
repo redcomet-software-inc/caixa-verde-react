@@ -7,51 +7,63 @@ class Kits extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      itemData:[],
+      kitData:[],
       myBox:[]
     }
   }
 
-  refItem = (itemData, myBox) => {
-    this.setState({itemData: itemData});
+  refKit = (kitData, myBox) => {
+    this.setState({kitData: kitData});
     this.setState({myBox: myBox});
-    console.log("item data");
-    console.log(itemData);
+    console.log("kit data");
+    console.log(kitData);
   }
 
   getQuantity = (id) => {
-    let items = this.props.items; // this comes from Redux Store
+    let kits = this.props.kits; // this comes from Redux Store
     let quantity = 0;
-    if (items["kit" + id] !== undefined ) {
-      quantity = items["kit" + id].quantity;
+    if (kits["kit" + id] !== undefined ) {
+      quantity = kits["kit" + id].quantity;
     }
     return quantity;
+  }
+
+  renderKits = () => {
+    let table = []
+    let kits = this.props.kitsList;
+    if(kits !== undefined) {
+      for(let kit in this.props.kitsList) { 
+        table.push(
+          <div className="m-2">
+          <CardKits
+              key={"cardkit" + kits[kit].id}
+              id={kits[kit].id}
+              setMoneyFormat={this.props.setMoneyFormat}
+              name={kits[kit].name}
+              kind={kits[kit].kind}
+              description={kits[kit].description}
+              price={kits[kit].price_kit}
+              products={kits[kit].products}
+              quantity={this.getQuantity(kits[kit].id)}
+              refKit={this.refKit}
+              kitPlus={this.props.actions.kitPlus}
+              kitMinus={this.props.actions.kitMinus}
+              />
+            </div>
+        );
+      }
+    }
+
+    return table;
   }
 
   render() {
     return (
         <div className="card-deck mx-auto">
-        { this.props.kits === undefined || (
-          this.props.kits.map((item, index) => (
-              <div className="m-2">
-                {' '}
-                <CardKits
-                  key={"cardkit" + item.id}
-                  id={item.id}
-                  setMoneyFormat={this.props.setMoneyFormat}
-                  name={item.name}
-                  description={item.description}
-                  price={item.price_kit}
-                  products={item.products}
-                  quantity={this.getQuantity(item.id)}
-                  refItem={this.refItem}
-                  addCardCount={this.props.addCardCount}
-                  productPlus={this.props.actions.productPlus}
-                  productMinus={this.props.actions.productMinus}
-                  ref={instance => {this.card = instance; }} />
-                </div>
-            )))}
-            </div>
+              
+          {this.renderKits()}
+
+        </div>
       );
   }
 }

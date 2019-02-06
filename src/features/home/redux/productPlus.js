@@ -6,39 +6,26 @@ import {
   HOME_PRODUCT_PLUS,
 } from './constants';
 
-export function productPlus(kind, value, mybox) {
-  let id;
-  if(kind === "product") {
-    id = value.product_id
-  } else if(kind === "kit") {
-    id = value.kit_id
-  }
-
+export function productPlus(product) {
+  let id = product.product_id
   return {
     type: HOME_PRODUCT_PLUS,
-    kind,
-    value,
+    product,
     id,
-    mybox,
   };
 }
 
+
 export function reducer(state, action) {
-  let items = state.items
-  let box = state.myBox;
-  if(action.id === undefined) {
-    return state;
-  }
-  items[action.kind + action.id] =  action.value;
-  box["mybox" + action.kind + action.id] = action.mybox;
+  
   switch (action.type) {
-   
     case HOME_PRODUCT_PLUS:
-      return {
-        ...state,
-        items,
-        box,
-      }
+    let products = state.products;
+    products["product" + action.id ] =  action.product;
+    return {
+      ...state,
+      products,
+    };
 
     default:
       return state;

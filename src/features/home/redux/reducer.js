@@ -7,6 +7,8 @@ import { reducer as redirectReducer } from './redirect';
 import { reducer as resetRedirectReducer } from './resetRedirect';
 import { reducer as productPlusReducer } from './productPlus';
 import { reducer as productMinusReducer } from './productMinus';
+import { reducer as kitPlusReducer } from './kitPlus';
+import { reducer as kitMinusReducer } from './kitMinus';
 
 const reducers = [
   turnOnLoadingReducer,
@@ -17,6 +19,8 @@ const reducers = [
   resetRedirectReducer,
   productPlusReducer,
   productMinusReducer,
+  kitPlusReducer,
+  kitMinusReducer,
 ];
 
 export default function reducer(state = initialState, action) {

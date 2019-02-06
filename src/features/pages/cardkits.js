@@ -7,7 +7,7 @@ export default class CardKits extends Component {
   constructor(props) {
     super(props);
 
-    let itemData = {
+    let kitData = {
       kit_id: this.props.id,
       name: this.props.name,
       price: this.props.price,
@@ -20,21 +20,21 @@ export default class CardKits extends Component {
       price: this.props.price,
       quantity: this.props.quantity,
       kind: this.props.kind,
-      products: this.props.products,
+      kits: this.props.kits,
     }
 
-    this.props.refItem(itemData, myBox);
+    this.props.refKit(kitData, myBox);
     let hide = null;
     let card_active = null;
     if(this.props.quantity > 0) {
       hide = "show";
       card_active = "card-active";
     } else {
-      itemData.quantity = 0;
+      kitData.quantity = 0;
     }
     this.state = {
       borderClass: 'standard',
-      itemData: itemData || {},
+      kitData: kitData || {},
       myBox: myBox || {},
       card_active: card_active || '',
       hide: hide || 'hide',
@@ -45,17 +45,17 @@ export default class CardKits extends Component {
     console.log("delta");
     console.log(delta);
     /* name variable can be either kit or product */
-      let item = this.state.itemData;
+      let kit = this.state.kitData;
       let box = this.state.myBox;
-      let quantity = item.quantity;
-      let nextQuantity = item.quantity + delta;
-      console.log(item);
-      console.log(this.state.itemData);
+      let quantity = kit.quantity;
+      let nextQuantity = kit.quantity + delta;
+      console.log(kit);
+      console.log(this.state.kitData);
       console.log("quantity: " + quantity);
       console.log("next quantity: " + nextQuantity);
 
       if (quantity === 0 && delta === 1 || nextQuantity > 0) {
-        item.quantity += delta;
+        kit.quantity += delta;
         box.quantity += delta;
         this.setState({card_active: "card-active"});
         this.setState({ hide: 'show' });
@@ -63,31 +63,59 @@ export default class CardKits extends Component {
       }
 
       if(nextQuantity === 0) {
-        item.quantity = 0;
+        kit.quantity = 0;
         box.quantity = 0;
         console.log(quantity);
         this.setState({card_active: ""});
         this.setState({ hide: 'hide' });
         console.log("minus");
       }
-      this.setState({ itemData: item});
+      this.setState({ kitData: kit});
       this.setState({ myBox: box});
       console.log("check here");
-      console.log(this.state.itemData);
-      this.props.refItem(item, box);
+      console.log(this.state.kitData);
+      this.props.refKit(kit, box);
   };
 
   handleClickPlus = () => {
     this.addCardCount(1);
-    this.props.productPlus("kit", this.state.itemData, this.state.myBox);
+    this.props.kitPlus(this.state.kitData);
   }
 
   handleClickMinus = () => {
-    if("kit", this.state.itemData.quantity > 0) {
+    if(this.state.kitData.quantity > 0) {
       this.addCardCount(-1);
-      this.props.productMinus("kit", this.state.itemData, this.state.myBox);
+      this.props.kitMinus(this.state.kitData);
     }
   }
+
+  renderProducts = () => {
+    let table = [];
+    let products = this.props.products;
+    console.log("PRODUCTS");
+    console.log(products);
+    if(products !== undefined) {
+      for(let product in this.props.products) {
+        table.push(
+          <ul className="list-group list-group-flush">
+            <li className="list-group-kit"> 
+              <div className="row">
+                <div className="col">
+                  <img className="img-fluid" alt={"Imagem Kit " + products[product].name} src={products[product].thumb} />
+                </div>
+                <div className="col my-auto">
+                  { products[product].name }
+                </div>
+              </div>
+            </li>
+          </ul>
+        );
+      }
+    }
+
+    return table;
+  }
+  
 
   render() {
     return (
@@ -95,24 +123,13 @@ export default class CardKits extends Component {
         <div className="card-body">
           <h5 className="card-title text-center">{this.props.name}</h5>
         </div>
-        <ul className="list-group list-group-flush">
-          {this.props.products.map((product, index) => (
-            <li className="list-group-item"> 
-              <div className="row">
-                <div className="col p-0">
-                  <img alt={"Imagem Kit " + product.name} src={product.thumb} />
-                </div>
-                <div className="col my-auto">
-                  { product.name }
-                </div>
-              </div>
-            </li>
-            ))}
-        </ul>
+        
+          { this.renderProducts() }
+ 
         <div className="card-body text-center">
         <div className="row">
           <div className="col">
-            <p className="card-text text-center text-success">{this.props.setMoneyFormat(this.state.itemData.price)}</p>
+            <p className="card-text text-center text-success">{this.props.setMoneyFormat(this.state.kitData.price)}</p>
           </div>
         </div>
         <div className="row">
@@ -125,7 +142,7 @@ export default class CardKits extends Component {
           </div>
           <div className={"col-4 " + this.state.hide}>
             <div id={this.props.id} className={'btn disabled '+ this.state.hide}>
-              {this.state.itemData.quantity}
+              {this.state.kitData.quantity}
             </div>
           </div>
           <div className="col-4">

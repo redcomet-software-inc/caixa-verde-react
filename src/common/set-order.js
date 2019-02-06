@@ -5,9 +5,6 @@ export let setOrder = function(params) {
     return new Promise((resolve, reject) => {
     const email = localStorage.getItem("email");
     const token = localStorage.getItem("token");
-    console.log("Set Order");
-    console.log("DATA");
-    console.log(params);
 
     const file = {
         url:'/api/v1/orders.json',
@@ -23,10 +20,8 @@ export let setOrder = function(params) {
         },
     }
     request(file).then( success => {
-        console.log(success);
         resolve(success);
     }).catch( err => {
-        console.log(err);
         reject( err )
     });
 

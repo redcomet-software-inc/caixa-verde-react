@@ -60,7 +60,9 @@ class MyOrders extends Component {
               
               <Route exact path={"/pedidos/:orderId"}
                       render={props => (
-                        <Show 
+                        <Show
+                        redirect={this.props.redirect}
+                        setCheckoutOrderId={this.props.setCheckoutOrderId}
                         location={window.location}
                         {...props}
                         />

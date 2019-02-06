@@ -36,8 +36,6 @@ class MessageScreen extends Component {
     }
 
     current_tab = () => {
-        console.log("current tab");
-        console.log(this.props.currentTab);
         if(this.props.currentTab === "success") {
             return this.render_success();
         } else {

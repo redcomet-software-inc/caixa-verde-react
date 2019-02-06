@@ -3,6 +3,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './common/config-store';
 import { Switch, Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import history from './common/history';
@@ -50,7 +52,9 @@ export default class Root extends React.Component {
     const children = renderRouteConfigV3(this.props.routeConfig, '/');
     return (
       <Provider store={this.props.store}>
-        <ConnectedRouter history={history}>{children}</ConnectedRouter>
+
+          <ConnectedRouter history={history}>{children}</ConnectedRouter>
+
       </Provider>
     );
   }

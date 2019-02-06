@@ -19,8 +19,6 @@ export let getProducts = function() {
         }
 
         request(data).then( success => {
-            console.log("success");
-            console.log(success);
             resolve(success);
         }).catch( err => {
             reject( err );

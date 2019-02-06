@@ -52,7 +52,7 @@ export class MainPage extends Component {
       avatar:'',
       warningMessage:'A sua caixa está vazia.',
       checkout_order_id:0,
-      items: []
+      products: []
     };
   }
 
@@ -62,8 +62,6 @@ export class MainPage extends Component {
   }
 
   setCheckoutOrderId = (order_id) => {
-    console.log(order_id);
-    console.log("checkout");
     this.setState({checkout_order_id: order_id});
     localStorage.setItem("checkout_order_id", order_id);
   }
@@ -200,13 +198,50 @@ export class MainPage extends Component {
     }
   }
 
-  count = () => {
+  /* Check if a Giving Object is Empty */
+  isEmpty = function (obj){
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+      }
+      return true;
+  }
+
+  countB = (myObject) => {
     let count = 0;
-    let myObject = this.props.home.items
-    for (var key in this.props.home.items) {
-      count += myObject[key].quantity;
+    if(this.isEmpty(myObject) === false) {
+      for (var key in myObject) {
+        count += myObject[key].quantity;
+      }
     }
     return count;
+  }
+
+  /* Count Selected Items */
+  count = () => {
+    let products = this.countB(this.props.home.products);
+    let kits = this.countB(this.props.home.kits);
+    let count = products + kits;
+    
+    return count;
+  }
+
+  order_priceB = (myObject) => {
+    let value = 0;
+    if(this.isEmpty(myObject) === false) {
+      for(var key in myObject) {
+        value += myObject[key].price;
+      }
+    }
+    return value;
+  }
+
+  order_price = () => {
+    let value = 0;
+    let price_products = this.order_priceB(this.props.home.products);
+    let price_kits = this.order_priceB(this.props.home.kits);
+    value = price_products + price_kits;
+    return value;
   }
 
   render() {
@@ -243,7 +278,7 @@ export class MainPage extends Component {
                                 <Products
                                   permit={true}
                                   setMoneyFormat={this.setMoneyFormat}
-                                  items={this.props.home.items}
+                                  products={this.props.home.products}
                                 />
                               )}
                             />
@@ -252,8 +287,8 @@ export class MainPage extends Component {
                               exact
                               render={props => (
                                 <Kits
-                                  kits={this.state.kitsList}
-                                  items={this.props.home.items}
+                                  kits={this.props.home.kits}
+                                  kitsList={this.state.kitsList}
                                   permit={true}
                                   onRef={ref => (this.custom = ref)}
                                   setMoneyFormat={this.setMoneyFormat}
@@ -291,6 +326,10 @@ export class MainPage extends Component {
                                   clientId={this.state.clientId}
                                   clientEmail={this.state.clientEmail}
                                   resetItems={this.resetItems}
+                                  products={this.props.home.products}
+                                  kits={this.props.home.kits}
+                                  order_price={this.order_price()}
+                                  count={this.count()}   
                                   setCheckoutOrderId={this.setCheckoutOrderId}
                                   redirectTo={'login'}
                                 />
@@ -320,7 +359,7 @@ export class MainPage extends Component {
                               render={props => (
                                 <MyBox
                                   count={this.count()}
-                                  items={this.props.home.items}
+                                  products={this.props.home.products}
                                   permit={true}
                                  />
                               )}
@@ -355,7 +394,10 @@ export class MainPage extends Component {
           
             <ShoppingCart
               setMoneyFormat={this.setMoneyFormat}
-              items={this.props.home.items}
+              count={this.count()}
+              order_price={this.order_price()}
+              products={this.props.home.products}
+              kits={this.props.home.kits}
               loggedIn={this.state.loggedIn}
               warning={this.warning}
               onRef={ref => (this.custom = ref)}

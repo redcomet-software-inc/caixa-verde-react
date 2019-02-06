@@ -3,28 +3,28 @@
 // https://medium.com/@nate_wang/a-new-approach-for-managing-redux-actions-91c26ce8b5da
 
 import {
-  HOME_PRODUCT_MINUS,
+  HOME_KIT_PLUS,
 } from './constants';
 
-export function productMinus(product) {
-  let id = product.product_id
+export function kitPlus(kit) {
+  let id = kit.kit_id
   return {
-    type: HOME_PRODUCT_MINUS,
-    product,
+    type: HOME_KIT_PLUS,
+    kit,
     id,
   };
 }
 
 export function reducer(state, action) {
-
   switch (action.type) {
-  case HOME_PRODUCT_MINUS:
-  let products = state.products;
-  products["product" + action.id ] =  action.product;
-    return {
-      ...state,
-      products,
-    };
+    case HOME_KIT_PLUS:
+    let kits = state.kits;
+    kits["kit" + action.id] =  action.kit;
+      return {
+        ...state,
+        kits,
+      };
+
     default:
       return state;
   }

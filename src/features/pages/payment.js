@@ -4,7 +4,7 @@ import 'react-credit-cards/es/styles-compiled.css';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
 import PropTypes from 'prop-types';
 import { getClientInfo } from '../../common/get-clientinfo.js';
-import MessageScreen from '../components/MessageScreen.js';
+
 import CreditCardForm from '../pages/PaymentComponents/CreditCardForm.js';
 import TicketForm from '../pages/PaymentComponents/TicketForm';
 import MoneyForm from '../pages/PaymentComponents/MoneyForm';
@@ -47,7 +47,8 @@ class Payment extends Component {
 
   componentDidMount() {
     /* Must Choose an Order to Pay */
-    if(this.state.order_id===0) {
+    const o_id = this.state.order_id;
+    if(o_id===0 || o_id===undefined || o_id==="undefined") {
       this.props.actions.redirect('');
     }
     this.props.actions.turnOffLoading();
@@ -107,13 +108,13 @@ class Payment extends Component {
 
   success_tab = (status) => {
     return(
-      <MessageScreen status={status} />
+      <div></div>
     )
   }
 
   fail_tab = (status) => {
     return(
-      <MessageScreen status={status} />
+      <div></div>
     )
   }
 
@@ -168,11 +169,7 @@ class Payment extends Component {
     return (
       <div className="pages-payment">
         {this.state.current_tab==="success" || this.state.current_tab==="failed" && (
-            <MessageScreen 
-              successMessage={this.state.successMessage} 
-              errorMessage={this.state.errorMessage}
-              currentTab={this.state.current_tab}
-            />
+            <div></div>
         )}
         <h2 className="text-center title">Pagamento</h2>
           <div className="row">

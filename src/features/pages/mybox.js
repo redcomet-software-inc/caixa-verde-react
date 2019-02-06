@@ -33,16 +33,16 @@ class MyBox extends Component {
   renderBox = () => {
     console.log("render box");
     if(this.state.box_empty===false) {
-      let items = this.props.items;
+      let products = this.props.products;
       let table = [];
-      if(items !== undefined) {
-        for(let product in this.props.items) {
+      if(products !== undefined) {
+        for(let product in this.props.products) {
           table.push(
-            <div key={"key" + items[product].id + items[product].name} className="card-columns">
+            <div key={"key" + products[product].id + products[product].name} className="card-columns">
               <div className="card mb-3" style={{width: 180, backgroundColor: '#fff'}}>
-                <div className="card-header">{ items[product].name }</div>
+                <div className="card-header">{ products[product].name }</div>
                 <div className="card-body">
-                  <img alt={"Image do Produto " + items[product].name} className="img-fluid" src={ items[product].thumb } />
+                  <img alt={"Image do Produto " + products[product].name} className="img-fluid" src={ products[product].thumb } />
                   <p className="card-text"></p>
                 </div>
               </div>

@@ -52,7 +52,7 @@ export class MainPage extends Component {
       avatar:'',
       warningMessage:'A sua caixa está vazia.',
       checkout_order_id:0,
-      items: []
+      products: []
     };
   }
 
@@ -202,10 +202,16 @@ export class MainPage extends Component {
 
   count = () => {
     let count = 0;
-    let myObject = this.props.home.items
-    for (var key in this.props.home.items) {
-      count += myObject[key].quantity;
-    }
+    //let myObject = this.props.home.products
+    console.log("My Object");
+   
+    /*
+    if(myObject[key] !== undefined) {
+      for (var key in this.props.home.products) {
+        count += myObject[key].quantity;
+      }
+    }*/
+
     return count;
   }
 
@@ -243,7 +249,7 @@ export class MainPage extends Component {
                                 <Products
                                   permit={true}
                                   setMoneyFormat={this.setMoneyFormat}
-                                  items={this.props.home.items}
+                                  products={this.props.home.products}
                                 />
                               )}
                             />
@@ -253,7 +259,7 @@ export class MainPage extends Component {
                               render={props => (
                                 <Kits
                                   kits={this.state.kitsList}
-                                  items={this.props.home.items}
+                                  products={this.props.home.products}
                                   permit={true}
                                   onRef={ref => (this.custom = ref)}
                                   setMoneyFormat={this.setMoneyFormat}
@@ -309,6 +315,7 @@ export class MainPage extends Component {
                                 <MyOrders 
                                   setCheckoutOrderId={this.setCheckoutOrderId}
                                   redirect={this.redirect}
+                                  setCheckoutOrderId={this.setCheckoutOrderId}
                                   location={window.location}
                                   {...props}
                                 />
@@ -320,7 +327,7 @@ export class MainPage extends Component {
                               render={props => (
                                 <MyBox
                                   count={this.count()}
-                                  items={this.props.home.items}
+                                  products={this.props.home.products}
                                   permit={true}
                                  />
                               )}
@@ -355,7 +362,7 @@ export class MainPage extends Component {
           
             <ShoppingCart
               setMoneyFormat={this.setMoneyFormat}
-              items={this.props.home.items}
+              products={this.props.home.products}
               loggedIn={this.state.loggedIn}
               warning={this.warning}
               onRef={ref => (this.custom = ref)}

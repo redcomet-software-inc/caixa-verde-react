@@ -6,8 +6,6 @@ export let getPagseguroTransaction = function(orderId) {
     return new Promise((resolve, reject) => {
     const email = localStorage.getItem("email");
     const token = localStorage.getItem("token");
-    console.log("orderId");
-    console.log(orderId);
     const data = {
         url:'/api/v1/orders/' + orderId + '/order_statuses/1.json',
         method:'get',

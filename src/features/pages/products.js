@@ -13,7 +13,7 @@ class Products extends Component {
       products_length:0,
       products_mounted:0,
       localLoading:false,
-      itemData:[],
+      productData:[],
       myBox:[],
     }
   }
@@ -23,11 +23,11 @@ class Products extends Component {
     this.setState({ products_length: products.length});
   }
 
-  refItem = (itemData, myBox) => {
-    this.setState({itemData: itemData});
-    this.setState({myBox: myBox});
+  refProduct = (productData) => {
+    this.setState({productData: productData});
+
     console.log("item data");
-    console.log(itemData);
+    console.log(productData);
   }
 
   cardMounted = () => {
@@ -54,10 +54,10 @@ class Products extends Component {
   }
 
   getQuantity = (id) => {
-    let items = this.props.items; // this comes from Redux Store
+    let products = this.props.products; // this comes from Redux Store
     let quantity = 0;
-    if (items["product" + id] !== undefined ) {
-      quantity = items["product" + id].quantity;
+    if (products["product" + id] !== undefined ) {
+      quantity = products["product" + id].quantity;
     }
     return quantity;
   }
@@ -69,7 +69,7 @@ class Products extends Component {
             <Card
               key={"card" + item.id}
               id={item.id}
-              refItem={this.refItem}
+              refProduct={() => this.refProduct}
               cardMounted={this.cardMounted}
               name={item.name}
               description={item.description}
