@@ -6,11 +6,12 @@ import {
   HOME_KIT_MINUS,
 } from './constants';
 
-export function kitMinus(kit) {
+export function kitMinus(kit, box) {
   let id = kit.kit_id
   return {
     type: HOME_KIT_MINUS,
     kit,
+    box,
     id,
   };
 }
@@ -20,10 +21,13 @@ export function reducer(state, action) {
   switch (action.type) {
     case HOME_KIT_MINUS:
       let kits = state.kits;
+      let myBoxKits = state.myBoxKits;
       kits["kit" + action.id] =  action.kit;
+      myBoxKits["myBoxKit" + action.id] = action.kit;
       return {
         ...state,
         kits,
+        myBoxKits,
       };
 
     default:

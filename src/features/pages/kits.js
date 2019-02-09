@@ -12,6 +12,11 @@ class Kits extends Component {
     }
   }
 
+  componentDidMount () {
+    this.props.actions.turnOffLoading();
+    
+  }
+
   refKit = (kitData, myBox) => {
     this.setState({kitData: kitData});
     this.setState({myBox: myBox});

@@ -40,6 +40,8 @@ export class MainPage extends Component {
     let authentication_token = localStorage.getItem('token');
     let clientEmail = localStorage.getItem('email');
 
+    
+
     this.state = {
       productsList:[],
       clientName:'',
@@ -359,7 +361,9 @@ export class MainPage extends Component {
                               render={props => (
                                 <MyBox
                                   count={this.count()}
-                                  products={this.props.home.products}
+                                  setMoneyFormat={this.setMoneyFormat}
+                                  myBoxKits={this.props.home.myBoxKits}
+                                  myBoxProducts={this.props.home.myBoxProducts}
                                   permit={true}
                                  />
                               )}

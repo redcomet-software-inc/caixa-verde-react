@@ -14,16 +14,16 @@ export default class CardKits extends Component {
       quantity: this.props.quantity
     }
 
-    let myBox = {
+    let myBoxKit = {
       id: this.props.id,
       name: this.props.name,
       price: this.props.price,
       quantity: this.props.quantity,
       kind: this.props.kind,
-      kits: this.props.kits,
+      products: this.props.products,
     }
 
-    this.props.refKit(kitData, myBox);
+    this.props.refKit(kitData, myBoxKit);
     let hide = null;
     let card_active = null;
     if(this.props.quantity > 0) {
@@ -35,7 +35,7 @@ export default class CardKits extends Component {
     this.state = {
       borderClass: 'standard',
       kitData: kitData || {},
-      myBox: myBox || {},
+      myBoxKit: myBoxKit || {},
       card_active: card_active || '',
       hide: hide || 'hide',
     };
@@ -46,7 +46,7 @@ export default class CardKits extends Component {
     console.log(delta);
     /* name variable can be either kit or product */
       let kit = this.state.kitData;
-      let box = this.state.myBox;
+      let box = this.state.myBoxKit;
       let quantity = kit.quantity;
       let nextQuantity = kit.quantity + delta;
       console.log(kit);
@@ -71,7 +71,7 @@ export default class CardKits extends Component {
         console.log("minus");
       }
       this.setState({ kitData: kit});
-      this.setState({ myBox: box});
+      this.setState({ myBoxKit: box});
       console.log("check here");
       console.log(this.state.kitData);
       this.props.refKit(kit, box);
@@ -79,13 +79,13 @@ export default class CardKits extends Component {
 
   handleClickPlus = () => {
     this.addCardCount(1);
-    this.props.kitPlus(this.state.kitData);
+    this.props.kitPlus(this.state.kitData, this.state.myBoxKit);
   }
 
   handleClickMinus = () => {
     if(this.state.kitData.quantity > 0) {
       this.addCardCount(-1);
-      this.props.kitMinus(this.state.kitData);
+      this.props.kitMinus(this.state.kitData, this.state.myBoxKit);
     }
   }
 
