@@ -106,7 +106,7 @@ class Checkout extends Component
       this.getPermission();
     }).catch(error => {
       console.log(error);
-      throw new Error("Impossible to Create Order: ");
+      //throw new Error("Impossible to Create Order: ");
       
     });
   }

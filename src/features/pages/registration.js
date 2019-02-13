@@ -45,7 +45,8 @@ class Registration extends Component {
     }).catch(error => {
       this.setState({invalidCep: 'visible'});
       this.setState({isCepLoading: false});
-      throw new Error("Error getting Zipcode:" + error)
+      console.log(error);
+      //throw new Error("Error getting Zipcode:" + error)
     });
   }
 
@@ -110,7 +111,8 @@ class Registration extends Component {
         }).catch( error => {
           this.setState({invalidEmail:true});
           this.setState({isLoading:false});
-          throw new Error("Erro when trying to Register: " + error);
+          console.log(error);
+          //throw new Error("Erro when trying to Register: " + error);
         });
   }
 
