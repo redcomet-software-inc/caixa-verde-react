@@ -37,7 +37,7 @@ export default function configureStore(initialState) {
 
   const store = createStore(persistedReducer, initialState, 
     compose(applyMiddleware(...middlewares),
-    devToolsExtension
+    devToolsExtension ? devToolsExtension && devToolsExtension : f => f
   ));
 
   const persistor = persistStore(store); 
