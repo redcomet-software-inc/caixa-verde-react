@@ -1,0 +1,16 @@
+version: '3.5'
+
+services:
+
+  sample-app:
+    container_name: caixa-verde-react
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - '6075:6075'
+    environment:
+      - NODE_ENV=development

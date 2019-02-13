@@ -1,7 +1,8 @@
 import axios  from 'axios'
 
 const client = axios.create({
-  baseURL: process.env.REACT_APP_SERVER_ADDRESS              
+  baseURL: process.env.REACT_APP_SERVER_ADDRESS,
+  headers: "Access-Control-Allow-Origin: https://caixa-verde.herokuapp.com/",
 });
 
 const request = function(options) {
