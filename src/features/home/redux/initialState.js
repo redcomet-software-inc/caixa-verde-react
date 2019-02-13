@@ -5,8 +5,8 @@ const initialState = {
   redirectTo:'/',
   products: {},      // Products Info Directive
   kits: {},          //Kits Info Directive
-  myBoxProducts: {}, // Detailed Selected Products Info
-  myBoxKits: {},     // Detailed Selected Kits Info 
+  myBoxProducts: {}, // Detailed Selected Products Info --
+  myBoxKits: {},     // Detailed Selected Kits Info  --
 };
 
 export default initialState;
