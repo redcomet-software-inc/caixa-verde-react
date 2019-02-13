@@ -61,18 +61,26 @@ export default class Option extends Component
       <div className="pages-option">
         <h3 className="text-center title">Como você prefere comprar?</h3>
           <div className="row">
-            <div className="col-md-6 text-center pl-lg-4 mt-5">
-              <h4 className="text-info">Kits</h4>
-              <NavLink className="mx-auto" to="/kits">
-                <img alt={"Ir para Lista de Kits"} onMouseOver={this.addColorKit} onMouseOut={this.removeColorKit} className={"img-fluid rounded option "+this.kitsColor()} src={kits} />
-              </NavLink><br />
-              <h5 className="warning-muted text-danger" style={{textAlign:"center"}}>10% de desconto</h5>
+            <div className="col-md-6 pl-2 text-center pl-lg-2 mt-5">
+              <div className="col pl-lg-5 mt-lg-4 mt-md-3">
+                <div className="col pl-lg-2">
+                  <h4 className="text-info">Kits</h4>
+                    <NavLink className="mx-auto" to="/kits">
+                      <img alt={"Ir para Lista de Kits"} onMouseOver={this.addColorKit} onMouseOut={this.removeColorKit} className={"img-fluid rounded option "+this.kitsColor()} src={kits} width={200} />
+                    </NavLink><br />
+                    <h5 className="warning-muted text-danger" style={{textAlign:"center"}}>10% de desconto</h5>
+                </div>
+              </div>
             </div>
-            <div className="col-md-6 text-center pr-lg-5 mt-5">
-              <h4 className="text-info">Personalizado</h4>
-              <NavLink className="mx-auto" to="/personalizado">
-                <img alt={"Ir para Lista de Personalizados"} onMouseOver={this.addColorCustom} onMouseOut={this.removeColorCustom} className={"img-fluid rounded option "+this.customColor()} src={custom} />
-              </NavLink><br />
+            <div className="col-md-6 pl-2 text-center pr-lg-5 mt-5">
+              <div className="col pr-lg-5 mt-lg-4 mt-md-3">
+                <div className="col pr-lg-5">
+                  <h4 className="text-info">Personalizado</h4>
+                  <NavLink className="mx-auto" to="/personalizado">
+                    <img alt={"Ir para Lista de Personalizados"} onMouseOver={this.addColorCustom} onMouseOut={this.removeColorCustom} className={"img-fluid rounded option "+this.customColor()} src={custom}  width={200} />
+                  </NavLink><br />
+                </div>
+              </div>
             </div>
           </div>
           <div className="h-100 row my-auto p-5">

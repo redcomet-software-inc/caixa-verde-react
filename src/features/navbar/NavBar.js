@@ -99,15 +99,14 @@ class NavBar extends Component {
               )}
             </ul>
           </div>
-       
         </nav>
             
 
-        <nav className={"navbar-options bg-dark shadow " + this.state.fixedTop}>
-          <div className="w-100">
-            <div className="d-flex justify-content-lg-end justify-content-center bd-highlight mb-0">
-             <div className="p-0 bd-highlight">
-                <span className="nav-item">
+        <nav className={"navbar-options bg-dark shadow text-center " + this.state.fixedTop}>
+          <div className="w-100 pl-3">
+            <div className="d-flex justify-content-lg-end justify-content-center bd-highlight mb-0 ">
+             <div className="p-0 bd-highlight ">
+                <span className="nav-item ">
                   <NavLink className="nav-link" to="/kits">Kits</NavLink>
                 </span>
               </div>
@@ -116,7 +115,7 @@ class NavBar extends Component {
                   <NavLink className="nav-link" to="/personalizado">Personalizado</NavLink>
                 </span>
               </div>
-              <div className="p-0 bd-highlight">
+              <div className="p-0 bd-highlight d-none d-md-block d-lg-none">
                 <span className="nav-item">
                   {this.props.loggedIn ? (<NavLink className="nav-link nav-item" exact to="/pedidos">Meus Pedidos</NavLink>) : null }
                 </span>

@@ -4,8 +4,9 @@ import axios from 'axios';
 import {
   NavLink
 } from "react-router-dom";
+import LoaderHOC from '../../HOC/LoaderHOC.js';
 
-export default class Registration extends Component {
+class Registration extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -102,7 +103,7 @@ export default class Registration extends Component {
         }).then(res => {
           if(res.status===200) {
             this.setState({isLoading:false});
-            this.props.redirect('login');
+            this.props.actions.redirect('login');
           } else if(res.status===422) {
             console.log("Unauthorized, sorry :(")
           }
@@ -228,3 +229,5 @@ export default class Registration extends Component {
     );
   }
 }
+
+export default LoaderHOC(Registration); 
