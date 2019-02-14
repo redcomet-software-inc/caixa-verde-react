@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Icon } from 'react-icons-kit';
 import { boxAdd } from 'react-icons-kit/icomoon/boxAdd';
 import { minus } from 'react-icons-kit/icomoon/minus';
+import { getProduct } from '../../common/get-products.js';
 
 export default class Card extends Component {
   static propTypes = {};
@@ -47,15 +48,14 @@ export default class Card extends Component {
     this.props.cardMounted();
   };
 
-  handleError = () => {
-    localStorage.removeItem('productsList');
-    localStorage.removeItem('kitsList');
-    localStorage.removeItem('token');
-    localStorage.removeItem('email');
-    localStorage.removeItem('selectedKits');
-    localStorage.removeItem('selectedProducts');
-    window.location.reload();
-  };
+  handleError (e, id) {
+    e.persist();
+    getProduct(id).then(res => {
+      e.target.src = res.thumb;
+      console.log("Image Error");
+      console.log(res);
+    });
+  }
 
   /* Add Item to the Shopping List */
   addCardCount = (delta) => {
@@ -108,11 +108,11 @@ export default class Card extends Component {
     return (
       <div key={"div" + this.state.productData.id} className={"card m-2 mx-auto " + this.state.card_active} style={{maxWidth:200}}>
         <img
-          alt={"Image" + this.props.name}
+          alt={"Imagem" + this.props.name}
           className="card-img-top"
           src={this.props.thumb}
           onLoad={this.handleLoad}
-          onError={this.handleError}
+          onError={e => this.handleError(e, this.state.productData.id)}
         />
         <div className="card-body text-center pb-0">
           <span className="card-text">{this.state.productData.name}</span>

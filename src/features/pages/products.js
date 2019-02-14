@@ -12,11 +12,11 @@ class Products extends Component {
       products_by_category:[],
       products_length:0,
       products_mounted:0,
-      localLoading:false,
       productData:[],
       myBox:[],
     }
   }
+  
 
   refProducts = (products) => {
     this.setState({ products_by_category: products});
@@ -25,9 +25,6 @@ class Products extends Component {
 
   refProduct = (productData) => {
     this.setState({productData: productData});
-
-    console.log("item data");
-    console.log(productData);
   }
 
   cardMounted = () => {
@@ -43,16 +40,6 @@ class Products extends Component {
     this.setState({ localLoading: false});
   }
 
-  turnOnLocalLoading = () => {
-    this.setState({localLoading: true});
-    this.setState({hide_products: 'hide-products'});
-  }
-
-  turnOffLocalLoading = () => {
-    this.setState({localLoading: false});
-    this.setState({hide_products: 'unhide-products'});
-  }
-
   getQuantity = (id) => {
     let products = this.props.products; // this comes from Redux Store
     let quantity = 0;
@@ -65,7 +52,7 @@ class Products extends Component {
   renderCard = (item, index) => {
    return(
     <React.Fragment>
-            {' '}
+      {this.state.products_by_category.map((item, index) => (
             <Card
               key={"card" + item.id}
               id={item.id}
@@ -81,7 +68,7 @@ class Products extends Component {
               productPlus={this.props.actions.productPlus}
               productMinus={this.props.actions.productMinus}
             />
-      
+      ))}
     </React.Fragment>
     );
   }
@@ -90,19 +77,13 @@ class Products extends Component {
     return (
       <div>
         <h3 className="text-left title">Personalizado</h3>
-       
-        <div className="ml-auto">
-          <Categories refProducts={this.refProducts} 
-          localLoading={this.state.localLocalLoading} 
-          turnOnLocalLoading={this.turnOnLocalLoading} 
-          turnOffLocalLoading={this.turnOffLocalLoading}
-          resetImgCount={this.resetImgCount} />
-        </div>
-        <div className={"card-columns mx-auto pb-5 " + this.state.hide_products} >
-            {this.state.products_by_category.map((item, index) => (
-                this.renderCard(item, index)
-            ))}
-        </div>
+          <div className="ml-auto">
+            <Categories refProducts={this.refProducts} 
+            resetImgCount={this.resetImgCount} />
+          </div>
+          <div className={"card-columns mx-auto pb-5 "} >
+            { this.renderCard() }
+          </div>
       </div>
     );
   }

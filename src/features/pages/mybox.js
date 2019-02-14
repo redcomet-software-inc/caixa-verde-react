@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
 import { getProduct, getKit } from '../../common/get-products.js';
-import { BreedingRhombusSpinner } from 'react-epic-spinners';
-
 
 class MyBox extends Component {
   static propTypes = {
@@ -34,7 +31,6 @@ class MyBox extends Component {
           console.log("FALSE");
           return false;
         }
-            
       }
       console.log("TRUE");
       return true;
@@ -68,8 +64,6 @@ class MyBox extends Component {
   renderKits () {
     let myBox = this.props.myBoxKits;
     let table = [];
-    console.log("My Box");
-    console.log(myBox);
     for(let item in myBox) {        
     
       table.push(
@@ -91,9 +85,7 @@ class MyBox extends Component {
         </div>
       );
     }
-
     return table;
-
   }
 
   handleError (e, id) {
@@ -106,8 +98,6 @@ class MyBox extends Component {
   renderProducts ()  {
     let myBox = this.props.myBoxProducts;
     let table = [];
-    console.log("My Box");
-    console.log(myBox);
     for(let item in myBox) {        
       table.push(
           <div className="card mb-3" style={{minWidth: 180, backgroundColor: '#fff'}}>
@@ -130,7 +120,6 @@ class MyBox extends Component {
     return table;
   }
 
-
   /*
       <React.Fragment>
           <h4 className="warning-muted text-center">A sua caixa está vazia.</h4>
@@ -149,13 +138,12 @@ class MyBox extends Component {
         <h2 className="text-center title">Minha Caixa
               <h4><span className="badge badge-secondary badge-pill">
                 {this.props.count}
-              </span>
+                </span>
               </h4>
         </h2>
         <div className="card-deck">
           { this.renderKits() }
           { this.renderProducts() }
- 
         </div>
       </div>
     );

@@ -6,6 +6,7 @@ import * as actions from '../../features/home/redux/actions.js';
 import request from '../../common/config-api.js';
 import Loading from '../common/loading.js';
 
+
   export class Categories extends Component {
     static propTypes = {
       components: PropTypes.object.isRequired,
@@ -17,6 +18,7 @@ import Loading from '../common/loading.js';
         categories:[],
         current_category:'Variedades',
         products_by_category:[],
+        localLoading:true,
       }
     }
 
@@ -35,36 +37,40 @@ import Loading from '../common/loading.js';
     }
 
     getProducts = (e) => {
+      this.setState({localLoading: true});
       this.props.resetImgCount();
       let id = '';
       if(e === undefined) {
         id = 'all';
       }
+
       if(e !== undefined) {
         e.preventDefault();
         e.persist();
         id = e.target.id;
         let name = e.target.name;
         this.setState({ current_category: name});
-    }
+      }
     
-    request({
-      method: 'get',
-      url: 'api/v1/categories/' + id + '.json',
-      }).then((res) => {
-          this.setState({products_by_category: res});
-          /* Pass products to parent component 'Products' */
-          this.props.refProducts(res);
-          this.props.turnOffLocalLoading();
-          this.props.actions.turnOffLoading();
-      }).catch(error =>{
-          this.props.actions.turnOffLoading();
-          this.props.turnOffLocalLoading();
-      });
+      request({
+        method: 'get',
+        url: 'api/v1/categories/' + id + '.json',
+        }).then((res) => {
+            this.setState({products_by_category: res});
+            /* Pass products to parent component 'Products' */
+            this.props.refProducts(res);
+            this.props.actions.turnOffLoading();
+            console.log("Accepted");
+            this.setState({localLoading: false});
+        }).catch(error =>{
+            this.props.actions.turnOffLoading();
+            this.setState({localLoading: false});
+            console.log("Not Accepted");
+        });
   }
 
   renderLoading = () => {
-    if(this.props.localLoading===true) {
+    if(this.state.localLoading) {
       return <Loading />
     }
   }
@@ -80,7 +86,7 @@ import Loading from '../common/loading.js';
             </button>
                 <div className="dropdown-menu" >
                   { this.state.categories.map((category) => (
-                    <button key={"category" + category.id} id={ category.id } className="dropdown-item" name={category.name} onClick={(e) => this.getProducts(e)} >{ category.name }</button>
+                    <a key={"category" + category.id} id={ category.id } className="dropdown-item" name={category.name} onClick={(e) => this.getProducts(e)} >{ category.name }</a>
                   )) } 
                   <div className="dropdown-divider"></div>
                   <a className="dropdown-item" name="Tudo" id="all" onClick={(e) => this.getProducts(e)}>Tudo</a>
