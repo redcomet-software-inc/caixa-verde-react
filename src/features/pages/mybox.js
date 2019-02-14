@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
-import { getProduct, getKit } from '../../common/get-products.js';
+import { getProduct } from '../../common/get-products.js';
 
 class MyBox extends Component {
   static propTypes = {

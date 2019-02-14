@@ -80,20 +80,6 @@ let createCardToken = function(card, brand) {
     });
 }
 
-/* 4.5 (Optional) Get PaymentMethods */
-    let getPaymentMethods = function() {
-    return new Promise((resolve, reject) => {
-        PagSeguroDirectPayment.getPaymentMethods({
-            success: function(response) {
-                resolve(response);
-            },
-            error: function(error) {
-                reject("Get Payment Methods Failed: " + error)
-            },
-        });
-    });
-}
-
 /* 4. Get Brand from Card Bin */
     let getBrand = function(card_number) {
     return new Promise((resolve, reject) => {
@@ -159,3 +145,18 @@ let createCardToken = function(card, brand) {
         });
     });
 }
+
+/* 4.5 (Optional) Get PaymentMethods
+    let getPaymentMethods = function() {
+    return new Promise((resolve, reject) => {
+        PagSeguroDirectPayment.getPaymentMethods({
+            success: function(response) {
+                resolve(response);
+            },
+            error: function(error) {
+                reject("Get Payment Methods Failed: " + error)
+            },
+        });
+    });
+}
+ */

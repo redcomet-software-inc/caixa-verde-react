@@ -39,8 +39,8 @@ export default function configureStore(initialState) {
     compose(applyMiddleware(...middlewares),
     devToolsExtension ? devToolsExtension && devToolsExtension : f => f
   ));
-
-  const persistor = persistStore(store); 
+  /* Create Persistor */
+  persistStore(store); 
     /* istanbul ignore if  */
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers

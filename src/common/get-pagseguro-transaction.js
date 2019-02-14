@@ -1,5 +1,4 @@
 
-import React, { Component } from 'react';
 import request from './config-api.js';
 
 export let getPagseguroTransaction = function(orderId) {

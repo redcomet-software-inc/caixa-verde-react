@@ -3,7 +3,7 @@ import { getPagseguroTransaction } from '../../../common/get-pagseguro-transacti
 import { Icon } from 'react-icons-kit';
 import { arrowLeft2 } from 'react-icons-kit/icomoon/arrowLeft2';
 import { Link } from 'react-router-dom';
-import { getOrders, getOrderInfo } from '../../../common/get-orders.js';
+import { getOrderInfo } from '../../../common/get-orders.js';
 
 
 export default class Show extends Component {

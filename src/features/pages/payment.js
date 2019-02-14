@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { checkLocalStorage } from '../home/set-localstorage';
 import 'react-credit-cards/es/styles-compiled.css';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
 import PropTypes from 'prop-types';
@@ -168,9 +167,7 @@ class Payment extends Component {
   render() {
     return (
       <div className="pages-payment">
-        {this.state.current_tab==="success" || this.state.current_tab==="failed" && (
-            <div></div>
-        )}
+
         <h2 className="text-center title">Pagamento</h2>
           <div className="row">
             <div className="col text-center">

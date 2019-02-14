@@ -5,12 +5,9 @@ import {
 import kits from '../../images/kit_2.png';
 import custom from '../../images/custom_2.png';
 
-export default class Option extends Component 
-{
-  static propTypes = {
-  };
-  constructor ()
-  {
+export default class Option extends Component {
+
+  constructor () {
     super();
     this.state = {
       kits_color: false,
@@ -18,10 +15,8 @@ export default class Option extends Component
     };
   }
 
-  customColor = () => 
-  {
-    if(this.state.custom_color===true) 
-    {
+  customColor = () => {
+    if(this.state.custom_color===true) {
       return '';
     } else {
       return 'greyscale';
@@ -29,34 +24,27 @@ export default class Option extends Component
   }
 
   kitsColor = () => {
-    if(this.state.kits_color===true) 
-    {
+    if(this.state.kits_color===true) {
       return '';
-    } else 
-    {
+    } else {
       return 'greyscale';
     }
   }
 
-  addColorKit = () => 
-  {
+  addColorKit = () => {
     this.setState({kits_color:true});
   }
-  removeColorKit = () => 
-  {
+  removeColorKit = () => {
     this.setState({kits_color:false});
   }
-  addColorCustom = () => 
-  {
+  addColorCustom = () => {
     this.setState({custom_color:true});
   }
-  removeColorCustom= () => 
-  {
+  removeColorCustom= () => {
     this.setState({custom_color:false});
   }
 
-  render() 
-  {
+  render() {
     return (
       <div className="pages-option">
         <h3 className="text-center title">Como você prefere comprar?</h3>

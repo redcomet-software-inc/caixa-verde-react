@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import userImage from '../../images/userImage.jpg';
 import Loading from '../common/loading.js';
 import { getClientInfo } from '../../common/get-clientinfo.js';
@@ -337,16 +336,16 @@ class MyAccount extends Component {
         <input id="address_kind" name="address_kind" type="hidden" value={ kind } />
           <div className="row">
             <div className="col-md-8">
-              <input type="hidden" id="address_id" value={this.state["address_" + kind] ? this.state["address_" + kind].id : null } />
+              <input type="hidden" id="address_id" value={this.state["address_" + kind] ? this.state["address_" + kind].id : ' ' } />
               <label htmlFor="inp" className="inp mb-2">
-                <input type="text" id="street" name="street" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].street : null }/>
+                <input type="text" id="street" name="street" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].street : ' ' }/>
                 <span className="label">Endereço</span>
                  
               </label>
             </div>
             <div className="col-md-4">
               <label htmlFor="inp" className="inp mb-2">
-                <input type="text" id="number" name="number" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].number : null } />
+                <input type="text" id="number" name="number" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].number : ' ' } />
                 <span className="label">Nº</span>
                  
               </label>
@@ -355,7 +354,7 @@ class MyAccount extends Component {
           <div className="row">
             <div className="col-md-12">
               <label htmlFor="inp" className="inp mb-2">
-                <input type="text" id="neighbourhood" name="neighbourhood" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].neighbourhood : null } />
+                <input type="text" id="neighbourhood" name="neighbourhood" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].neighbourhood : ' ' } />
                 <span className="label">Bairro</span>
                  
               </label>
@@ -364,7 +363,7 @@ class MyAccount extends Component {
           <div className="row">
             <div className="col-12">
               <label htmlFor="inp" className="inp mb-2">
-                <input type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].zipcode : null } />
+                <input type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].zipcode : ' ' } />
                 <span className="label">CEP</span>
                  
               </label>
@@ -373,7 +372,7 @@ class MyAccount extends Component {
           <div className="row">
             <div className="col-12">
               <label htmlFor="inp" className="inp mb-2">
-                <input type="text" id="complement" name="complement" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].complement : null } />
+                <input type="text" id="complement" name="complement" placeholder="&nbsp;" defaultValue={this.state["address_" + kind] ? this.state["address_" + kind].complement : ' ' } />
                 <span className="label">Complemento</span>
                  
               </label>

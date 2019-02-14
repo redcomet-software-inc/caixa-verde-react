@@ -26,8 +26,9 @@ const LoaderHOC = (WrappedComponent) => {
         this.props.actions.turnOffError();
         this.props.actions.turnOnLoading();
         getAuth().then(res => {
-
-          res ? null : this.redirect();
+          if (!res) {
+            this.redirect();
+          } 
           this.props.actions.turnOffLoading();
 
         }).catch(error => {

@@ -53,7 +53,6 @@ class MyOrders extends Component {
 
   renderOrders = () => {
     if(this.state.orders_empty===false) {
-      const { match } = this.props
       return(
          <Router>
            <Switch>

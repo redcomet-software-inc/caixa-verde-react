@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 export default class Index extends Component {
-
-    constructor(props) {
-        super(props);
-    }
 
     componentDidMount () {
         console.log("Index Mounted");

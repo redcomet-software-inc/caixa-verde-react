@@ -313,7 +313,6 @@ export class MainPage extends Component {
                               path="/pedidos"
                               render={props => (
                                 <MyOrders 
-                                  setCheckoutOrderId={this.setCheckoutOrderId}
                                   redirect={this.redirect}
                                   setCheckoutOrderId={this.setCheckoutOrderId}
                                   location={window.location}

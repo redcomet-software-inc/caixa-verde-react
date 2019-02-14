@@ -150,7 +150,7 @@ class Checkout extends Component
     if(kits !== undefined) {
       for(let item in kits) {
         table.push(
-        <li className="list-group-item d-flex justify-content-between lh-condensed">
+        <li key={"checkout-kit" + kits[item].kit_id} className="list-group-item d-flex justify-content-between lh-condensed">
           <div>
             <h6 className="my-0">
               {kits[item].name} {this.renderQuantity(kits[item].quantity)}
@@ -170,9 +170,9 @@ class Checkout extends Component
     let table = []
     let products = this.props.products;
     if(products !== undefined) {
-      for(let item in this.props.products) {
+      for(let item in products) {
         table.push(
-        <li className="list-group-item d-flex justify-content-between lh-condensed">
+        <li key={"checkout-item" + products[item].product_id} className="list-group-item d-flex justify-content-between lh-condensed">
           <div>
             <h6 className="my-0">
               {products[item].name} {this.renderQuantity(products[item].quantity)}
@@ -232,8 +232,8 @@ class Checkout extends Component
           </div>
           <div className="col-md-8 order-md-1">
             <h4 className="mb-3">Endereço para Entrega</h4>
-            <form onSubmit={e => this.checkOut(e)} className="needs-validation mt-3" novalidate>
-              <input id="client_id" name="client_id" type="hidden" value={this.state.client_data.id} />
+            <form onSubmit={e => this.checkOut(e)} className="needs-validation mt-3" noValidate>
+              <input id="client_id" name="client_id" type="hidden" value={this.state.client_data.id || ' '} />
               <input id="kind" name="kind" type="hidden" value={ this.state.client_data.kind } />
               <input
                 id="address_id"
@@ -257,7 +257,7 @@ class Checkout extends Component
                     name="name"
                     placeholder=""
                     onChange={this.handleChange}
-                    defaultValue={this.state.client_data ? this.state.client_data.name : null}
+                    defaultValue={this.state.client_data ? this.state.client_data.name : ' '}
                     required
                   />
                   <div className="invalid-feedback">Valid first name is required.</div>
@@ -270,7 +270,7 @@ class Checkout extends Component
                     id="lastame"
                     name="lastname"
                     placeholder=""
-                    defaultValue={this.state.client_data ? this.state.client_data.lastname : null}
+                    defaultValue={this.state.client_data ? this.state.client_data.lastname : ' '}
                     required
                   />
                   <div className="invalid-feedback">Valid last name is required.</div>
@@ -287,7 +287,7 @@ class Checkout extends Component
                     id="email"
                     name="email"
                     placeholder="you@example.com"
-                    defaultValue={this.state.client_data ? this.state.client_data.email : null}
+                    defaultValue={this.state.client_data ? this.state.client_data.email :  ' '}
                     required
                   />
                 </div>
@@ -301,7 +301,7 @@ class Checkout extends Component
                     id="cellphone"
                     name="cellphone"
                     placeholder="9999-9999"
-                    defaultValue={this.state.client_data ? this.state.client_data.cellphone : null}
+                    defaultValue={this.state.client_data ? this.state.client_data.cellphone :  ' '}
                     required
                   />
                 </div>
@@ -315,7 +315,7 @@ class Checkout extends Component
                     id="address_zipcode"
                     name="address_zipcode"
                     placeholder=""
-                    defaultValue={this.state.address_data ? this.state.address_data.zipcode : null}
+                    defaultValue={this.state.address_data ? this.state.address_data.zipcode :  ' '}
                     required
                   />
                 </div>
@@ -329,7 +329,7 @@ class Checkout extends Component
                       id="address_street"
                       name="address_street"
                       placeholder="Rua, Avenina, 99"
-                      defaultValue={this.state.address_data ? this.state.address_data.street : null}
+                      defaultValue={this.state.address_data ? this.state.address_data.street :  ' '}
                       required
                     />
                     <div className="invalid-feedback"></div>
@@ -343,7 +343,7 @@ class Checkout extends Component
                         id="address_number"
                         name="address_number"
                         placeholder=""
-                        defaultValue={this.state.address_data ? this.state.address_data.number : null}
+                        defaultValue={this.state.address_data ? this.state.address_data.number : ' '}
                         required
                       />
                     <div className="invalid-feedback"></div>
@@ -359,7 +359,7 @@ class Checkout extends Component
                     id="address_neighbourhood"
                     name="address_neighbourhood"
                     placeholder=""
-                    defaultValue={this.state.address_data ? this.state.address_data.neighbourhood : null}
+                    defaultValue={this.state.address_data ? this.state.address_data.neighbourhood : ' '}
                   />
                   </div>
                 <div className="col-md-4 mb-3">
@@ -370,24 +370,25 @@ class Checkout extends Component
                     id="address_complement"
                     name="address_complement"
                     placeholder="(opcional)"
-                    defaultValue={this.state.address_data ? this.state.address_data.complement : null}
+                    defaultValue={this.state.address_data ? this.state.address_data.complement : ' '}
                   />
                   <div className="invalid-feedback" />
                 </div>
                 <div className="col-md-4 mb-3">
                   <label>Região Administrativa</label>
                   <select
+                    key={"admin_region_select"}
                     className="form-control"
                     type="text"
                     id="adm_region_id"
                     name="adm_region_id"
                     onChange={e => this.change(e)}
-                    value={this.state.address_data ? this.state.address_data.adm_region_id : null}
+                    value={this.state.address_data ? this.state.address_data.adm_region_id || ' ' : ' '}
                     placeholder="&nbsp;"
                   >
-                    <option value=""> -- Escolha uma região -- </option>
+                    <option value=" "> -- Escolha uma região -- </option>
                     {this.state.adm_regions.map((item, index) => (
-                      <option value={item.id}> {item.name}</option>
+                      <option key={"region" + index} value={item.id}> {item.name}</option>
                     ))}
                   </select>
                 </div>
@@ -402,7 +403,7 @@ class Checkout extends Component
                     className="form-control"
                     id="cpf"
                     name="cpf"
-                    defaultValue={this.state.client_data ? this.state.client_data.cpf : null}
+                    defaultValue={this.state.client_data ? this.state.client_data.cpf : ' '}
                     placeholder="000.000.000-00"
                   />
                   <div className="invalid-feedback">Name on card is required</div>

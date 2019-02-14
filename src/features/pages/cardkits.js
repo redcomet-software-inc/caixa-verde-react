@@ -54,7 +54,7 @@ export default class CardKits extends Component {
       console.log("quantity: " + quantity);
       console.log("next quantity: " + nextQuantity);
 
-      if (quantity === 0 && delta === 1 || nextQuantity > 0) {
+      if ((quantity === 0 && delta === 1) || nextQuantity > 0) {
         kit.quantity += delta;
         box.quantity += delta;
         this.setState({card_active: "card-active"});

@@ -1,12 +1,20 @@
 export const storageProduct = (products) => {
 /* Add List of Selected Products and Kits to Local Storage */
   let ls = localStorage.setItem('selectedProducts', JSON.stringify(products));
-  ls ? true : false
+  if(ls) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export const storageKit = (kits) => {
   let ls = localStorage.setItem('selectedKits', JSON.stringify(kits));
-  ls ? true : false
+  if(ls) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /* Verify if a localStore key is available */

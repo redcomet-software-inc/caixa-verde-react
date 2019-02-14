@@ -12,27 +12,20 @@ class Login extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      disable: false,
+      disabled: false,
       message: '',
-    }
-  }
-
-  componentDidMount() {
-    console.log(this.props);
-    console.log("props");
-    if (this.props.loggedIn) {
-      this.props.actions.redirect();
     }
   }
   
   handleClick = (e) => {
     e.preventDefault();
-    if(!this.state.isLoading) {
+    e.persist();
+    if(!this.state.isLoading && this.state.disabled===false) {
       const email = e.currentTarget.email.value;
       const password = e.currentTarget.password.value;
       this.setState({ message: ''});
       this.setState({ isLoading: true});
-      this.setState({ disable: true});
+      this.setState({ disabled: true});
       signIn(email, password).then(response => {
         console.log("this here");
         this.setState({ isLoading: false});
@@ -54,39 +47,23 @@ class Login extends Component {
     }
   }
 
-   renderLoading = () => 
-   {
+   renderLoading = () => {
      if(this.state.isLoading) {
       return <Loading />;
      }
   }
 
-  componentDidUpdate(prevProps) 
-  {
-    // Typical usage (don't forget to compare props):
-    if (this.props.signInMessage !== prevProps.signInMessage) 
-    {
-      if(this.props.signInMessage==='') 
-      {
-        this.setState({ isLoading: true});
-      } else 
-      {
-        this.setState({ isLoading: false});
-      }
-    }
-  }
-
-  render(props) 
-  {
+  
+  render(props) {
     return (
       <div className="pages-login">
         <h2 className="text-center title">Login</h2>
         <div className="content">
-        <form className="form-group" onSubmit={this.handleClick} disabled={this.props.disable}>
+        <form className="form-group" onSubmit={this.handleClick}>
           <div className="row justify-content-center">
             <div className="col-md-6 mb-3 form-group  text-center">
               <label htmlFor="inp" className="inp">
-                <input type="text" id="inp" name="email" placeholder="&nbsp;" required />
+                <input type="text" id="inp_name" name="email" placeholder="&nbsp;" required />
                 <span className="label">Email</span>
               </label>
             </div>
@@ -94,7 +71,7 @@ class Login extends Component {
           <div className="row justify-content-center">
             <div className="col-md-6 mb-3 form-group text-center">
               <label htmlFor="inp" className="inp">
-                <input type="password" id="inp" name="password" placeholder="&nbsp;" required />
+                <input type="password" id="inp_password" name="password" placeholder="&nbsp;" required />
                 <span className="label">Senha</span>
               </label>
             </div>
