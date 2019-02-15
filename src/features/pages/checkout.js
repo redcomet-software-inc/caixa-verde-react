@@ -3,10 +3,9 @@ import axios from 'axios';
 import { setOrder } from '../../common/set-order.js';
 import { getClientInfo } from '../../common/get-clientinfo.js';
 import LoaderHOC from '../../HOC/LoaderHOC.js';
+import Loading from '../common/loading.js';
 
-
-class Checkout extends Component 
-{
+class Checkout extends Component {
   
   constructor(props) {
     super(props);
@@ -26,13 +25,11 @@ class Checkout extends Component
       address_data: [],
       products: products || [],
       kits: kits || [],
+      submitLoading: false,
     };
   }
 
   componentDidMount() {
-      if(this.props.loggedIn === false) {
-        
-      }
       this.getClientInformations();
       this.getAdmRegions();
       this.getPermission();
@@ -50,6 +47,11 @@ class Checkout extends Component
   /*Get all the new Data and decide what to submit to the server*/
   checkOut = e => {
     e.preventDefault();
+    /* Avoid Multiple Submits */
+    if(this.state.submitLoading === true) {
+      return false;
+    }
+    this.setState({submitLoading: true});
     const name = e.currentTarget.name.value;
     const lastname = e.currentTarget.lastname.value;
     const cellphone = e.currentTarget.cellphone.value;
@@ -63,15 +65,17 @@ class Checkout extends Component
     const client_id = e.currentTarget.client_id.value;
     const cpf = e.currentTarget.cpf.value;
     /* Data structure to Create Order */
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    const products = this.props.products;
+
     var data = {
-      client_token: this.state.token,
-      client_email: this.state.email,
+
       order: {
-          order_price: this.state.order_price,
-          price_table_id: 5,
+          order_price: this.props.order_price,
+          price_table_id: 9,
           client_id: client_id,
           orders_kits_attributes:[],
-          orders_products_attributes: this.state.products,
+          orders_products_attributes: products,
         },
         client_attributes: 
         {
@@ -112,18 +116,17 @@ class Checkout extends Component
   }
 
   getClientInformations = () => {
-      /* Get Data from current user based on email and token */
-      getClientInfo().then(res => {
-          this.setState({client_data: res});
-          this.setState({address_data: res.address_delivery});
-        }).catch(error => {
-          
-      });
+    /* Get Data from current user based on email and token */
+    getClientInfo().then(res => {
+        this.setState({client_data: res});
+        this.setState({address_data: res.address_delivery});
+      }).catch(error => {
+        
+    });
   }
 
   getAdmRegions = () => {
-    axios.get('http://localhost:3000/api/v1/adm_regions.json').then(res => 
-    {
+    axios.get('http://localhost:3000/api/v1/adm_regions.json').then(res => {
       const adm_regions = res.data;
       this.setState({ adm_regions: adm_regions });
     });
@@ -188,6 +191,12 @@ class Checkout extends Component
     return table;
   }
 
+  renderLoading = () => {
+    if(this.state.submitLoading) {
+      return <Loading />
+    }
+  }
+
   render() {
     return (
       <div className="pages-checkout pb-5 mb-5">
@@ -232,7 +241,7 @@ class Checkout extends Component
           </div>
           <div className="col-md-8 order-md-1">
             <h4 className="mb-3">Endereço para Entrega</h4>
-            <form onSubmit={e => this.checkOut(e)} className="needs-validation mt-3" noValidate>
+            <form onSubmit={e => this.checkOut(e)} className="needs-validation mt-3">
               <input id="client_id" name="client_id" type="hidden" value={this.state.client_data.id || ' '} />
               <input id="kind" name="kind" type="hidden" value={ this.state.client_data.kind } />
               <input
@@ -360,6 +369,7 @@ class Checkout extends Component
                     name="address_neighbourhood"
                     placeholder=""
                     defaultValue={this.state.address_data ? this.state.address_data.neighbourhood : ' '}
+                    required
                   />
                   </div>
                 <div className="col-md-4 mb-3">
@@ -397,7 +407,7 @@ class Checkout extends Component
               <br/><br />
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label>Deseja colocar seu CPF na nota?</label>
+                  <label>CPF</label>
                   <input
                     type="text"
                     className="form-control"
@@ -405,12 +415,16 @@ class Checkout extends Component
                     name="cpf"
                     defaultValue={this.state.client_data ? this.state.client_data.cpf : ' '}
                     placeholder="000.000.000-00"
+                    required
                   />
                   <div className="invalid-feedback">Name on card is required</div>
                 </div>
               </div>
               <hr className="mb-4 pb-5" />
-              <button className="btn btn-primary btn-lg btn-block">Continuar Compra</button>
+              <div class="text-center mx-auto w-100">
+                <div class="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" disabled={this.props.disable} >Continuar Compra</button></div>
+                <div class="d-inline p-1 text-white position-absolute">{this.renderLoading()}</div>
+              </div>  
             </form>
           </div>
         </div>

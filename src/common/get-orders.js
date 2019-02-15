@@ -1,4 +1,3 @@
-
 import request from './config-api.js';
 
 const email = localStorage.getItem("email");
@@ -10,12 +9,10 @@ export let getOrderInfo = function(order_id) {
         url:'/api/v1/orders/1.json',
         method:'get',
         params: { 
-        client_email: email,
-        client_token: token,
-        order_id: order_id,
-        },
-        header:
-        {
+            client_email: email,
+            client_token: token,
+            order_id: order_id,
+        }, header: {
         'X-Client-Email': email,
         'X-Client-Token': token,
         },

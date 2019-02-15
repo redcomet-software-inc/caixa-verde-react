@@ -223,8 +223,8 @@ class Registration extends Component {
             <label className="form-check-label" for="inlineCheckbox1"> Ao me cadastrar, concordo com os termos de serviço e políticas de privacidade desta página.</label>
           </div>
           <div class="text-center mx-auto w-100">
-          <div class="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" disabled={this.props.disable} >Cadastrar</button></div>
-          <div class="d-inline p-1 text-white position-absolute">{this.renderLoading()}</div>
+            <div class="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" disabled={this.props.disable} >Cadastrar</button></div>
+            <div class="d-inline p-1 text-white position-absolute">{this.renderLoading()}</div>
           </div>  
         </form>
       </div>

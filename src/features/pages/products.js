@@ -16,7 +16,6 @@ class Products extends Component {
       myBox:[],
     }
   }
-  
 
   refProducts = (products) => {
     this.setState({ products_by_category: products});
