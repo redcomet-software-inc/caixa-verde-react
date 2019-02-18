@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import LoaderHOC from '../../HOC/LoaderHOC.js';
+import LoaderHOC from '../../HOC/loader-hoc';
 import { getProduct } from '../../common/get-products.js';
 
 class MyBox extends Component {

@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
   NavLink
 } from "react-router-dom";
-import LoaderHOC from '../../HOC/LoaderHOC.js';
+import LoaderHOC from '../../HOC/loader-hoc';
 
 class Registration extends Component {
   constructor(props){

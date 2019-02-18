@@ -4,7 +4,7 @@ import Loading from '../common/loading.js';
 import { getClientInfo } from '../../common/get-clientinfo.js';
 import request from '../../common/config-api.js';
 import { NavLink } from 'react-router-dom';
-import LoaderHOC from '../../HOC/LoaderHOC.js';
+import LoaderHOC from '../../HOC/loader-hoc';
 
 class MyAccount extends Component {
  

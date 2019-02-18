@@ -76,9 +76,8 @@ export default class Index extends Component {
                 <div className="card">
                 <div className="" id={"heading" + index}>
                     <div className="row">
-                        <div className="col"><button className="btn btn-info nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</button></div>
-                        <div className="col my-auto"><NavLink to={"pedidos/" + order.id}>{ 'Pedido nº ' + order.order_status.id}</NavLink></div>
-                        <div className="col my-auto"><button className="btn btn-info nav-link collapsed" >Pagar</button></div>    
+                        <div className="col"><button className="btn btn-success nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</button></div>
+                        <div className="col my-auto"><NavLink to={"pedidos/" + order.id}>{ 'Pedido nº ' + order.order_status.id}</NavLink></div>   
                     </div>
                 </div>
                 <div id={"collapse" + index} className="collapse" aria-labelledby={"heading" + index} data-parent="#accordion">

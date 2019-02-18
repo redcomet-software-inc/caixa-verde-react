@@ -36,15 +36,18 @@ export default class CreditCardForm extends Component {
       }
 
     onSubmitCard = (e) => {
-        this.setState({isLoadingSend: true});
         e.preventDefault();
         e.persist();
+        /* Avoiding Multiple Requests */
+        if(this.state.isLoadingSend === true) {
+            return false;
+        }
+        this.setState({isLoadingSend: true});
+        
         let card = e.currentTarget;
         /* Client Side Payment Process */
         startPaymentProcess(card, this.state.order_id)
         .then(res => {
-            console.log("Payment Result");
-            console.log(res.response.code);
             this.props.handleSuccess();
         }).catch(error => {
             this.props.handleFail();

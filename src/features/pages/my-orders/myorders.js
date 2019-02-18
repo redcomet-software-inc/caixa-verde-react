@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import LoaderHOC from '../../../HOC/LoaderHOC.js';
+import LoaderHOC from '../../../HOC/loader-hoc';
 import { getOrders } from '../../../common/get-orders.js';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import List from './myorders-index.js';
@@ -56,28 +56,20 @@ class MyOrders extends Component {
       return(
          <Router>
            <Switch>
-              
               <Route exact path={"/pedidos/:orderId"}
-                      render={props => (
-                        <Show
-                        redirect={this.props.redirect}
-                        setCheckoutOrderId={this.props.setCheckoutOrderId}
-                        location={window.location}
-                        {...props}
-                        />
-                      )}/>            
-               
-              <List orders={this.state.orders}>
-               <Route component={List} />
-              </List> 
-               
-            
+                    render={props => (
+                      <Show
+                      redirect={this.props.redirect}
+                      setCheckoutOrderId={this.props.setCheckoutOrderId}
+                      location={window.location}
+                      {...props}
+                      />
+                    )}/>            
+                <List orders={this.state.orders}>
+              <Route component={List} />
+            </List> 
           </Switch>
          </Router>  
-        
-      
-
-      
     );
 
     } else {
@@ -95,11 +87,6 @@ class MyOrders extends Component {
   render() {
     return (
       <div className="pages-my-orders">
-        
-        
-       
-        
-
         <h2 className="text-center title">Meus Pedidos</h2>
         { this.renderOrders() }
       </div>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Card from '../pages/card.js';
 import Categories from '../components/categories.js';
-import LoaderHOC from '../../HOC/LoaderHOC.js';
+import LoaderHOC from '../../HOC/loader-hoc';
 
 class Products extends Component {
   constructor(props) {

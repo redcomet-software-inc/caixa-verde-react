@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Loading from '../common/loading.js';
 import { signIn } from '../../common/signin.js';
 import { NavLink } from 'react-router-dom';
-import LoaderHOC from '../../HOC/LoaderHOC.js';
+import LoaderHOC from '../../HOC/loader-hoc';
 
 class Login extends Component {
   static propTypes = {};

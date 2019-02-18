@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { setOrder } from '../../common/set-order.js';
 import { getClientInfo } from '../../common/get-clientinfo.js';
-import LoaderHOC from '../../HOC/LoaderHOC.js';
+import LoaderHOC from '../../HOC/loader-hoc';
 import Loading from '../common/loading.js';
 
 class Checkout extends Component {
@@ -69,24 +69,20 @@ class Checkout extends Component {
     const products = this.props.products;
 
     var data = {
-
       order: {
           order_price: this.props.order_price,
           price_table_id: 9,
           client_id: client_id,
           orders_kits_attributes:[],
           orders_products_attributes: products,
-        },
-        client_attributes: 
-        {
-          name: name,
-          lastname: lastname,
-          email: this.state.email,
-          cellphone: cellphone,
-          cpf: cpf,
-        },
-        address_attributes: 
-          {
+          client_attributes: {
+            name: name,
+            lastname: lastname,
+            email: this.state.email,
+            cellphone: cellphone,
+            cpf: cpf,
+          },
+          address_attributes: {
             id: this.state.address_id,
             number: address_number,
             street: address_street,
@@ -96,7 +92,8 @@ class Checkout extends Component {
             neighbourhood: address_neighbourhood,
             kind: address_kind
           }
-      }
+        },
+    }
     console.log("CHECKOUT DATA<<<<<<<<<<<<<<<<<<<<<<<");
     console.log(data);
 
@@ -152,19 +149,21 @@ class Checkout extends Component {
     let kits = this.props.kits;
     if(kits !== undefined) {
       for(let item in kits) {
-        table.push(
-        <li key={"checkout-kit" + kits[item].kit_id} className="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 className="my-0">
-              {kits[item].name} {this.renderQuantity(kits[item].quantity)}
-            </h6>
-            <small className="text-muted">{kits[item].description}</small>
-          </div>
-          <span className="text-muted">
-            {this.props.setMoneyFormat(kits[item].price * kits[item].quantity)}
-          </span>
-        </li>)
-      } 
+        if(kits[item].quantity > 0) {
+          table.push(
+          <li key={"checkout-kit" + kits[item].kit_id} className="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h6 className="my-0">
+                {kits[item].name} {this.renderQuantity(kits[item].quantity)}
+              </h6>
+              <small className="text-muted">{kits[item].description}</small>
+            </div>
+            <span className="text-muted">
+              {this.props.setMoneyFormat(kits[item].price * kits[item].quantity)}
+            </span>
+          </li>)
+        }
+      }
     }
     return table;
   }
@@ -174,18 +173,20 @@ class Checkout extends Component {
     let products = this.props.products;
     if(products !== undefined) {
       for(let item in products) {
-        table.push(
-        <li key={"checkout-item" + products[item].product_id} className="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 className="my-0">
-              {products[item].name} {this.renderQuantity(products[item].quantity)}
-            </h6>
-            <small className="text-muted">{products[item].description}</small>
-          </div>
-          <span className="text-muted">
-            {this.props.setMoneyFormat(products[item].price * products[item].quantity)}
-          </span>
-        </li>)
+        if(products[item].quantity > 0) {
+          table.push(
+          <li key={"checkout-item" + products[item].product_id} className="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h6 className="my-0">
+                {products[item].name} {this.renderQuantity(products[item].quantity)}
+              </h6>
+              <small className="text-muted">{products[item].description}</small>
+            </div>
+            <span className="text-muted">
+              {this.props.setMoneyFormat(products[item].price * products[item].quantity)}
+            </span>
+          </li>)
+        }
       } 
     }
     return table;

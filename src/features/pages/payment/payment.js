@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import 'react-credit-cards/es/styles-compiled.css';
-import LoaderHOC from '../../HOC/LoaderHOC.js';
+import LoaderHOC from '../../../HOC/loader-hoc';
 import PropTypes from 'prop-types';
-import { getClientInfo } from '../../common/get-clientinfo.js';
-
-import CreditCardForm from '../pages/PaymentComponents/CreditCardForm.js';
-import TicketForm from '../pages/PaymentComponents/TicketForm';
-import MoneyForm from '../pages/PaymentComponents/MoneyForm';
+import { getClientInfo } from '../../../common/get-clientinfo.js';
+import { NavLink } from 'react-router-dom';
+import CreditCardForm from '../../pages/payment/credit-card-form.js';
+import TicketForm from '../../pages/payment/ticket-form';
+import MoneyForm from '../../pages/payment/money-form';
+import Success from '../common/success';
 
 class Payment extends Component {
   static propTypes = {
@@ -61,8 +62,6 @@ class Payment extends Component {
     this.setState({ [card_name]: card_string });
   }
 
-  
-
   cardCallback = (callback) => {
     this.setState({card_brand: callback.issuer});
   }
@@ -106,14 +105,28 @@ class Payment extends Component {
   }
 
   success_tab = (status) => {
+
+    const body = (
+      <span>
+        Você pode acompanhar seu pedido <NavLink to="pedidos">nesta página</NavLink>.
+      </span>
+    );
     return(
-      <div></div>
+      <Success
+        status={1}
+        title={"Parabéns!"}
+        message={"Sua compra foi efetuada com sucesso!"}
+        body={body} />
     )
   }
 
   fail_tab = (status) => {
     return(
-      <div></div>
+      <Success
+        status={4}
+        title={"Desculpe!"}
+        message={"Pagamento não foi processado."}
+        body={"Encontramos um erro e não foi possível continuar."} />
     )
   }
 
@@ -132,8 +145,6 @@ class Payment extends Component {
       return this.fail_tab("failed");
     }
   }
-
-  
 
   handleClick = (e) => {
     e.preventDefault();
@@ -167,18 +178,18 @@ class Payment extends Component {
   render() {
     return (
       <div className="pages-payment">
-
-        <h2 className="text-center title">Pagamento</h2>
+        {(this.state.current_tab!=="success" && this.state.current_tab!=="failed") && (
+          <h2 className="text-center title">Pagamento</h2>
+        )}
           <div className="row">
             <div className="col text-center">
               
                  { this.renderOptions() }
-              
-              
+
             </div>
           </div>
           <div className="row">
-            <div className="content-payment w-80 p-3 pt-4 mx-auto">
+            <div className="content-payment col-md-6 w-80 p-3 pt-4 mx-auto">
               {this.current_page()}
             </div>
           </div>

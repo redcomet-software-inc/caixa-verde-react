@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CardKits from '../pages/cardkits.js';
-import LoaderHOC from '../../HOC/LoaderHOC.js';
+import LoaderHOC from '../../HOC/loader-hoc';
 
 class Kits extends Component {
 

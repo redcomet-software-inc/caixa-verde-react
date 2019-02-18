@@ -5,7 +5,6 @@ const client = axios.create({
       headers:{
           "Access-Control-Allow-Origin": process.env.REACT_APP_ALLOW_ORIGIN
       }
-  
 });
 
 const request = function(options) {

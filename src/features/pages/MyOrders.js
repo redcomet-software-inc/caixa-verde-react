@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-import LoaderHOC from '../../HOC/LoaderHOC.js';
+import LoaderHOC from '../../HOC/loader-hoc';
 import { getOrders } from '../../common/get-orders.js';
 
 class MyOrders extends Component {
@@ -119,7 +119,7 @@ class MyOrders extends Component {
                     <div className="row">
                         <div className="col"><button className="btn btn-info nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</button></div>
                         <div className="col my-auto"><NavLink to='pedidos/${order_id}'>{ 'Pedido nº ' + order.order_status.id}</NavLink></div>
-                        <div className="col my-auto"><button onClick={e => this.handlePayment(order.id)} className="btn btn-info nav-link collapsed" >Pagar</button></div>    
+                        <div className="col my-auto"></div>    
                     </div>
                 </div>
                 <div id={"collapse" + index} className="collapse" aria-labelledby={"heading" + index} data-parent="#accordion">

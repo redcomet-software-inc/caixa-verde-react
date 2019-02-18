@@ -1,4 +1,5 @@
 import request from './config-api.js';
+import { setPayment } from './set-payment.js';
 
 let PagSeguroDirectPayment = window.PagSeguroDirectPayment;
 
@@ -16,20 +17,8 @@ let sendToApi = function(order_id, token, hash, brand) {
 
     if (order_id && token && hash && brand) {
         return new Promise((resolve, reject) => {
-            const client_email = localStorage.getItem("email");
-            const client_token  = localStorage.getItem("token");
-            request({
-                url:'api/v1/pagseguro/payment.json',
-                method:'post',
-                data: {
-                    client_email: client_email,
-                    client_token: client_token,
-                    order_id: order_id,
-                    sender_hash: hash,
-                    card_token: token,
-                }
-            }).then(response => 
-            {
+            setPayment(order_id, hash, token)
+            .then(response => {
                 resolve(response);
             }).catch(err => {
                 reject("Failed to Send to Api" + err);
@@ -74,6 +63,7 @@ let createCardToken = function(card, brand) {
                 resolve(response.card.token);
             },
             error: function (error) {
+                console.log(error);
                 reject("Create Card Token Failed: "+ error);
             },
         });
