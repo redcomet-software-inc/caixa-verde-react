@@ -70,20 +70,29 @@ export default class Index extends Component {
 
     render() {
         return (
-        <div>
-            <div id="accordion" className="accordion p-0">
-            {this.props.orders.map((order, index) => (
-                <div className="card">
-                  <div className="" id={"heading" + index}>
-                      <div className="row">
-                          <div className="col"><button className="btn btn-success nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</button></div>
-                          <div className="col my-auto"><NavLink to={"pedidos/" + order.id}>{ 'Pedido nº ' + order.order_status.id}</NavLink></div>   
-                      </div>
+        <React.Fragment>
+          <div className="w-50 text-center mx-auto">
+            <div className={"mb-2"}>
+              <div className="mb-3 pb-2">
+                  <div class="d-inline-block">
+
                   </div>
-                </div>
-            ))}
+
+                  {this.props.orders && this.props.orders.map((order, index) => (
+                    <div className="card card-custom mb-2">
+                      <div className="" id={"heading" + index}>
+                          <div className="row order-style">
+                              <div className="col"><div className="nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</div></div>
+                              <div className="col my-auto"><NavLink className="custom-link" to={"pedidos/" + order.id}>{ 'Pedido #' + order.order_status.id}</NavLink></div>   
+                          </div>
+                      </div>
+                    </div>
+                  ))}
+
+              </div>
             </div>
-        </div>
+          </div>
+        </React.Fragment>
         );
     }
 }

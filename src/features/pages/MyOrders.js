@@ -117,8 +117,8 @@ class MyOrders extends Component {
               <div className="card">
                 <div className="" id={"heading" + index}>
                     <div className="row">
-                        <div className="col"><button className="btn btn-info nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</button></div>
-                        <div className="col my-auto"><NavLink to='pedidos/${order_id}'>{ 'Pedido nº ' + order.order_status.id}</NavLink></div>
+                        <div className="col"><button className="nav-link" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</button></div>
+                        <div className="col my-auto"><NavLink to='pedidos/${order_id}'>{ 'Pedido #' + order.order_status.id}</NavLink></div>
                         <div className="col my-auto"></div>    
                     </div>
                 </div>

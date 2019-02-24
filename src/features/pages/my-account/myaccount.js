@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import userImage from '../../../images/userImage.jpg';
 import request from '../../../common/config-api.js';
 import LoaderHOC from '../../../HOC/loader-hoc';
-import { PersonalDataClient } from './personal-data.js';
+import { PersonalDataClient, PersonalAddressDelivery, PersonalAddressBilling } from './personal-data.js';
 
 class MyAccount extends Component {
    constructor(props) {
@@ -138,7 +138,9 @@ class MyAccount extends Component {
 
           <div className="row">
             <div className="col-md p-md-5 p-0">
-              <PersonalDataClient  />
+              <PersonalDataClient {...this.props}  />
+              <PersonalAddressDelivery {...this.props} /> 
+              <PersonalAddressBilling {...this.props} /> 
             </div>
           </div>
       </div>

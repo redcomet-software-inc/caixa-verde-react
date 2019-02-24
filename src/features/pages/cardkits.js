@@ -150,7 +150,7 @@ export default class CardKits extends Component {
                 icon={minus}
                 id={this.props.id}
                 onClick={e => this.handleClickMinus(e)}
-                className={'btn btn-info ' + this.props.hide}   />
+                className={'btn btn-lg btn-info ' + this.state.hide}   />
           </div>
           <div className={"col-4 " + this.state.hide}>
             <div id={this.props.id} className={'btn disabled '+ this.state.hide}>

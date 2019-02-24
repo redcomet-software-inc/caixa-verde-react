@@ -57,9 +57,9 @@ export default class UserProfile extends Component
             <div className="dropdown-menu dropdown-menu-right m-2 shadow text-center" aria-labelledby="navbarDropdown">
               <NavLink className="dropdown-item" exact to="/minhaconta">Minha Conta</NavLink>
               <div className="dropdown-divider"></div>
-              <a className="dropdown-item" href="/">Opções</a>
+              <NavLink className="dropdown-item" exact to="/pedidos">Meus Pedidos</NavLink>
               <div className="dropdown-divider"></div>
-              <NavLink className="dropdown-item" exact to="/orders">Histórico</NavLink>
+              <NavLink className="dropdown-item" exact to="/minhacaixa">Minha Caixa</NavLink>
               <div className="dropdown-divider"></div>
               <a className="dropdown-item" onClick={this.signOut} href="/">Sair</a>
             </div>
