@@ -20,8 +20,8 @@ import Login from '../pages/login.js';
 import Registration from '../pages/registration.js';
 import ShoppingCart from '../pages/shoppingcart.js';
 import ShoppingCartButton from '../components/shoppingcart-button.js';
-import Checkout from '../pages/checkout.js';
-import MyAccount from '../pages/myaccount.js';
+import Checkout from '../pages/checkout/checkout.js';
+import MyAccount from '../pages/my-account/myaccount.js';
 import MyOrders from '../pages/my-orders/myorders.js';
 import MyBox from '../pages/mybox.js';
 import Payment from '../pages/payment/payment.js';
@@ -31,7 +31,6 @@ import Spinner from '../common/spinner.js';
 import NotFound from '../common/not-found.js';
 import * as actions from '../../features/home/redux/actions.js';
 
-
 export class MainPage extends Component {
   constructor(props) {
     super(props);
@@ -39,8 +38,6 @@ export class MainPage extends Component {
     /* GetItems from LocalStorage */
     let authentication_token = localStorage.getItem('token');
     let clientEmail = localStorage.getItem('email');
-
-    
 
     this.state = {
       productsList:[],
@@ -232,7 +229,7 @@ export class MainPage extends Component {
     let value = 0;
     if(this.isEmpty(myObject) === false) {
       for(var key in myObject) {
-        value += myObject[key].price;
+        value += myObject[key].price * myObject[key].quantity;
       }
     }
     return value;
@@ -349,6 +346,7 @@ export class MainPage extends Component {
                               render={props => (
                                 <MyOrders 
                                   setCheckoutOrderId={this.setCheckoutOrderId}
+                                  setMoneyFormat={this.setMoneyFormat}
                                   redirect={this.redirect}
                                   location={window.location}
                                   {...props}

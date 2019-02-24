@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Icon } from 'react-icons-kit';
 import { boxAdd } from 'react-icons-kit/icomoon/boxAdd';
 import { minus } from 'react-icons-kit/icomoon/minus';
+import { getProduct } from '../../common/get-products.js';
+import userImage from '../../images/caixaverde-finalizacao-WHITE-BOX.png';
 
 export default class CardKits extends Component {
   constructor(props) {
@@ -101,7 +103,7 @@ export default class CardKits extends Component {
             <li className="list-group-kit"> 
               <div className="row">
                 <div className="col">
-                  <img className="img-fluid" alt={"Imagem Kit " + products[product].name} src={products[product].thumb} />
+                  <img onError={e => this.handleError(e, products[product].id)} className="img-fluid" alt={"Imagem Kit " + products[product].name} src={products[product].thumb} />
                 </div>
                 <div className="col my-auto">
                   { products[product].name }
@@ -114,6 +116,16 @@ export default class CardKits extends Component {
     }
 
     return table;
+  }
+
+  handleError (e, id) {
+    e.persist();
+    getProduct(id).then(res => {
+      e.target.src = res.thumb;
+      if(typeof res.thumb === 'undefined') {
+        e.target.src = userImage;
+      }
+    });
   }
   
 

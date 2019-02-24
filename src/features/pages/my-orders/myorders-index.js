@@ -74,42 +74,12 @@ export default class Index extends Component {
             <div id="accordion" className="accordion p-0">
             {this.props.orders.map((order, index) => (
                 <div className="card">
-                <div className="" id={"heading" + index}>
-                    <div className="row">
-                        <div className="col"><button className="btn btn-success nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</button></div>
-                        <div className="col my-auto"><NavLink to={"pedidos/" + order.id}>{ 'Pedido nº ' + order.order_status.id}</NavLink></div>   
-                    </div>
-                </div>
-                <div id={"collapse" + index} className="collapse" aria-labelledby={"heading" + index} data-parent="#accordion">
-                    <div className="card-body p-0">
-                        <table className="table table-hover">
-                        <thead className="thead-dark">
-                            <tr>
-                            <th scope="col"></th>
-                            <th scope="col">Recebido</th>
-                            <th scope="col">Pago</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        { this.renderPayment(order.order_status)}
-                        </tbody>
-                        </table>
-                        <table className="table table-hover">
-                        <thead className="thead-light">
-                            <tr>
-                            <th scope="col">Itens</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            { this.renderItens(order.orders_products) }
-                            { this.renderKits(order.orders_kits) }
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
+                  <div className="" id={"heading" + index}>
+                      <div className="row">
+                          <div className="col"><button className="btn btn-success nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</button></div>
+                          <div className="col my-auto"><NavLink to={"pedidos/" + order.id}>{ 'Pedido nº ' + order.order_status.id}</NavLink></div>   
+                      </div>
+                  </div>
                 </div>
             ))}
             </div>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Icon } from 'react-icons-kit';
 import { boxAdd } from 'react-icons-kit/icomoon/boxAdd';
 import { minus } from 'react-icons-kit/icomoon/minus';
+import userImage from '../../images/caixaverde-finalizacao-WHITE-BOX.png';
 import { getProduct } from '../../common/get-products.js';
 
 export default class Card extends Component {
@@ -50,11 +51,7 @@ export default class Card extends Component {
 
   handleError (e, id) {
     e.persist();
-    getProduct(id).then(res => {
-      e.target.src = res.thumb;
-      console.log("Image Error");
-      console.log(res);
-    });
+    e.target.src = userImage;
   }
 
   /* Add Item to the Shopping List */
@@ -106,11 +103,12 @@ export default class Card extends Component {
 
   render() {
     return (
-      <div key={"div" + this.state.productData.id} className={"card m-2 mx-auto " + this.state.card_active} style={{maxWidth:200}}>
+      <div key={"div" + this.state.productData.id} className={"card m-2 text-center mx-auto " + this.state.card_active} style={{maxWidth:200}}>
         <img
           alt={"Imagem" + this.props.name}
-          className="card-img-top"
-          src={this.props.thumb}
+          className="card-img-top mt-5"
+          
+          src={this.props.thumb && this.props.thumb || userImage}
           onLoad={this.handleLoad}
           onError={e => this.handleError(e, this.state.productData.id)}
         />

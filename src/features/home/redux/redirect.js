@@ -8,8 +8,6 @@ import {
 
 /* Accepts Params */
 export function redirect(value) {
-  console.log("value");
-  console.log(value);
   return {
     type: HOME_REDIRECT,
     value

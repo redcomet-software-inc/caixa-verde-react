@@ -20,7 +20,7 @@ class Login extends Component {
   handleClick = (e) => {
     e.preventDefault();
     e.persist();
-    if(!this.state.isLoading && this.state.disabled===false) {
+    if(!this.state.isLoading) {
       const email = e.currentTarget.email.value;
       const password = e.currentTarget.password.value;
       this.setState({ message: ''});
@@ -29,10 +29,10 @@ class Login extends Component {
       signIn(email, password).then(response => {
         console.log("this here");
         this.setState({ isLoading: false});
-        const client_id = response['id'];
-        const client_name = response['name'];
-        const client_email = response['email'];
-        const token = response['authentication_token'];
+        const client_id = response.id;
+        const client_name = response.name;
+        const client_email = response.email;
+        const token = response.authentication_token;
         this.props.setSignIn(client_id, client_name, client_email, token);
         this.props.actions.redirect('/');
         this.setState({ message: 'Você está logado' });

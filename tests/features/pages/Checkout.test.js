@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Checkout } from '../../../src/features/pages';
+import { Checkout } from '../../../src/features/pages/checkout';
 
 it('renders node with correct class name', () => {
   const renderedComponent = shallow(<Checkout />);

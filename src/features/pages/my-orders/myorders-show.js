@@ -3,37 +3,69 @@ import { getPagseguroTransaction } from '../../../common/get-pagseguro-transacti
 import { Icon } from 'react-icons-kit';
 import { arrowLeft2 } from 'react-icons-kit/icomoon/arrowLeft2';
 import { Link } from 'react-router-dom';
-import { getOrderInfo } from '../../../common/get-orders.js';
+import { getOrderInfo, getPayment } from '../../../common/get-orders.js';
+
 
 export default class Show extends Component {
     constructor (props) {
         super(props);
+        this.props.actions.turnOnLoading();
         this.state = {
             transaction:{},
-            order_info:[],
+            order_info:'',
+            payment_info:[],
+            payment_status: <span className="text-info">Carregando...</span>,
+            payment_kind:<span className="text-info">Carregando...</span>,
         };
     }
-
     componentDidMount (match) {
+        window.scroll({top: 0, left: 0, behavior: 'smooth' });
         this.getTransaction();
         this.getOrder();
+        this.getPayment();
         this.props.setCheckoutOrderId(this.props.match.params.orderId);
     }
-
     handleBack = (e) => {
         e.preventDefault();
-        console.log("Back");
-        console.log(this.props);
-        console.log(this.props.history);
         this.props.history.push('/pedidos');
     } 
     
     getOrder = () => {
         getOrderInfo(this.props.match.params.orderId)
         .then(res => {
-            console.log("Order Resposne");
+            console.log("order");
             console.log(res);
+            this.props.actions.turnOffLoading();
             this.setState({order_info: res});
+        }).catch( error => {
+            console.log(error);
+            this.props.actions.turnOffLoading();
+        });
+    }
+
+    getPayment = () => {
+        console.log("where is the params");
+        console.log(this.props);
+        getPayment(this.props.match.params.orderId)
+        .then(res => {
+            this.setState({payment_info: res});
+            if(res.payment.kind === "credit-card") {
+                this.setState({payment_kind: <span className="text-info">Cartão de crédito</span>});
+                this.setState({payment_status: this.paymentStatus(res.transaction.status)});
+            }
+            if(res.payment.kind === "debit") {
+                this.setState({payment_kind: "Débito"})
+            }
+            if(res.payment.kind === "money") {
+                this.setState({payment_kind: "Dinheiro"})
+            }
+            if(res.payment.kind === "ticket") {
+                this.setState({payment_kind: "Boleto"})
+            }
+            if(res.payment.kind === null) {
+                this.setState({payment_kind: null});
+                this.setState({payment_status: <span className="text-danger">Pendente</span>});
+            }
         });
     }
 
@@ -44,6 +76,37 @@ export default class Show extends Component {
         }).catch(err=>{
             console.log("Error: " + err);
         });
+    }
+
+    paymentStatus = (status) => {
+        status = parseInt(status);
+        if(status === 1) {
+            return <span className="text-warning">Aguardando pagamento</span>;
+        }
+        if (status === 2) {
+            return <span className="text-warning">Em análise</span>;
+        }
+        if (status === 3) {
+            return <span className="text-success">Completo</span>;
+        }
+        if (status === 4){
+            return <span className="text-warning">Disponível</span>;
+        } else 
+        if(status === 5) {
+            return <span className="text-info">Em Disputa</span>;
+        } 
+        if(status === 6) {
+            return <span className="text-info">Devolvido</span>;
+        }
+        if(status === 7) {
+            return <span className="text-info">Cancelado</span>;
+        }
+        if(status === 8) {
+            return <span className="text-warning">Em devolução</span>;
+        } 
+        if(status === 9) {
+            return <span className="text-warning">Em Contestação</span>;
+        }
     }
 
     handlePayment = (id) => {
@@ -61,12 +124,12 @@ export default class Show extends Component {
             for(let product in order.orders_products) {
                 if(order.orders_products[product].quantity > 0) {
                     products.push(
-                        <tr>
-                            <td key={"key" + product.id} className="align-middle">
+                        <tr key={"key_product" + order.orders_products[product].id}>
+                            <td className="align-middle">
                                 {order.orders_products[product].name}
                             </td>
                             <td>
-                                {order.orders_products[product].price}
+                                {this.props.setMoneyFormat(order.orders_products[product].price)}
                             </td>
                             <td>     
                                 {order.orders_products[product].quantity}
@@ -80,13 +143,13 @@ export default class Show extends Component {
             }
             for(let kit in order.orders_kits) {
                 kits.push(
-                    <tr>
+                    <tr key={"key_kit" + order.orders_kits[kit].id}>
                         <th scope="row">Kits</th>
-                        <td key={"key" + kit.id} className="align-middle">
+                        <td className="align-middle">
                             {order.orders_kits[kit].name}
                         </td>
                         <td>
-                            {order.orders_kits[kit].price}
+                            {this.props.setMoneyFormat(order.orders_kits[kit].price)}
                         </td>
                         <td>     
                             {order.orders_kits[kit].quantity}
@@ -115,18 +178,28 @@ export default class Show extends Component {
                     <tbody>
                         <tr>
                         <td className="align-middle text-right">Status</td>
-                        <td>Aguardando Pagamento</td>
+                        <td></td>
+                        </tr>
+                        <tr>
+                            <td className="align-middle text-right">Forma de Pagamento</td>
+                            <td className="align-middle"><strong>{ this.state.payment_kind }</strong></td>
                         </tr>
                         <tr>
                             <td className="align-middle text-right">Pagamento</td>
-                            <td className="align-middle"><strong>Pendente</strong></td>
+                            <td className="align-middle"><strong>{ this.state.payment_status }</strong></td>
                         </tr>
                         <tr>
-                            <td className="align-middle text-center" colspan="3"><Link onClick={e => this.handlePayment(this.props.match.params.orderId)} to="/pagamento" replace><button className="btn btn-info">Pagar Agora</button></Link></td>
+                            { this.state.payment_kind === null && (  
+                                <td className="align-middle text-center" colspan="3">
+                                    <Link onClick={e => this.handlePayment(this.props.match.params.orderId)} to="/pagamento" replace>
+                                        <button className="btn btn-info">Pagar Agora</button>
+                                    </Link>
+                                </td>
+                            ) }
                         </tr>
                         <tr>
                             <td className="align-middle text-right">Valor total</td>
-                            <td className="align-middle"><strong>{this.state.order_info.order_price}</strong></td>
+                            <td className="align-middle"><strong>{this.props.setMoneyFormat(this.state.order_info.order_price)}</strong></td>
                         </tr>
                         <tr>
                             <td  className="align-middle text-right">Previsão de Entrega</td>
@@ -135,17 +208,23 @@ export default class Show extends Component {
                     </tbody>
                 </table>
                 
-                <h4 className="text-center pt-5">Endereço de Enrega</h4>
-                <table className="table align-middle my-auto">
-                    <tbody>
-                        <tr>
-                            <td>Rua Yollanda Ferreira Penzo, 60</td>
-                            <td>BNH II Plano</td>
-                            <td>79826-175</td>
-                            <td>Águas Claras-DF</td>
-                        </tr>
-                    </tbody>
-                </table>
+                
+                { this.state.order_info.order_address && this.state.order_info.order_address && ( 
+                    <div>
+                        <h4 className="text-center pt-5">Endereço de Enrega</h4>
+                        <table className="table align-middle my-auto">
+                            <tbody>
+                                <tr>
+                                    <td>{ this.state.order_info.order_address.street }</td>
+                                    <td>{ this.state.order_info.order_address.neighbourhood }</td>
+                                    <td>{ this.state.order_info.order_address.zipcode }</td>
+                                    <td>{ this.state.order_info.order_address.adm_region }</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                ) }
+                    
 
                 <h4 className="text-center pt-5">Produtos</h4>
                 <table className="table text-center">

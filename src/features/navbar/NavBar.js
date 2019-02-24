@@ -115,7 +115,7 @@ class NavBar extends Component {
                   <NavLink className="nav-link" to="/personalizado">Personalizado</NavLink>
                 </span>
               </div>
-              <div className="p-0 bd-highlight d-none d-md-block d-lg-none">
+              <div className="p-0 bd-highlight d-none d-md-block">
                 <span className="nav-item">
                   {this.props.loggedIn ? (<NavLink className="nav-link nav-item" exact to="/pedidos">Meus Pedidos</NavLink>) : null }
                 </span>

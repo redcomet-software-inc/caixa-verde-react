@@ -62,6 +62,8 @@ class MyOrders extends Component {
                       redirect={this.props.redirect}
                       setCheckoutOrderId={this.props.setCheckoutOrderId}
                       location={window.location}
+                      setMoneyFormat={this.props.setMoneyFormat}
+                      actions = {this.props.actions}
                       {...props}
                       />
                     )}/>            
@@ -75,10 +77,7 @@ class MyOrders extends Component {
     } else {
       return (
         <div className="row mx-auto">
-          <div className="col-lg-6 col-md-8 mx-auto">
-            <span className="tab">Por enquanto você ainda não possui nenhum pedido.
-            Quando fizer o seu pedido você poderá acompanhá-lo nesta página.</span>
-          </div>
+         
         </div>
       )
     }

@@ -1,5 +1,5 @@
 import request from './config-api.js';
-import { setPayment } from './set-payment.js';
+import { setPaymentCard } from './set-payment.js';
 
 let PagSeguroDirectPayment = window.PagSeguroDirectPayment;
 
@@ -17,7 +17,7 @@ let sendToApi = function(order_id, token, hash, brand) {
 
     if (order_id && token && hash && brand) {
         return new Promise((resolve, reject) => {
-            setPayment(order_id, hash, token)
+            setPaymentCard(order_id, hash, token)
             .then(response => {
                 resolve(response);
             }).catch(err => {

@@ -92,7 +92,7 @@ import Loading from '../common/loading.js';
                   <a className="dropdown-item" name="Tudo" id="all" onClick={(e) => this.getProducts(e)}>Tudo</a>
                 </div>
               </div>
-          <div className="p-2 bd-highlight my-auto">{ this.renderLoading() }</div>
+          <div className="p-2 bd-highlight my-auto loading-categories">{ this.renderLoading() }</div>
         </div>
         
       </div>

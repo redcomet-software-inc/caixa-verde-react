@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import LoaderHOC from '../../HOC/loader-hoc';
 import { getProduct } from '../../common/get-products.js';
+import userImage from '../../images/caixaverde-finalizacao-WHITE-BOX.png';
 
 class MyBox extends Component {
-  static propTypes = {
-    pages: PropTypes.object.isRequired,
-    actions: PropTypes.object.isRequfired,
-  };
+
   constructor (props) {
     super(props);
     /* Load Props from MainPage */
@@ -41,10 +38,8 @@ class MyBox extends Component {
     this.setState({myKits:[]});
   }
 
-  componentWillUpdate(prevProps, props) {
-    console.log("here");
-    console.log(this.state.myProducts.length);
-    if(props.myBoxProducts !== prevProps.myBoxProducts) {
+  componentWillUpdate(prevProps) {
+    if(this.props.myBoxProducts !== prevProps.myBoxProducts) {
         if(this.state.myProducts.length === 0 && this.state.myKits.length === 0) {
           this.props.actions.turnOffLoading();
         }
@@ -53,10 +48,14 @@ class MyBox extends Component {
 
   renderKitProducts = (products) => {
     let table = [];
+    console.log('>>>>>>>>>>>>>>>>>>>>>')
+    console.log(products);
     for (let item in products) {
-      table.push(
-        <img onError={e => this.handleError(e, products[item].id)} alt={"Image do Produto " + products[item].name} className="img-fluid" src={products[item].thumb} />  
-      );
+
+        table.push(
+          <img alt={"Image Logo Caixa Verde " + products[item].name} className="img-fluid" src={userImage} />  
+        );
+
     }
     return table;
   }
@@ -65,25 +64,38 @@ class MyBox extends Component {
     let myBox = this.props.myBoxKits;
     let table = [];
     for(let item in myBox) {        
-    
-      table.push(
-          <div className="card mb-3" style={{minWidth: 180, backgroundColor: '#fff'}}>
-            <div className="card-header">{ myBox[item].name }</div>
-            <div className="card-body text-center">
+      if(parseInt(myBox[item].quantity) > 0) {
+        let products = myBox[item].products;
+        console.log(myBox);
+        let product_table = "";
+        let count = 1;
+        /* Display Products Name */
+        for(let product in products) {
+          product_table += count;
+          if(products.length > count) {
+            product_table += ", ";
+          }
+          count++;
+        }
+        table.push(
+            <div className="card mb-3" style={{minWidth: 180, backgroundColor: '#fff'}}>
+              <div className="card-header">{ myBox[item].name }</div>
+              <div className="card-body text-center">
 
-              { this.renderKitProducts(myBox[item].products) }               
+                { this.renderKitProducts(myBox[item].products) }               
 
-              <p className="card-text"></p>
-            </div>
-            <div className="card-footer text-center">
-              <ul className="list-group">
-                <li className="list-group-item">{ myBox[item].kind }</li>
-                <li className="list-group-item text-success">{ this.props.setMoneyFormat(myBox[item].price) }</li>
-                <li className="list-group-item">Quantidade: { myBox[item].quantity }</li>
-              </ul>
-            </div>
-        </div>
-      );
+                <p className="card-text"></p>
+              </div>
+              <div className="card-footer text-center">
+                <ul className="list-group">
+                  <li className="list-group-item">{ product_table }</li>
+                  <li className="list-group-item text-success">{ this.props.setMoneyFormat(myBox[item].price) }</li>
+                  <li className="list-group-item">Quantidade: { myBox[item].quantity }</li>
+                </ul>
+              </div>
+          </div>
+        );
+      }
     }
     return table;
   }
@@ -92,29 +104,34 @@ class MyBox extends Component {
     e.persist();
     getProduct(id).then(res => {
       e.target.src = res.thumb;
+      if(typeof res.thumb === 'undefined') {
+        e.target.src = userImage;
+      }
     });
   }
 
   renderProducts ()  {
     let myBox = this.props.myBoxProducts;
     let table = [];
-    for(let item in myBox) {        
-      table.push(
-          <div className="card mb-3" style={{minWidth: 180, backgroundColor: '#fff'}}>
-            <div className="card-header">{ myBox[item].name }</div>
-            <div className="card-body text-center">
-              <img onError={e => this.handleError(e, myBox[item].id)} alt={"Image do Produto " + myBox[item].name} className="img-fluid" src={myBox[item].thumb} />  
-              <p className="card-text"></p>
-            </div>
-            <div className="card-footer text-center">
-              <ul className="list-group">
-                <li className="list-group-item">{ myBox[item].kind }</li>
-                <li className="list-group-item text-success">{ this.props.setMoneyFormat(myBox[item].price) }</li>
-                <li className="list-group-item">Quantidade: { myBox[item].quantity }</li>
-              </ul>
-            </div>
-        </div>
-      );
+    for(let item in myBox) {  
+      if(parseInt(myBox[item].quantity) > 0) {
+        table.push(
+            <div className="card mb-3" style={{minWidth: 180, backgroundColor: '#fff'}}>
+              <div className="card-header">{ myBox[item].name }</div>
+              <div className="card-body text-center">
+                <img onError={e => this.handleError(e, myBox[item].id)} alt={"Image do Produto " + myBox[item].name} className="img-fluid" src={myBox[item].thumb} />  
+                <p className="card-text"></p>
+              </div>
+              <div className="card-footer text-center">
+                <ul className="list-group">
+                  <li className="list-group-item">{ myBox[item].kind }</li>
+                  <li className="list-group-item text-success">{ this.props.setMoneyFormat(myBox[item].price) }</li>
+                  <li className="list-group-item">Quantidade: { myBox[item].quantity }</li>
+                </ul>
+              </div>
+          </div>
+        );
+      }
     }
       
     return table;
@@ -131,19 +148,32 @@ class MyBox extends Component {
       </React.Fragment>
 
     */
-   
+  clickHandle = (e) => {
+    e.preventDefault();
+    e.persist();
+
+    if (this.props.loggedIn===false) {
+      this.props.actions.redirect('cadastro');
+    } else {
+      this.props.actions.redirect('checkout');
+    }
+  }
+
   render() {
     return (
-      <div className="pages-my-box">
+      <div className="pages-my-box ">
         <h2 className="text-center title">Minha Caixa
               <h4><span className="badge badge-secondary badge-pill">
                 {this.props.count}
                 </span>
               </h4>
         </h2>
-        <div className="card-deck">
+        <div className="card-columns">
           { this.renderKits() }
           { this.renderProducts() }
+        </div>
+        <div className="text-center">
+          <button className="btn btn-primary" onClick={this.clickHandle} type="button">Finalizar Compra</button>
         </div>
       </div>
     );

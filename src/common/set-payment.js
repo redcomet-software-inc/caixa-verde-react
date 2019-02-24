@@ -1,7 +1,7 @@
 
 import request from './config-api.js';
 
-export let setPayment = function(order_id, sender_hash, card_token) {
+export let setPaymentCard = function(order_id, sender_hash, card_token) {
     return new Promise((resolve, reject) => {
     const email = localStorage.getItem("email");
     const token = localStorage.getItem("token");
@@ -20,6 +20,7 @@ export let setPayment = function(order_id, sender_hash, card_token) {
             order_id: order_id,
             sender_hash: sender_hash,
             card_token: card_token,
+            kind: "credit-card"
         },
         header: {
             'X-Client-Email': email,

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import 'react-credit-cards/es/styles-compiled.css';
 import LoaderHOC from '../../../HOC/loader-hoc';
 import PropTypes from 'prop-types';
-import { getClientInfo } from '../../../common/get-clientinfo.js';
 import { NavLink } from 'react-router-dom';
 import CreditCardForm from '../../pages/payment/credit-card-form.js';
 import TicketForm from '../../pages/payment/ticket-form';
@@ -39,12 +38,6 @@ class Payment extends Component {
     };
   }
 
-  clientData = () => {
-    getClientInfo().then(buyer => {
-        this.setState({ client_info: buyer});
-    });
-  }
-
   componentDidMount() {
     /* Must Choose an Order to Pay */
     const o_id = this.state.order_id;
@@ -53,15 +46,6 @@ class Payment extends Component {
     }
     this.props.actions.turnOffLoading();
   }
-
-  handleChange = (e) => {
-    e.preventDefault();
-    e.persist();
-    const card_name = e.currentTarget.name;
-    const card_string = e.currentTarget.value;
-    this.setState({ [card_name]: card_string });
-  }
-
   cardCallback = (callback) => {
     this.setState({card_brand: callback.issuer});
   }

@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
 import * as actions from '../features/home/redux/actions.js';
 import { bindActionCreators, compose } from 'redux';
-import { getAuth } from '../common/get-auth.js';
 import { connect } from 'react-redux';
+import { getAuth } from '../common/get-auth.js';
 
 // This function takes a component...
 const LoaderHOC = (WrappedComponent) => {
   // ...and returns another component...
   return class extends Component {
+
+    constructor(props) {
+      super(props);
+      this.state = {
+        client_data:[],
+      }
+    }
 
     redirect = () => {
       if(!this.props.permit) {
@@ -26,10 +33,10 @@ const LoaderHOC = (WrappedComponent) => {
         this.props.actions.turnOffError();
         this.props.actions.turnOnLoading();
         getAuth().then(res => {
+          this.props.actions.turnOffLoading();
           if (!res) {
             this.redirect();
           } 
-          this.props.actions.turnOffLoading();
 
         }).catch(error => {
           this.props.actions.turnOffLoading();
@@ -47,6 +54,7 @@ const LoaderHOC = (WrappedComponent) => {
 const mapStateToProps = (state, props) => {
   return {
     isLoading: state.isLoading,
+    home: state.home,
   };
 }
 

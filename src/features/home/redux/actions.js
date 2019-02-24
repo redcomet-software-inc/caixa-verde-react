@@ -8,3 +8,4 @@ export { productPlus } from './productPlus';
 export { productMinus } from './productMinus';
 export { kitPlus } from './kitPlus';
 export { kitMinus } from './kitMinus';
+export { getClientData, dismissGetClientDataError } from './getClientData';

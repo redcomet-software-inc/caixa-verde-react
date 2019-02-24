@@ -55,9 +55,7 @@ class Registration extends Component {
    
   }
   renderCepLoading = () => {
-    if(this.state.isCepLoading) {
-      return <Loading />
-    }
+    
   }
 
   renderLoading = () => {
@@ -81,6 +79,7 @@ class Registration extends Component {
     const adm_region_id = e.target.elements.adm_region_id.value;
     const complement = e.target.elements.complement.value;
     const cellphone = e.target.elements.cellphone.value;
+    const cpf = e.target.elements.cpf.value;
      axios({ method: 'POST', url: 'http://localhost:3000/api/v1/clients.json',
         data: { 
           client: {
@@ -116,14 +115,14 @@ class Registration extends Component {
         });
   }
 
-  render(props) {
+  render() {
     return (
-      <div className="pages-registration form-spacing p-lg-2 mb-5 pb-5">
+      <div className="pages-registration form-spacing p-md-5 mb-5 pb-4">
           <NavLink className="nav-link p-4 text-center" to="/login" >Já tenho uma conta</NavLink>
-          <p></p>
+
         <h2 className="text-center title">Cadastro</h2>
         <form onSubmit={this.register}>
-          <div className="row">
+          <div className="form-row">
               <div className="col-md-6 mb-3">
                 <label for="inp" className="inp mb-2">
                   <input type="text" id="name" name="name" placeholder="&nbsp;" required/>
@@ -155,31 +154,24 @@ class Registration extends Component {
                   </label>
                 </div>
             </div>
-          <div className="p-4">
-          </div>
+
           <div className="form-row">
-            <div className="col-md-3 mb-12">
-              <label for="inp" className="inp mb-3">
-                  <input onBlur={(e) => this.getAddressAPI(e.currentTarget.value)} type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" required/> 
-                  <span className="label">CEP</span> 
-                </label>
+            <div className="col-md-6 mb-3">
+              <label for="inp" className="inp mb-2">
+                <input onBlur={(e) => this.getAddressAPI(e.currentTarget.value)} type="text" id="zipcode" name="zipcode" placeholder="&nbsp;" required/> 
+                <span className="label">CEP</span> 
+              </label>
             </div>
-            <div className="col-md-3 pb-5">
-                <small id="passwordHelp" className={"text-danger " + this.state.invalidCep}>
-                CEP inválido
-              </small>  
-              <span className="mb-5 pl-3 mr-5">{this.renderCepLoading()}</span>
-            </div>
-            <div className="col-md-6 mb-12 float-right">
-              <label for="inp" className="inp mb-3">
+            <div className="col-md-6 mb-3 float-right">
+              <label for="inp" className="inp mb-2">
                   <select type="text" id="adm_region_id" name="adm_region_id" placeholder="&nbsp;">
                     <option disabled selected value=""> -- Escolha uma região -- </option>
                     {this.state.adm_regions.map((item, index) => (
                     <option value={item.id}> {item.name}</option>              
-                ))}
+                    ))}
                   </select> 
                   <span className="label">Região Administrativa</span> 
-                </label>
+              </label>
             </div>
           </div>
           <div className="form-row">
@@ -217,14 +209,46 @@ class Registration extends Component {
                   <span className="label">Celular</span>
               </label>
             </div>
+            <div className="col-md-6 mb-3">
+              <label for="inp" className="inp mb-2">
+              <input type="text" id="cpf" name="cpf" placeholder="&nbsp;" required/>
+                  <span className="label">CPF</span>
+              </label>
+            </div>
           </div>
-          <div className="form-check form-check-inline p-4">
-            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" required/>
-            <label className="form-check-label" for="inlineCheckbox1"> Ao me cadastrar, concordo com os termos de serviço e políticas de privacidade desta página.</label>
+          <div className="form-row">
+            <div className="col mb-12">
+
+              <div class="d-flex pb-3 pt-3">
+                <div class="p-2 my-auto">
+                  <div className="text-center mx-auto align-middle align-center">
+                    <div class="switch_box box_4">
+                      <div class="input_wrapper">
+                        <input type="checkbox" class="switch_4" required/>
+                          <svg class="is_checked" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 426.67 426.67">
+                            <path d="M153.504 366.84c-8.657 0-17.323-3.303-23.927-9.912L9.914 237.265c-13.218-13.218-13.218-34.645 0-47.863 13.218-13.218 34.645-13.218 47.863 0l95.727 95.727 215.39-215.387c13.218-13.214 34.65-13.218 47.86 0 13.22 13.218 13.22 34.65 0 47.863L177.435 356.928c-6.61 6.605-15.27 9.91-23.932 9.91z"/>
+                          </svg>
+                          <svg class="is_unchecked" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212.982 212.982">
+                            <path d="M131.804 106.49l75.936-75.935c6.99-6.99 6.99-18.323 0-25.312-6.99-6.99-18.322-6.99-25.312 0L106.49 81.18 30.555 5.242c-6.99-6.99-18.322-6.99-25.312 0-6.99 6.99-6.99 18.323 0 25.312L81.18 106.49 5.24 182.427c-6.99 6.99-6.99 18.323 0 25.312 6.99 6.99 18.322 6.99 25.312 0L106.49 131.8l75.938 75.937c6.99 6.99 18.322 6.99 25.312 0 6.99-6.99 6.99-18.323 0-25.313l-75.936-75.936z" fill-rule="evenodd" clip-rule="evenodd"/>
+                          </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-2 flex-grow-1 align-middle my-auto">
+                  <span>
+                    Ao me cadastrar, concordo com os termos de serviço e políticas de privacidade desta página.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+              
+
           </div>
-          <div class="text-center mx-auto w-100">
-            <div class="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" disabled={this.props.disable} >Cadastrar</button></div>
-            <div class="d-inline p-1 text-white position-absolute">{this.renderLoading()}</div>
+          <div className="text-center mx-auto w-100">
+            <div className="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" disabled={this.props.disable} >Cadastrar</button></div>
+            <div className="d-inline p-1 text-white position-absolute">{this.renderLoading()}</div>
           </div>  
         </form>
       </div>

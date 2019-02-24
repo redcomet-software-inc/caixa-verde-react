@@ -1,5 +1,8 @@
 @import '../../styles/mixins';
 
+
+
+
 html, body, .fixed-top {
   line-height: 1;
   width: 100%;
@@ -7,6 +10,13 @@ html, body, .fixed-top {
   padding: 0px !important;
   overflow-x:hidden;
   overflow-y: auto;
+  font-family: 'Nunito', -apple-system, 'Segoe UI';
+  font-size: 100%;
+  color: #506554;
+}
+
+span {
+  line-height: 1.35em;
 }
 
 a:hover {
@@ -387,6 +397,7 @@ button:focus {
 .loader-hidden {
   display: none;
 }
+
 .loader-active {
   display: block;
 }
@@ -405,9 +416,9 @@ button:focus {
   width: 100%;
   background: #07f;
   transform: scaleX(0);
-  transform-origin: 0 0;
   transition: all 0.15s ease;
 }
+
 .inp input {
   -webkit-appearance: none;
   width: 100%;
@@ -423,18 +434,19 @@ button:focus {
   border-radius: 0;
   color: #223254;
   transition: all 0.15s ease;
-}
-.inp input:hover {
   
 }
+
 .inp input:not(:placeholder-shown) + span {
   color: #5a667f;
   transform: translateY(-26px) scale(0.75);
 }
+
 .inp input:focus {
   background: none;
   outline: none;
   color: #f21b3f !important;
+
 }
 
 .inp .label {
@@ -442,27 +454,33 @@ button:focus {
   top: 16px;
   left: 0;
   font-size: 16px;
+  transform-origin: 0 0;
   color: #9098a9;
   font-weight: 500;
-  transform-origin: 0 0;
   transition: all 0.2s ease;
   pointer-events: none;
 }
 
-.inp label:focus + span {
-  color: #f21b3f;
+// blue
+// BLUE, MUST BE VALID + NOT FOCUSED
+input:valid:not(:focus):required + span {
+
   transform: translateY(-26px) scale(0.75);
 }
-.inp label:focus + span {
+
+input:not(:required):not(:focus):required + span {
+
   transform: scaleX(1);
 }
 
-.inp input:focus + span {
-  color: #f21b3f;
-  transform: translateY(-26px) scale(0.75);
+// ORANGE
+// RED, MUST BE INVALID + NOT FOCUSED
+input:invalid:not(:focus) + span {
+
 }
-.inp input:focus + span + .border {
-  transform: scaleX(1);
+
+input:focus + span {
+  transform: translateY(-26px) scale(0.75);
 }
 
 input:-webkit-autofill,
@@ -485,6 +503,7 @@ input:-webkit-autofill:active  {
   border-radius: 0;
   color: #223254;
   transition: all 0.15s ease;
+  
 }
 
 .inp select:hover {
@@ -493,7 +512,10 @@ input:-webkit-autofill:active  {
 .inp select:not(:placeholder-shown) + span {
   color: #5a667f;
   transform: translateY(-26px) scale(0.75);
+  
 }
+
+
 
 .inp select:focus {
   background: none;
@@ -515,3 +537,101 @@ input:-webkit-autofill:active  {
 ::-webkit-scrollbar-thumb        { background-color:#343a40; }
 ::-webkit-scrollbar-corner       { background-color:#343a40;}
 ::-webkit-resizer                { background-color:#343a40; }
+
+
+/* Switch 4 Specific Style Start */
+
+.box_4{
+  background: #eee;
+}
+
+.input_wrapper{
+  width: 80px;
+  height: 40px;
+  position: relative;
+  top:0;
+  left: 0;
+  cursor: pointer;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.input_wrapper input[type="checkbox"]{
+  width: 80px;
+  height: 40px;
+  cursor: pointer;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background: #7b2433c4;
+  border-radius: 2px;
+  position: relative;
+  outline: 0;
+  -webkit-transition: all .2s;
+  transition: all .2s;
+}
+
+.input_wrapper input[type="checkbox"]:after{
+  position: absolute;
+  content: "";
+  top: 3px;
+  left: 3px;
+  width: 34px;
+  height: 34px;
+  background: rgb(226, 220, 220);
+  z-index: 2;
+  border-radius: 2px;
+  -webkit-transition: all .35s;
+  transition: all .35s;
+}
+
+.input_wrapper:hover input[type="checkbox"]:after{
+  background: white;
+}
+
+.input_wrapper svg{
+  position: absolute;
+  top: 45%;
+  right:.9em !important;
+  -webkit-transform-origin: 45% 45%;
+          transform-origin: 45% 45%;
+  fill: #fff;
+  -webkit-transition: all .35s;
+  transition: all .35s;
+  z-index: 1;
+}
+
+.input_wrapper .is_checked{
+  width: 18px;
+  left: 18%;
+  -webkit-transform: translateX(190%) translateY(-30%) scale(0);
+          transform: translateX(190%) translateY(-30%) scale(0);
+}
+
+.input_wrapper .is_unchecked{
+  width: 15px;
+  right: 10%;
+  -webkit-transform: translateX(0) translateY(-30%) scale(1);
+          transform: translateX(0) translateY(-30%) scale(1);
+}
+
+/* Checked State */
+.input_wrapper input[type="checkbox"]:checked{
+  background: #28a745;
+}
+
+.input_wrapper input[type="checkbox"]:checked:after{
+  left: calc(100% - 37px);
+}
+
+.input_wrapper input[type="checkbox"]:checked + .is_checked{
+  -webkit-transform: translateX(0) translateY(-30%) scale(1);
+          transform: translateX(0) translateY(-30%) scale(1);
+}
+
+.input_wrapper input[type="checkbox"]:checked ~ .is_unchecked{
+  -webkit-transform: translateX(-190%) translateY(-30%) scale(0);
+          transform: translateX(-190%) translateY(-30%) scale(0);
+}
+
+/* Switch 4 Specific Style End */

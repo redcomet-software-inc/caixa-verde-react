@@ -54,6 +54,14 @@ export default class CreditCardForm extends Component {
         });
     }
 
+    handleChange = (e) => {
+        e.preventDefault();
+        e.persist();
+        const card_name = e.currentTarget.name;
+        const card_string = e.currentTarget.value;
+        this.setState({ [card_name]: card_string });
+      }
+
     handleChangeExpiry = (e) => {
         const name = e.currentTarget.name;
         const value = e.currentTarget.value;
@@ -100,7 +108,6 @@ export default class CreditCardForm extends Component {
         <form onSubmit={(e) => this.onSubmitCard(e)}>
             <input type="hidden" name="card_brand" value={this.state.card_brand} />
             <div className="mx-auto">
-            Order Id: {this.state.order_id}
             <div className="form-row mb-4">
                 <Cards
                     number={this.state.card_number}
@@ -116,7 +123,7 @@ export default class CreditCardForm extends Component {
             <div className="form-row">
                 <div className="col mb-3">
                 <label htmlFor="inp" className="inp mb-2">
-                    <input type="text" maxLength="16" id="card_number" value={'4111111111111111'} onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_number" placeholder="&nbsp;" autoComplete="off" required/>
+                    <input type="text" maxLength="16" id="card_number" defaultValue={'4111111111111111'} onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_number" placeholder="&nbsp;" autoComplete="off" required/>
                     <span className="label">Número do Cartão</span>
                 </label>
                 </div>
@@ -144,7 +151,7 @@ export default class CreditCardForm extends Component {
                 </div>
                 <div className="col-3 mb-3">
                 <label htmlFor="inp" className="inp mb-3">
-                    <select type="text" value={'2030'}  onChange={e => this.handleChangeExpiry(e)} id="expiry_year" name="expiry_year" placeholder="&nbsp;" required>
+                    <select type="text" defaultValue={'2030'}  onChange={e => this.handleChangeExpiry(e)} id="expiry_year" name="expiry_year" placeholder="&nbsp;" required>
                     <option disabled value="" > - Ano - </option>
                     { this.renderYearSelect() }       
                     </select> 
@@ -153,7 +160,7 @@ export default class CreditCardForm extends Component {
                 </div>
                 <div className="col-6 mb-3">
                 <label htmlFor="inp" className="inp mb-2">
-                    <input type="text"  maxLength="3" id="cvc" value={"123"} onClick={e => this.handleClick_card(e)}  onChange={e => this.handleChange(e)}  name="cvc" placeholder="&nbsp;" required/>
+                    <input type="text"  maxLength="3" id="cvc" defaultValue={"123"} onClick={e => this.handleClick_card(e)}  onChange={e => this.handleChange(e)}  name="cvc" placeholder="&nbsp;" required/>
                     <span className="label">Código</span>
                 </label>
                 </div>
@@ -161,7 +168,7 @@ export default class CreditCardForm extends Component {
             <div className="form-row">
                 <div className="col mb-3">
                 <label htmlFor="inp" className="inp mb-2">
-                    <input type="text" id="card_name"  value='João Comprador' onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_name" placeholder="&nbsp;" required/>
+                    <input type="text" id="card_name"  defaultValue='João Comprador' onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_name" placeholder="&nbsp;" required/>
                     <span className="label">Nome do Proprietário</span>
                 </label>
                 </div>
