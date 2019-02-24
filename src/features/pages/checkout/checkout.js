@@ -4,6 +4,8 @@ import LoaderHOC from '../../../HOC/loader-hoc';
 import Loading from '../../common/loading.js';
 import { PersonalDataClient, PersonalAddressDelivery, PersonalAddressBilling } from '../../pages/my-account/personal-data.js';
 import YourBox from './yourbox';
+import Success from '../common/success';
+import { NavLink } from 'react-router-dom';
 
 class Checkout extends Component {
   
@@ -21,13 +23,36 @@ class Checkout extends Component {
       products: products || [],
       kits: kits || [],
       submitLoading: false,
-      client_data:[]
+      client_data:[],
+      error_min_quantity:false,
+      warning_title: "Antes de continuar!",
+      warning_message: "Para finalizar a compra é necessário ter um valor mínimo de " + this.props.home.min_quantity + " reais.",
+      warning_body: (<span>
+                        Adicione mais alguns produtos <NavLink to="personalizado">nesta página</NavLink>.
+                    </span>)
     };
+  }
+
+  componentDidMount () {
+    if(parseFloat(this.props.home.min_quantity) > parseFloat(this.props.order_price)) {
+      this.setState({error_min_quantity: true});
+      return;
+    }
   }
 
   /*Get all the new Data and decide what to submit to the server*/
   checkOut = e => {
     e.preventDefault();
+
+    console.log("Check Props");
+    console.log(this.props.home.min_quantity);
+    /* Check if the min Price is Enough to Continue */
+    if(parseFloat(this.props.home.min_quantity) > parseFloat(this.props.order_price)) {
+      this.setState({error_min_quantity: true});
+      window.scroll({top: 0, left: 0, behavior: 'smooth' });
+      return;
+    }
+
     /* Avoid Multiple Submits */
     if(this.state.submitLoading === true) {
       return false;
@@ -44,6 +69,7 @@ class Checkout extends Component {
           orders_products_attributes: products,
         },
     }
+
     setOrder(data).then(res => {
       this.setState({checkout_order_id: res.order.id});
       localStorage.setItem("checkout_order_id", res.order.id);
@@ -69,9 +95,18 @@ class Checkout extends Component {
     }
   }
 
+
   render() {
     return (
       <div className="pages-checkout pb-5 mb-5">
+          {this.state.error_min_quantity && (
+            <Success status={"warning"} 
+            title={this.state.warning_title}
+            message={this.state.warning_message} 
+            body={this.state.warning_body}
+            />
+          )}
+          
           <h2 className="mb-3 title">Checkout</h2>
           <p className="text-muted">Confira seus dados e sua caixa</p>
           <hr className="mb-4 mt-4" />  

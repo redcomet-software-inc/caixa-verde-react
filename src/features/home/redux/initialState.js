@@ -10,6 +10,9 @@ const initialState = {
   client_data:[],
   getClientDataPending: false,
   getClientDataError: null,    // All Data to be persisted
+  min_quantity:50,
+  getMinQuantityRequestPending: false,
+  getMinQuantityRequestError: null,
 };
 
 export default initialState;

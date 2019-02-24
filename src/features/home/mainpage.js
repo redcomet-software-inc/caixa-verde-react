@@ -58,6 +58,7 @@ export class MainPage extends Component {
   componentDidMount() {
     this.auth();
     this.getProducts();
+    this.props.actions.getMinQuantityRequest();
   }
 
   setCheckoutOrderId = (order_id) => {
