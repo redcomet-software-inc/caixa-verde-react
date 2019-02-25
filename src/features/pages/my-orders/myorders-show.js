@@ -2,17 +2,18 @@ import React, { Component } from 'react';
 import { getPagseguroTransaction } from '../../../common/get-pagseguro-transaction.js';
 import { Icon } from 'react-icons-kit';
 import { arrowLeft2 } from 'react-icons-kit/icomoon/arrowLeft2';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { getOrderInfo, getPayment } from '../../../common/get-orders.js';
 
 
 export default class Show extends Component {
     constructor (props) {
         super(props);
-        this.props.actions.turnOnLoading();
+
         this.state = {
             transaction:{},
             order_info:'',
+            order_status:'',
             payment_info:[],
             payment_status: <span className="text-info">Carregando...</span>,
             payment_kind:<span className="text-info">Carregando...</span>,
@@ -65,6 +66,7 @@ export default class Show extends Component {
             if(res.payment.kind === null) {
                 this.setState({payment_kind: null});
                 this.setState({payment_status: <span className="text-danger">Pendente</span>});
+                this.setState({order_status: <span className="text-danger">Aguardando pagamento</span>})
             }
         });
     }
@@ -109,9 +111,11 @@ export default class Show extends Component {
         }
     }
 
-    handlePayment = (id) => {
-        this.props.setCheckoutOrderId(id);
-        this.props.location.pathname('/pagamento');
+    handlePayment = (e) => {
+        e.preventDefault();
+        console.log("pagar agora");
+        localStorage.setItem("checkout_order_id", this.props.match.params.orderId);
+        this.props.actions.redirect('/pagamento');
     }
 
     renderProducts = () => {
@@ -178,12 +182,14 @@ export default class Show extends Component {
                     <tbody>
                         <tr>
                         <td className="align-middle text-right">Status</td>
-                        <td></td>
+                        <td>{ this.state.order_status }</td>
                         </tr>
-                        <tr>
-                            <td className="align-middle text-right">Forma de Pagamento</td>
-                            <td className="align-middle"><strong>{ this.state.payment_kind }</strong></td>
-                        </tr>
+                        { this.state.payment_kind && (
+                            <tr>
+                                <td className="align-middle text-right">Forma de Pagamento</td>
+                                <td className="align-middle"><strong>{ this.state.payment_kind }</strong></td>
+                            </tr>
+                        )}
                         <tr>
                             <td className="align-middle text-right">Pagamento</td>
                             <td className="align-middle"><strong>{ this.state.payment_status }</strong></td>
@@ -191,15 +197,27 @@ export default class Show extends Component {
                         <tr>
                             { this.state.payment_kind === null && (  
                                 <td className="align-middle text-center" colspan="3">
-                                    <Link onClick={e => this.handlePayment(this.props.match.params.orderId)} to="/pagamento" replace>
-                                        <button className="btn btn-info">Pagar Agora</button>
-                                    </Link>
+                                    <button onClick={e => this.handlePayment(e)} className="btn btn-info">Pagar Agora</button>
                                 </td>
                             ) }
                         </tr>
                         <tr>
                             <td className="align-middle text-right">Valor total</td>
-                            <td className="align-middle"><strong>{this.props.setMoneyFormat(this.state.order_info.order_price)}</strong></td>
+                            <td className="align-middle">
+                            <strong className="info">
+                                {this.state.order_info && this.state.order_info.order_price && (
+                                    <React.Fragment>
+                                        {this.props.setMoneyFormat(this.state.order_info.order_price)}
+                                    </React.Fragment>
+                                )}
+                                {!this.state.order_info && (
+                                    <React.Fragment>
+                                        Carregando...
+                                    </React.Fragment>
+                                )}
+                                
+                            </strong>
+                            </td>
                         </tr>
                         <tr>
                             <td  className="align-middle text-right">Previsão de Entrega</td>
@@ -207,7 +225,6 @@ export default class Show extends Component {
                         </tr>
                     </tbody>
                 </table>
-                
                 
                 { this.state.order_info.order_address && this.state.order_info.order_address && ( 
                     <div>

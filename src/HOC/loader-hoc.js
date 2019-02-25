@@ -45,7 +45,7 @@ const LoaderHOC = (WrappedComponent) => {
 
     }
     render() {
-      return <WrappedComponent  {...this.props} />;
+      return <WrappedComponent location={this.props.location}  {...this.props} />;
     }
   };
 }

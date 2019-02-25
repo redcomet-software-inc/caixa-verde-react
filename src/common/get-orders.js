@@ -1,9 +1,12 @@
 import request from './config-api.js';
 
-const email = localStorage.getItem("email");
-const token = localStorage.getItem("token");
+
 
 export let getOrderInfo = function(order_id) {
+    const email = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    console.log("order id ta funcionando aqui");
+    console.log(order_id);
     return new Promise((resolve, reject) => {
     const data = {
         url:'/api/v1/orders/1.json',
@@ -27,8 +30,12 @@ export let getOrderInfo = function(order_id) {
 }
 
 export let getOrders = function() {
+    const email = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
     return new Promise((resolve, reject) => {
-
+    console.log("Getting Orders");
+    console.log(email);
+    console.log(token);
     const data = {
         url:'/api/v1/orders.json',
         method:'get',
@@ -53,6 +60,8 @@ export let getOrders = function() {
 }
 
 export let getPayment = function(order_id) {
+    const email = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
     return new Promise((resolve, reject) => {
     const data = {
         url:'/api/v1/payments/1.json',

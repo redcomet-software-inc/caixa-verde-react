@@ -10,3 +10,5 @@ export { kitPlus } from './kitPlus';
 export { kitMinus } from './kitMinus';
 export { getClientData, dismissGetClientDataError } from './getClientData';
 export { getMinQuantityRequest, dismissGetMinQuantityRequestError } from './getMinQuantityRequest';
+export { logout } from './logout';
+export { clearBox } from './clearBox';

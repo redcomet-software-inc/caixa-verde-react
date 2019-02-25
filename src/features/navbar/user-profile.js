@@ -9,6 +9,10 @@ export default class UserProfile extends Component
     /* Sign In Client and Register new Token */
     signOut = e => {
       e.preventDefault();
+
+      console.log(this.props);
+      this.props.actions.logout();
+      localStorage.removeItem('persist:caixa-verde');
       const email = localStorage.getItem('email');
       const token = localStorage.getItem('token');
       const deleteUrl = "http://localhost:3000/api/v1/sessions.json?client_email="+email+"&client_token="+token;
@@ -25,7 +29,7 @@ export default class UserProfile extends Component
             throw new Error('Error');
           }
       }).catch(error => {
-        throw new Error('Error: ' + error);
+        console.log(error);
       })
     };
 

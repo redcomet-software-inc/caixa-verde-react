@@ -5,6 +5,7 @@ import history from './history';
 import rootReducer from './rootReducer';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import reduxReset from 'redux-reset'
 
 const router = routerMiddleware(history);
 
@@ -37,10 +38,12 @@ export default function configureStore(initialState) {
 
   const store = createStore(persistedReducer, initialState, 
     compose(applyMiddleware(...middlewares),
+    reduxReset(),  // Will use 'RESET' as default action.type to trigger reset
     devToolsExtension ? devToolsExtension && devToolsExtension : f => f
   ));
   /* Create Persistor */
   persistStore(store); 
+
     /* istanbul ignore if  */
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers

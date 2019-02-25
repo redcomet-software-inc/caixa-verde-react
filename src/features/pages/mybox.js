@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import LoaderHOC from '../../HOC/loader-hoc';
 import { getProduct } from '../../common/get-products.js';
 import userImage from '../../images/caixaverde-finalizacao-WHITE-BOX.png';
+import Success from './common/success';
+import { NavLink } from 'react-router-dom';
 
 class MyBox extends Component {
 
@@ -19,6 +21,12 @@ class MyBox extends Component {
         myProducts:[],
         myKits:[],
     }
+  }
+
+  componentDidMount(props) {
+    console.log("My Box");
+    console.log(this.props);
+    console.log(props);
   }
 
    /* Check if a Giving Object is Empty */
@@ -136,7 +144,6 @@ class MyBox extends Component {
       
     return table;
   }
-
   /*
       <React.Fragment>
           <h4 className="warning-muted text-center">A sua caixa está vazia.</h4>
@@ -164,17 +171,38 @@ class MyBox extends Component {
       <div className="pages-my-box ">
         <h2 className="text-center title">Minha Caixa
               <h4><span className="badge badge-secondary badge-pill">
-                {this.props.count}
+              { this.props.count > 0 && (
+                <React.Fragment>
+                  {this.props.count}
+                </React.Fragment>
+              )}
                 </span>
               </h4>
         </h2>
+
+        { this.props.count <= 0 && (
+        <React.Fragment>
+          <Success
+            status={"info"}
+            title={"Parece que sua caixa está vazia."}
+            body={<span>
+                Você pode escolher o que adicionar na caixa, através <NavLink to="/">desta página.</NavLink>.
+            </span>} />
+        </React.Fragment>
+          )}
+
         <div className="card-columns">
           { this.renderKits() }
           { this.renderProducts() }
         </div>
-        <div className="text-center">
-          <button className="btn btn-primary" onClick={this.clickHandle} type="button">Finalizar Compra</button>
-        </div>
+
+        { this.props.count > 0 && (
+          <div className="text-center">
+            <button className="btn btn-primary" onClick={this.clickHandle} type="button">Finalizar Compra</button>
+          </div>
+        )}
+        
+
       </div>
     );
   }

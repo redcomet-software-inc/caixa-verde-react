@@ -87,6 +87,7 @@ class NavBar extends Component {
                   changeToLoggedOut={this.props.changeToLoggedOut}
                   clientName={this.props.clientName}
                   image={this.props.image}
+                  {...this.props}
                 />
               ) : (
                 <div>

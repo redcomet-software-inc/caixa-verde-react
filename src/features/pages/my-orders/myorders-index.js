@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import { getOrders } from '../../../common/get-orders.js';
+import Success from '../common/success';
+import Loading from '../../common/loading.js';
 
 export default class Index extends Component {
 
-    componentDidMount () {
-        console.log("Index Mounted");
+    constructor(props){
+      super(props);
+      this.state = {
+        orders:[],
+      }
     }
-
+    
     renderKits = ( orders_kits) => {
         let order_dom = [];
         if( orders_kits.length > 0) {
             orders_kits.map((kit, index) => (
             order_dom.push(
-            <tr>
+            <tr key={"kits" + kit + index}>
               <th scope="row">{ index+1 }</th>
               <td>{kit.name}</td>
               <td></td>
@@ -24,12 +30,12 @@ export default class Index extends Component {
         }
       }
 
-    renderItens = (orders_products) => {
+    renderItems = (orders_products) => {
         let order_dom = [];
         if(orders_products.length > 0) {
             orders_products.map((product, index) => (
             order_dom.push(
-            <tr>
+            <tr key={"items" + product + index}>
               <th scope="row">{ index+1 }</th>
               <td>{product.name}</td>
               <td>{product.kind}</td>
@@ -46,8 +52,6 @@ export default class Index extends Component {
 
         let payment = ""
         let received = ""
-        console.log("Código de Pagamento");
-        console.log(order_status.pagseguro_code)
         const order_number = order_status.id
         if(order_status.paid === false) {
           payment = "Pendente"
@@ -68,25 +72,66 @@ export default class Index extends Component {
         );
       }
 
+      componentDidMount () {
+        console.log("myorders-index.js");
+        console.log(this.props);
+        this.getOrders();
+      }
+
+      getOrders = () => {
+        getOrders().then(res=>{
+          this.props.actions.turnOffLoading();
+          if(res) {
+            console.log("check here");
+            console.log(res);
+            this.setState({orders_empty: false});
+            this.setState({orders: res});
+          } else {
+            return this.setState({orders_empty: true});
+          }
+        }).catch(error =>{
+          this.props.actions.turnOffLoading();
+          //this.props.actions.turnOnError();
+        }); 
+      }
+
     render() {
         return (
         <React.Fragment>
+
+          {!this.state.orders && (
+            <Success
+            status={"info"}
+            title={"Você ainda não realizou nenhum pedido."}
+            body={<span>
+                  Quando efetuar seu primeiro pedido poderá acompanhá-lo nesta página.
+                  <br />
+                  <NavLink to="/kits">Leve-me aos Kits</NavLink>
+                  <br />
+                  <NavLink to="/personalizado">Leve-me aos Itens Personalizados</NavLink>
+               </span> }/>
+          )}
+          
           <div className="w-50 text-center mx-auto">
             <div className={"mb-2"}>
               <div className="mb-3 pb-2">
-                  <div class="d-inline-block">
-
+                  <div className="d-inline-block">
+                    {!this.state.orders.length == undefined && (
+                      <Loading />
+                    )}
                   </div>
 
-                  {this.props.orders && this.props.orders.map((order, index) => (
-                    <div className="card card-custom mb-2">
+                  {this.state.orders && this.state.orders.map((order, index) => (
+                    <NavLink className="custom-link" to={`${this.props.match.path}/${order.id}`}>
+                    <div key={"pedidos-" + index} className="card card-custom mb-2">
                       <div className="" id={"heading" + index}>
                           <div className="row order-style">
                               <div className="col"><div className="nav-link collapsed" data-toggle="collapse" data-target={"#collapse" + index} aria-expanded="false" aria-controls={"collapse" + index}>{ order.created_at }</div></div>
-                              <div className="col my-auto"><NavLink className="custom-link" to={"pedidos/" + order.id}>{ 'Pedido #' + order.order_status.id}</NavLink></div>   
+                              <div className="col my-auto">{ 'Pedido #' + order.order_status.id}</div>   
                           </div>
                       </div>
                     </div>
+                    </NavLink>
                   ))}
 
               </div>

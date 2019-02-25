@@ -75,6 +75,9 @@ class Checkout extends Component {
       localStorage.setItem("checkout_order_id", res.order.id);
       this.props.setCheckoutOrderId(res.order.id);
       /* Good bye Cart */
+      this.props.actions.clearBox();
+      
+      return;
       this.props.resetItems();
       this.props.actions.redirect('pagamento');
       this.getPermission();

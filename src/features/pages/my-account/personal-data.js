@@ -33,8 +33,18 @@ export class Field extends Component {
         this.setState({value: this.props.field_value});
         this.setState({backup_value: this.props.field_value});
         if(this.props.noedit) {
-            this.setState({noEditClass: ''});
+            if(this.state.noEditClass !== '') {
+                this.setState({noEditClass: ''});
+            }
         }
+        if(!this.props.noedit) {
+            if(this.props.field_value === "" || this.props.field_value === null) {
+                if(this.state.edit === false) {
+                    this.setState({edit: true});
+                }
+            }
+        }
+
       }
     }
 

@@ -87,6 +87,7 @@ class Registration extends Component {
             lastname: lastname,
             email: email,
             cellphone: cellphone,
+            cpf: cpf,
             password: password,
             password_confirmation: password,
             addresses_attributes: [{

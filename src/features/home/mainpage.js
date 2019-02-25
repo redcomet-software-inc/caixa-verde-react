@@ -59,6 +59,8 @@ export class MainPage extends Component {
     this.auth();
     this.getProducts();
     this.props.actions.getMinQuantityRequest();
+    console.log("Main Page");
+    console.log(this.props);
   }
 
   setCheckoutOrderId = (order_id) => {
@@ -222,7 +224,6 @@ export class MainPage extends Component {
     let products = this.countB(this.props.home.products);
     let kits = this.countB(this.props.home.kits);
     let count = products + kits;
-    
     return count;
   }
 
@@ -260,6 +261,7 @@ export class MainPage extends Component {
                   warning={this.warning}
                   changeToLoggedOut={this.changeToLoggedOut}
                   image={this.state.avatar}
+                  {...this.props}
                 />
                 <div className="row" >
                     <div className="container-fluid pb-3">
@@ -279,6 +281,7 @@ export class MainPage extends Component {
                                   permit={true}
                                   setMoneyFormat={this.setMoneyFormat}
                                   products={this.props.home.products}
+                                  location={this.props.location}
                                 />
                               )}
                             />
@@ -349,7 +352,6 @@ export class MainPage extends Component {
                                   setCheckoutOrderId={this.setCheckoutOrderId}
                                   setMoneyFormat={this.setMoneyFormat}
                                   redirect={this.redirect}
-                                  location={window.location}
                                   {...props}
                                 />
                               )}
@@ -364,6 +366,7 @@ export class MainPage extends Component {
                                   myBoxKits={this.props.home.myBoxKits}
                                   myBoxProducts={this.props.home.myBoxProducts}
                                   permit={true}
+                                  {...props}
                                  />
                               )}
                             />

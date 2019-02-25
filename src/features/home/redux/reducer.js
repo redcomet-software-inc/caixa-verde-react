@@ -11,6 +11,8 @@ import { reducer as kitPlusReducer } from './kitPlus';
 import { reducer as kitMinusReducer } from './kitMinus';
 import { reducer as getClientDataReducer } from './getClientData';
 import { reducer as getMinQuantityRequestReducer } from './getMinQuantityRequest';
+import { reducer as logoutReducer } from './logout';
+import { reducer as clearBoxReducer } from './clearBox';
 
 const reducers = [
   turnOnLoadingReducer,
@@ -25,6 +27,8 @@ const reducers = [
   kitMinusReducer,
   getClientDataReducer,
   getMinQuantityRequestReducer,
+  logoutReducer,
+  clearBoxReducer,
 ];
 
 export default function reducer(state = initialState, action) {
