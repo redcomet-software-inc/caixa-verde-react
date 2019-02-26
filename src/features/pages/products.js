@@ -66,6 +66,7 @@ class Products extends Component {
               quantity={this.getQuantity(item.id)}
               productPlus={this.props.actions.productPlus}
               productMinus={this.props.actions.productMinus}
+              getOrderPrice={this.props.actions.getOrderPrice}
             />
       ))}
     </React.Fragment>

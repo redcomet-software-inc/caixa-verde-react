@@ -53,6 +53,7 @@ class Kits extends Component {
               refKit={this.refKit}
               kitPlus={this.props.actions.kitPlus}
               kitMinus={this.props.actions.kitMinus}
+              getOrderPrice={this.props.actions.getOrderPrice}
               />
             </div>
         );

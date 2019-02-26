@@ -13,6 +13,7 @@ const initialState = {
   min_quantity:50,
   getMinQuantityRequestPending: false,
   getMinQuantityRequestError: null,
+  order_price:0,
 };
 
 export default initialState;

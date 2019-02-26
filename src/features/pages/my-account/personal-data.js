@@ -26,10 +26,6 @@ export class Field extends Component {
 
     componentWillUpdate (prevProps) {
       if(this.props !== prevProps) {
-        console.log("==Field Redux Test==");
-        console.log(this.props);
-        console.log("field_name: " + this.props.field_name);
-        console.log("field_value: " + this.props.field_value);
         this.setState({value: this.props.field_value});
         this.setState({backup_value: this.props.field_value});
         if(this.props.noedit) {
@@ -100,7 +96,7 @@ export class Field extends Component {
         <React.Fragment>
             <form onSubmit={(e) => this.submitField(e)}>
                 {this.props.field_name && (
-                    <div class="d-flex bd-highlight">
+                    <div className="d-flex bd-highlight">
                         <div className="p-2 d-none d-lg-block d-lg-none">
                             <strong>{this.props.fields_br[this.props.field_name]}</strong>:
                         </div>
@@ -121,7 +117,7 @@ export class Field extends Component {
                                 </div>
                                 )}
                         </div>
-                        <div class="p-2 bd-highlight">
+                        <div className="p-2 bd-highlight">
                             <div className="container_row float-right">
                                 <div className="layer1">
                                     {!this.state.edit &&  !this.state.isLoading && !this.props.noedit && (
@@ -172,22 +168,12 @@ export class PersonalDataList extends Component {
         }
     }
 
-    componentDidMount (){
-        console.log("COMPONENT DID MOUNT");
-        console.log(this.state.fields_br);
-        console.log(this.state.placeholder);
-    }
-
     componentWillUpdate (prevProps) {
         if(prevProps !== this.props) {
             if(typeof this.props.home !== 'undefined') {
-                
                 let exp_data = this.props.home[this.props.table_name];
-                console.log("check");
                 if(this.state.field_value === '') {
                     this.setState({field_value: exp_data});
-                    console.log("check");
-                    console.log(exp_data);
                 }
             }
         }
@@ -197,9 +183,6 @@ export class PersonalDataList extends Component {
         let table = [];
         let data = this.props.home.client_data[this.props.table_name];
         let noedit = false;
-        
-        console.log("check data");
-        console.log(data);
 
         for(let field in data) {
             const field_value = data[field];
@@ -209,7 +192,7 @@ export class PersonalDataList extends Component {
                     noedit = true;
                 }
                 table.push(
-                    <React.Fragment>
+                    <React.Fragment key={"unique-" + field}>
                         <Field 
                         noedit={noedit}
                         table_name={this.props.table_name} 
@@ -220,8 +203,6 @@ export class PersonalDataList extends Component {
                     </React.Fragment>
                 )
             }
-
-            console.log(field);
         }
 
         return table;
@@ -254,7 +235,7 @@ export class PersonalDataClient extends Component {
         return(
             <div className={"mb-2" + this.state.noborder}>
                 <div className="mb-3 pb-2">
-                    <div class="d-inline-block">
+                    <div className="d-inline-block">
                         <TitleData title={this.state.title} />
                     </div>
                     { this.props.home.client_data && (
@@ -283,7 +264,7 @@ export class PersonalAddressDelivery extends Component {
         return(
             <div className={"mb-2" + this.state.noborder}>
                 <div className="mb-3 pb-2">
-                    <div class="d-inline-block">
+                    <div className="d-inline-block">
                         <TitleData title={this.state.title} />
                     </div>
                     { this.props.home.client_data && (
@@ -312,7 +293,7 @@ export class PersonalAddressBilling extends Component {
         return(
             <div className={"mb-2" + this.state.noborder}>
                 <div className="mb-3 pb-2">
-                    <div class="d-inline-block">
+                    <div className="d-inline-block">
                         <TitleData title={this.state.title} />
                     </div>
                     { this.props.home.client_data && (

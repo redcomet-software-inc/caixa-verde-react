@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import LoaderHOC from '../../../HOC/loader-hoc';
-import { BrowserRouter as Router, Switch, Route, HashRouter } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import List from './myorders-index.js';
 import Show from './myorders-show.js';
 
@@ -14,7 +14,6 @@ class MyOrders extends Component {
     this.state = {
       client_email: email || '',
       client_token: token || '',
-      orders_empty: true,
       error:false,
       
     }

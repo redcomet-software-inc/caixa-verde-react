@@ -10,6 +10,7 @@ export default class Index extends Component {
       super(props);
       this.state = {
         orders:[],
+        orders_empty:false,
       }
     }
     
@@ -80,18 +81,17 @@ export default class Index extends Component {
 
       getOrders = () => {
         getOrders().then(res=>{
-          this.props.actions.turnOffLoading();
-          if(res) {
+            this.props.actions.turnOffLoading();
             console.log("check here");
             console.log(res);
-            this.setState({orders_empty: false});
+            if(res.length === 0) {
+              this.setState({orders_empty: true});
+            }
             this.setState({orders: res});
-          } else {
-            return this.setState({orders_empty: true});
-          }
+            return true;
         }).catch(error =>{
           this.props.actions.turnOffLoading();
-          //this.props.actions.turnOnError();
+          console.log(error);
         }); 
       }
 
@@ -99,7 +99,7 @@ export default class Index extends Component {
         return (
         <React.Fragment>
 
-          {!this.state.orders && (
+          {this.state.orders_empty === true && (
             <Success
             status={"info"}
             title={"Você ainda não realizou nenhum pedido."}

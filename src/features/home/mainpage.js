@@ -60,7 +60,7 @@ export class MainPage extends Component {
     this.getProducts();
     this.props.actions.getMinQuantityRequest();
     console.log("Main Page");
-    console.log(this.props);
+    console.log(this.props.home);
   }
 
   setCheckoutOrderId = (order_id) => {
@@ -320,24 +320,7 @@ export class MainPage extends Component {
                                 />
                               )}
                             />
-                            <Route
-                              path="/checkout"
-                              exact
-                              render={props => (
-                                <Checkout
-                                  setMoneyFormat={this.setMoneyFormat}
-                                  clientId={this.state.clientId}
-                                  clientEmail={this.state.clientEmail}
-                                  resetItems={this.resetItems}
-                                  products={this.props.home.products}
-                                  kits={this.props.home.kits}
-                                  order_price={this.order_price()}
-                                  count={this.count()}   
-                                  setCheckoutOrderId={this.setCheckoutOrderId}
-                                  redirectTo={'login'}
-                                />
-                              )}
-                            />
+                            <Route path="/checkout"  exact  component={Checkout} />
                             <Route
                               exact
                               path="/minhaconta"

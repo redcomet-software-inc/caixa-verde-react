@@ -6,19 +6,19 @@ import { PersonalDataClient, PersonalAddressDelivery, PersonalAddressBilling } f
 import YourBox from './yourbox';
 import Success from '../common/success';
 import { NavLink } from 'react-router-dom';
+import { getFreight } from '../../../common/get-extra-charges.js';
 
 class Checkout extends Component {
   
   constructor(props) {
     super(props);
-    
     let products = this.props.products;
     let kits = this.props.kits;
-    let order_price = this.props.order_price;
-    
     this.state = {
       checkout_order_id:0,
-      order_price: order_price || 0,
+      order_price:0,
+      freight:5,
+      total_price: 0,
       client_id: 0,
       products: products || [],
       kits: kits || [],
@@ -33,19 +33,46 @@ class Checkout extends Component {
     };
   }
 
-  componentDidMount () {
-    if(parseFloat(this.props.home.min_quantity) > parseFloat(this.props.order_price)) {
-      this.setState({error_min_quantity: true});
-      return;
+  componentDidUpdate(prevState, prevProps) {
+    if(prevProps !== this.props) {
+      if(this.props._persist.rehydrated) {
+          if(this.state.order_price === 0) {
+            this.props.actions.getOrderPrice();
+            const order_price =  this.props.home.order_price;
+            this.setState({order_price});
+            getFreight().then(res => {
+              if(this.state.freight === 5) {
+                this.setState({freight: res.freight});
+              }
+              if(this.state.total_price === 0) {
+                const total_price = res.freight + this.state.order_price;
+                this.setState({total_price});
+              }
+            }).catch(error => {
+              console.log(error);
+            });   
+          }
+      }
+      if(parseFloat(this.props.home.min_quantity) > parseFloat(this.props.order_price)) {
+        console.log("min quant:" + parseFloat(this.props.home.min_quantity));
+        console.log("order price:" +  parseFloat(this.props.order_price));
+
+        if(this.state.error_min_quantity === false) {
+          this.setState({error_min_quantity: true});
+        }
+        return;
+      }
     }
+  }
+
+  componentDidMount () {
+    console.log("order price request");
+    console.log(this.props._persist.rehydrated);
   }
 
   /*Get all the new Data and decide what to submit to the server*/
   checkOut = e => {
     e.preventDefault();
-
-    console.log("Check Props");
-    console.log(this.props.home.min_quantity);
     /* Check if the min Price is Enough to Continue */
     if(parseFloat(this.props.home.min_quantity) > parseFloat(this.props.order_price)) {
       this.setState({error_min_quantity: true});
@@ -76,15 +103,12 @@ class Checkout extends Component {
       this.props.setCheckoutOrderId(res.order.id);
       /* Good bye Cart */
       this.props.actions.clearBox();
-      
-      return;
       this.props.resetItems();
       this.props.actions.redirect('pagamento');
       this.getPermission();
     }).catch(error => {
       console.log(error);
       //throw new Error("Impossible to Create Order: ");
-      
     });
   }
 
@@ -98,12 +122,13 @@ class Checkout extends Component {
     }
   }
 
-
   render() {
     return (
       <div className="pages-checkout pb-5 mb-5">
           {this.state.error_min_quantity && (
-            <Success status={"warning"} 
+            <Success 
+            notitle
+            status={"danger"} 
             title={this.state.warning_title}
             message={this.state.warning_message} 
             body={this.state.warning_body}
@@ -114,7 +139,7 @@ class Checkout extends Component {
           <p className="text-muted">Confira seus dados e sua caixa</p>
           <hr className="mb-4 mt-4" />  
           <div className="row">
-            <YourBox {...this.props} />
+            <YourBox products={this.props.home.products} kits={this.props.home.kits} order_price={this.state.order_price} total_price={this.state.total_price} freight={this.state.freight} />
             <div className="col-md-8 order-md-1">
       
               <PersonalDataClient {...this.props} noborder /> 
@@ -128,9 +153,9 @@ class Checkout extends Component {
                   type="hidden"
                   value={this.state.order_price }
                 />
-                <div class="text-center mx-auto w-100">
-                  <div class="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" disabled={this.props.disable} >Continuar Compra</button></div>
-                  <div class="d-inline p-1 text-white position-absolute">{this.renderLoading()}</div>
+                <div className="text-center mx-auto w-100">
+                  <div className="d-inline p-2 text-white"><button className="btn btn-primary" type="submit" disabled={this.props.disable} >Continuar Compra</button></div>
+                  <div className="d-inline p-1 text-white position-absolute">{this.renderLoading()}</div>
                 </div>  
               </form>
           </div>

@@ -52,9 +52,12 @@ const LoaderHOC = (WrappedComponent) => {
 
 /* istanbul ignore next */
 const mapStateToProps = (state, props) => {
+  console.log("Redux Check");
+  console.log(state);
+  console.log(props);
   return {
-    isLoading: state.isLoading,
-    home: state.home,
+    ...state,
+    ...props,
   };
 }
 

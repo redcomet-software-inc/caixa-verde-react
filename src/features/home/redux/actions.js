@@ -12,3 +12,4 @@ export { getClientData, dismissGetClientDataError } from './getClientData';
 export { getMinQuantityRequest, dismissGetMinQuantityRequestError } from './getMinQuantityRequest';
 export { logout } from './logout';
 export { clearBox } from './clearBox';
+export { getOrderPrice } from './getOrderPrice';

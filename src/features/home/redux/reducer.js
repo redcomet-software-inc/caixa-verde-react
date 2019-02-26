@@ -13,6 +13,7 @@ import { reducer as getClientDataReducer } from './getClientData';
 import { reducer as getMinQuantityRequestReducer } from './getMinQuantityRequest';
 import { reducer as logoutReducer } from './logout';
 import { reducer as clearBoxReducer } from './clearBox';
+import { reducer as getOrderPriceReducer } from './getOrderPrice';
 
 const reducers = [
   turnOnLoadingReducer,
@@ -29,6 +30,7 @@ const reducers = [
   getMinQuantityRequestReducer,
   logoutReducer,
   clearBoxReducer,
+  getOrderPriceReducer,
 ];
 
 export default function reducer(state = initialState, action) {

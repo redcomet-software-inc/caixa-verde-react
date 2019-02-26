@@ -82,12 +82,14 @@ export default class CardKits extends Component {
   handleClickPlus = () => {
     this.addCardCount(1);
     this.props.kitPlus(this.state.kitData, this.state.myBoxKit);
+    this.props.getOrderPrice();
   }
 
   handleClickMinus = () => {
     if(this.state.kitData.quantity > 0) {
       this.addCardCount(-1);
       this.props.kitMinus(this.state.kitData, this.state.myBoxKit);
+      this.props.getOrderPrice();
     }
   }
 

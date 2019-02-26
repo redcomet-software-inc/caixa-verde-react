@@ -39,7 +39,9 @@ export default class Success extends Component {
         const current = this.state.current;
         return(
             <div className="mb-4 pb-3">
-                <h2 className={"text-center title text" + kind[current]}>{this.state.mainTitle[current]}</h2>
+                { !this.props.notitle && (
+                    <h2 className={"text-center title text" + kind[current]}>{this.state.mainTitle[current]}</h2>
+                )}
                 <div className={"notice notice" + kind[current]}>
                     <strong>{this.state.title}</strong> {this.state.message}
                     <p>{this.state.body}</p>

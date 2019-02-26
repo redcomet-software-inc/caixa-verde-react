@@ -14,8 +14,8 @@ class Registration extends Component {
       street:'',
       complement:'',
       neighbourhood:'',
-      isCepLoading:false,
-      isLoading:false,
+      isCepLoading:true,
+      isLoading:true,
       invalidCep:'invisible',
       invalidEmail:'invisible',
     }
@@ -222,7 +222,7 @@ class Registration extends Component {
 
               <div class="d-flex pb-3 pt-3">
                 <div class="p-2 my-auto">
-                  <div className="text-center mx-auto align-middle align-center">
+                  <div className="scaled text-center mx-auto align-middle align-center">
                     <div class="switch_box box_4">
                       <div class="input_wrapper">
                         <input type="checkbox" class="switch_4" required/>

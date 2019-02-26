@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Loading from '../../common/loading.js';
+import { setMoneyFormat } from '../../home/set-money-format.js';
 
 export default class YourBox extends Component {
 
@@ -24,7 +26,7 @@ export default class YourBox extends Component {
                   <small className="text-muted">{kits[item].description}</small>
                 </div>
                 <span className="text-muted">
-                  {this.props.setMoneyFormat(kits[item].price * kits[item].quantity)}
+                  {setMoneyFormat(kits[item].price * kits[item].quantity)}
                 </span>
               </li>)
             }
@@ -48,7 +50,7 @@ export default class YourBox extends Component {
                   <small className="text-muted">{products[item].description}</small>
                 </div>
                 <span className="text-muted">
-                  {this.props.setMoneyFormat(products[item].price * products[item].quantity)}
+                  {setMoneyFormat(products[item].price * products[item].quantity)}
                 </span>
               </li>)
             }
@@ -72,25 +74,42 @@ export default class YourBox extends Component {
                   {this.props.count}
                 </span>
               </h4>
-            <ul className="list-group mb-3">
+            <ul className="list-group mb-3 card-custom-box">
               {this.renderProducts()}
               {this.renderKits()}
-              <li className="list-group-item d-flex justify-content-between bg-light">
-                <div className="text-info">
-                  <h6 className="my-0">Valor do Frete</h6>
+
+              <li className="yourbox-freight list-group-item d-flex justify-content-between">
+                <span>Valor do Frete</span>
+                  {!this.props.freight && (
+                    <div className="total-price-loading">
+                      <Loading size={15} />
+                    </div>
+                  )}
+                  {setMoneyFormat(
+                    this.props.freight
+                  )}
+              </li>
+
+              <li className="yourbox-total list-group-item d-flex justify-content-between lh-condensed">
+                <div>
+                  <h6 className="my-0">
+                  </h6>
+                  <span>Total</span>
                 </div>
-                <span className="text-success">
-                  {this.props.setMoneyFormat(this.state.freight)}
+                <span className="text-success-price">
+                  {this.props.total_price && (
+                    <React.Fragment>
+                      { setMoneyFormat(this.props.total_price) }
+                    </React.Fragment>
+                  )}
+                  {!this.props.total_price && (
+                    <div className="total-price-loading">
+                      <Loading size={15} />
+                    </div>
+                  )}
                 </span>
               </li>
-              <li className="list-group-item d-flex justify-content-between">
-                <span>Total</span>
-                <strong>
-                  {this.props.setMoneyFormat(
-                    this.props.order_price
-                  )}
-                </strong>
-              </li>
+
             </ul>
             <form className="card p-2">
               <div className="input-group">
