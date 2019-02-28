@@ -63,11 +63,6 @@ export class MainPage extends Component {
     console.log(this.props.home);
   }
 
-  setCheckoutOrderId = (order_id) => {
-    this.setState({checkout_order_id: order_id});
-    localStorage.setItem("checkout_order_id", order_id);
-  }
-
   /*Check if user is LoggedIn */
   auth = () => {
     getAuth().then(res => {
@@ -92,17 +87,6 @@ export class MainPage extends Component {
       getKits().then(res=> {
         this.setState({ kitsList: res });
       });
-  }
-
-  /* After Submiting Checkout */
-  resetItems = () => {
-    destroyShoppingCart();
-    this.setState({productsCount: 0});
-    this.setState({kitsCount: 0});
-    this.setState({selectedProducts: [] });
-    this.setState({selectedKits: []});
-    this.setState({productsCount: 0});
-    this.setState({kitsCount: 0});
   }
 
   /* Reset all data and states */

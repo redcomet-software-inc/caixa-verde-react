@@ -14,8 +14,8 @@ class Registration extends Component {
       street:'',
       complement:'',
       neighbourhood:'',
-      isCepLoading:true,
-      isLoading:true,
+      isCepLoading:false,
+      isLoading:false,
       invalidCep:'invisible',
       invalidEmail:'invisible',
     }

@@ -5,6 +5,7 @@ import Loading from '../../common/loading.js';
 import { PersonalDataClient, PersonalAddressDelivery, PersonalAddressBilling } from '../../pages/my-account/personal-data.js';
 import YourBox from './yourbox';
 import Success from '../common/success';
+import { setCheckoutOrderId } from '../../home/set-checkout-order-id.js';
 import { NavLink } from 'react-router-dom';
 import { getFreight } from '../../../common/get-extra-charges.js';
 
@@ -67,14 +68,14 @@ class Checkout extends Component {
 
   componentDidMount () {
     console.log("order price request");
-    console.log(this.props._persist.rehydrated);
+    console.log(this.props);
   }
 
   /*Get all the new Data and decide what to submit to the server*/
   checkOut = e => {
     e.preventDefault();
     /* Check if the min Price is Enough to Continue */
-    if(parseFloat(this.props.home.min_quantity) > parseFloat(this.props.order_price)) {
+    if(parseFloat(this.props.home.min_quantity) > parseFloat(this.props.home.order_price)) {
       this.setState({error_min_quantity: true});
       window.scroll({top: 0, left: 0, behavior: 'smooth' });
       return;
@@ -86,8 +87,8 @@ class Checkout extends Component {
     }
     this.setState({submitLoading: true});
     /* Data structure to Create Order */
-    const products = this.props.products;
-    const order_price = this.props.order_price;
+    const products = this.props.home.products;
+    const order_price = this.props.home.order_price;
 
     var data = {
       order: {
@@ -100,10 +101,9 @@ class Checkout extends Component {
     setOrder(data).then(res => {
       this.setState({checkout_order_id: res.order.id});
       localStorage.setItem("checkout_order_id", res.order.id);
-      this.props.setCheckoutOrderId(res.order.id);
+      setCheckoutOrderId(res.order.id);
       /* Good bye Cart */
       this.props.actions.clearBox();
-      this.props.resetItems();
       this.props.actions.redirect('pagamento');
       this.getPermission();
     }).catch(error => {

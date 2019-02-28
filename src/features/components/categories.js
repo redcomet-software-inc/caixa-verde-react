@@ -60,12 +60,11 @@ import Loading from '../common/loading.js';
             /* Pass products to parent component 'Products' */
             this.props.refProducts(res);
             this.props.actions.turnOffLoading();
-            console.log("Accepted");
             this.setState({localLoading: false});
         }).catch(error =>{
             this.props.actions.turnOffLoading();
             this.setState({localLoading: false});
-            console.log("Not Accepted");
+            console.log("Not Accepted: " + error);
         });
   }
 
@@ -92,7 +91,9 @@ import Loading from '../common/loading.js';
                   <a className="dropdown-item" name="Tudo" id="all" onClick={(e) => this.getProducts(e)}>Tudo</a>
                 </div>
               </div>
-          <div className="p-2 bd-highlight my-auto loading-categories">{ this.renderLoading() }</div>
+          <div className="p-adjust">
+            <div className="p-2 bd-highlight my-auto loading-categories load-custom">{ this.renderLoading() }</div>
+          </div>
         </div>
         
       </div>

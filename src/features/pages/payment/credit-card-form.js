@@ -123,7 +123,7 @@ export default class CreditCardForm extends Component {
             <div className="form-row">
                 <div className="col mb-3">
                 <label htmlFor="inp" className="inp mb-2">
-                    <input type="text" maxLength="16" id="card_number" defaultValue={'4111111111111111'} onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_number" placeholder="&nbsp;" autoComplete="off" required/>
+                    <input type="text" maxLength="16" id="card_number" onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_number" placeholder="&nbsp;" autoComplete="off" required/>
                     <span className="label">Número do Cartão</span>
                 </label>
                 </div>
@@ -151,7 +151,7 @@ export default class CreditCardForm extends Component {
                 </div>
                 <div className="col-3 mb-3">
                 <label htmlFor="inp" className="inp mb-3">
-                    <select type="text" defaultValue={'2030'}  onChange={e => this.handleChangeExpiry(e)} id="expiry_year" name="expiry_year" placeholder="&nbsp;" required>
+                    <select type="text"  onChange={e => this.handleChangeExpiry(e)} id="expiry_year" name="expiry_year" placeholder="&nbsp;" required>
                     <option disabled value="" > - Ano - </option>
                     { this.renderYearSelect() }       
                     </select> 
@@ -160,7 +160,7 @@ export default class CreditCardForm extends Component {
                 </div>
                 <div className="col-6 mb-3">
                 <label htmlFor="inp" className="inp mb-2">
-                    <input type="text"  maxLength="3" id="cvc" defaultValue={"123"} onClick={e => this.handleClick_card(e)}  onChange={e => this.handleChange(e)}  name="cvc" placeholder="&nbsp;" required/>
+                    <input type="text"  maxLength="3" id="cvc" onClick={e => this.handleClick_card(e)}  onChange={e => this.handleChange(e)}  name="cvc" placeholder="&nbsp;" required/>
                     <span className="label">Código</span>
                 </label>
                 </div>
@@ -168,7 +168,7 @@ export default class CreditCardForm extends Component {
             <div className="form-row">
                 <div className="col mb-3">
                 <label htmlFor="inp" className="inp mb-2">
-                    <input type="text" id="card_name"  defaultValue='João Comprador' onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_name" placeholder="&nbsp;" required/>
+                    <input type="text" id="card_name" onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_name" placeholder="&nbsp;" required/>
                     <span className="label">Nome do Proprietário</span>
                 </label>
                 </div>

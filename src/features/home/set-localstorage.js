@@ -39,8 +39,3 @@ export const getLocalStorage = () => {
     return false;
   }
 }
-
-export const destroyShoppingCart = () => {
-  localStorage.removeItem("selectedKits");
-  localStorage.removeItem("selectedProducts");
-}
