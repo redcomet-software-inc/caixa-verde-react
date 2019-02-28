@@ -40,6 +40,9 @@ class Checkout extends Component {
           if(this.state.order_price === 0) {
             this.props.actions.getOrderPrice();
             const order_price =  this.props.home.order_price;
+            if(order_price === 0) {
+              return;
+            }
             this.setState({order_price});
             getFreight().then(res => {
               if(this.state.freight === 5) {
