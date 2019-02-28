@@ -8,14 +8,13 @@ export default class Loading extends Component {
 
   constructor (props) {
     super(props);
-    const size = this.props.size;
     this.state = {
-      size: size || 20,
+      size: 20,
     }
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props !== prevProps) {
+    if (this.props.size !== prevProps.size) {
       this.setState({size: this.props.size});
     }
   }
