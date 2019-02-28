@@ -16,6 +16,7 @@ class Checkout extends Component {
     let products = this.props.products;
     let kits = this.props.kits;
     this.state = {
+      rehydrated_once: true,
       checkout_order_id:0,
       order_price:0,
       freight:5,
@@ -36,8 +37,9 @@ class Checkout extends Component {
 
   componentDidUpdate(prevState, prevProps) {
     if(prevProps !== this.props) {
-      if(this.props._persist.rehydrated) {
+      if(this.props._persist.rehydrated && this.state.rehydrated_once) {
           if(this.state.order_price === 0) {
+            this.setState({rehydrated_once: false});
             this.props.actions.getOrderPrice();
             const order_price =  this.props.home.order_price;
             if(order_price === 0) {
