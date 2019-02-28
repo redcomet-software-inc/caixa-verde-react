@@ -90,26 +90,28 @@ export default class YourBox extends Component {
                   )}
               </li>
 
-              <li className="yourbox-total list-group-item d-flex justify-content-between lh-condensed">
-                <div>
-                  <h6 className="my-0">
-                  </h6>
-                  <span>Total</span>
-                </div>
-                <span className="text-success-price">
-                  {this.props.total_price && (
-                    <React.Fragment>
-                      { setMoneyFormat(this.props.total_price) }
-                    </React.Fragment>
-                  )}
-                  {!this.props.total_price && (
-                    <div className="total-price-loading">
-                      <Loading size={15} />
-                    </div>
-                  )}
-                </span>
-              </li>
-
+              { this.props.total_price > 0 && (
+                <li className="yourbox-total list-group-item d-flex justify-content-between lh-condensed">
+                  <div>
+                    <h6 className="my-0">
+                    </h6>
+                    <span>Total</span>
+                  </div>
+                  <span className="text-success-price">
+                    {this.props.total_price && (
+                      <React.Fragment>
+                        { setMoneyFormat(this.props.total_price) }
+                      </React.Fragment>
+                    )}
+                    {!this.props.total_price && (
+                      <div className="total-price-loading">
+                        <Loading size={15} />
+                      </div>
+                    )}
+                  </span>
+                </li>
+              )}
+              
             </ul>
             <form className="card p-2">
               <div className="input-group">
