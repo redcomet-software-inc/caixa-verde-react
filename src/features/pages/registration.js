@@ -5,6 +5,7 @@ import {
   NavLink
 } from "react-router-dom";
 import LoaderHOC from '../../HOC/loader-hoc';
+import { getAdmRegions } from '../../common/get-adm-regions.js';
 
 class Registration extends Component {
   constructor(props){
@@ -22,10 +23,13 @@ class Registration extends Component {
   }
 
   getAdmRegions = () => {
-    axios.get('http://localhost:3000/api/v1/adm_regions.json')
+    getAdmRegions()
     .then(res => {
-      const adm_regions = res.data;
+      console.log("success");
+      const adm_regions = res;
       this.setState({adm_regions: adm_regions});
+    }).catch(error => {
+      console.log("Adm Region Error: " + error);
     });
   }
 
