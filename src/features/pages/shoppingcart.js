@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as actions from '../../features/home/redux/actions.js';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { setMoneyFormat } from '../home/local-actions';
 
 export class ShoppingCart extends Component {
   static propTypes = {};
@@ -69,7 +70,7 @@ export class ShoppingCart extends Component {
       <tr key={product + "ShoppingCart"}>
         <td className="text-left">{products[product].name} {products[product].quantity > 1 ? <small className="text-danger">x{products[product].quantity}</small> : ' ' }  </td>
         <td className="text-center">
-          {this.props.setMoneyFormat(products[product].price * products[product].quantity)}
+          {setMoneyFormat(products[product].price * products[product].quantity)}
         </td>
       </tr>
       )
@@ -87,7 +88,7 @@ export class ShoppingCart extends Component {
       <tr key={kit + "ShoppingCart"}>
         <td className="text-left">{kits[kit].name} {kits[kit].quantity > 1 ? <small className="text-danger">x{kits[kit].quantity}</small> : ' ' }  </td>
         <td className="text-center">
-          {this.props.setMoneyFormat(kits[kit].price * kits[kit].quantity)}
+          {setMoneyFormat(kits[kit].price * kits[kit].quantity)}
         </td>
       </tr>
       )
@@ -140,7 +141,7 @@ export class ShoppingCart extends Component {
             <div className="modal-footer">
               <div className="row w-100">
                 <div className="col my-auto text-center mx-auto">
-                  Total: {this.props.setMoneyFormat( this.props.order_price)}
+                  Total: {setMoneyFormat( this.props.order_price)}
                 </div>
                 <div className="col text-right pr-0">
                     <button className="btn btn-primary" data-dismiss="modal" onClick={this.clickHandle} type="button">Finalizar Compra</button>

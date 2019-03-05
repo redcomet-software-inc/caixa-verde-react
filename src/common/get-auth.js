@@ -1,5 +1,5 @@
 import request from './config-api.js';
-import { getLocalStorage } from '../features/home/set-localstorage.js';
+import { getLocalStorage } from '../features/home/local-actions';
 
 /* Check if User has Authorization to Access Restrict Pages */
 export let getAuth = function() {

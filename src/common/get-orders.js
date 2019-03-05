@@ -1,7 +1,5 @@
 import request from './config-api.js';
 
-
-
 export let getOrderInfo = function(order_id) {
     const email = localStorage.getItem("email");
     const token = localStorage.getItem("token");

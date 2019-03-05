@@ -127,11 +127,6 @@ export class MainPage extends Component {
         return <Redirect exact to={this.props.home.redirectTo} />;
       }
   };
-  
-  setMoneyFormat = price => {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
-    // => "R$100,000,000.00"
-  };
 
   /* Sign In Client and Register new Token */
   setSignIn = (client_id, client_name, client_email, token) => {
@@ -184,51 +179,6 @@ export class MainPage extends Component {
     }
   }
 
-  /* Check if a Giving Object is Empty */
-  isEmpty = function (obj){
-    for(var key in obj) {
-        if(obj.hasOwnProperty(key))
-            return false;
-      }
-      return true;
-  }
-
-  countB = (myObject) => {
-    let count = 0;
-    if(this.isEmpty(myObject) === false) {
-      for (var key in myObject) {
-        count += myObject[key].quantity;
-      }
-    }
-    return count;
-  }
-
-  /* Count Selected Items */
-  count = () => {
-    let products = this.countB(this.props.home.products);
-    let kits = this.countB(this.props.home.kits);
-    let count = products + kits;
-    return count;
-  }
-
-  order_priceB = (myObject) => {
-    let value = 0;
-    if(this.isEmpty(myObject) === false) {
-      for(var key in myObject) {
-        value += myObject[key].price * myObject[key].quantity;
-      }
-    }
-    return value;
-  }
-
-  order_price = () => {
-    let value = 0;
-    let price_products = this.order_priceB(this.props.home.products);
-    let price_kits = this.order_priceB(this.props.home.kits);
-    value = price_products + price_kits;
-    return value;
-  }
-
   render() {
     
     return (
@@ -237,10 +187,9 @@ export class MainPage extends Component {
             <div>
                 <div className="header">
                 <div className="left-margin" />
-                <ShoppingCartButton count={this.count()}/>
+                <ShoppingCartButton />
                 <NavBar
                   loggedIn={this.state.loggedIn}
-                  count={ this.count() }
                   clientName={this.state.clientName}
                   warning={this.warning}
                   changeToLoggedOut={this.changeToLoggedOut}
@@ -257,31 +206,10 @@ export class MainPage extends Component {
                             {this.renderRedirect(this.props.home.redirectTo)}
                             <Switch>
                             <Route path="/" exact component={Option} />
-                            <Route
-                              path="/Personalizado"
-                              exact
-                              render={props => (
-                                <Products
-                                  permit={true}
-                                  setMoneyFormat={this.setMoneyFormat}
-                                  products={this.props.home.products}
-                                  location={this.props.location}
-                                />
-                              )}
-                            />
-                            <Route
-                              path="/Kits"
-                              exact
-                              render={props => (
-                                <Kits
-                                  kits={this.props.home.kits}
-                                  kitsList={this.state.kitsList}
-                                  permit={true}
-                                  onRef={ref => (this.custom = ref)}
-                                  setMoneyFormat={this.setMoneyFormat}
-                                />
-                              )}
-                            />
+
+                            <Route path="/personalizado" exact component={Products} />
+                            <Route path="/kits" exact component={Kits} />
+
                             <Route
                               path="/login"
                               exact
@@ -304,7 +232,9 @@ export class MainPage extends Component {
                                 />
                               )}
                             />
-                            <Route path="/checkout"  exact  component={Checkout} />
+
+                            <Route path="/checkout" exact component={Checkout} />
+
                             <Route
                               exact
                               path="/minhaconta"
@@ -315,9 +245,7 @@ export class MainPage extends Component {
                             <Route
                               path="/pedidos"
                               render={props => (
-                                <MyOrders 
-                                  setCheckoutOrderId={this.setCheckoutOrderId}
-                                  setMoneyFormat={this.setMoneyFormat}
+                                <MyOrders
                                   redirect={this.redirect}
                                   {...props}
                                 />
@@ -328,8 +256,6 @@ export class MainPage extends Component {
                               exact
                               render={props => (
                                 <MyBox
-                                  count={this.count()}
-                                  setMoneyFormat={this.setMoneyFormat}
                                   myBoxKits={this.props.home.myBoxKits}
                                   myBoxProducts={this.props.home.myBoxProducts}
                                   permit={true}
@@ -366,9 +292,7 @@ export class MainPage extends Component {
             <Warning warningMessage={this.state.warningMessage} />
           
             <ShoppingCart
-              setMoneyFormat={this.setMoneyFormat}
-              count={this.count()}
-              order_price={this.order_price()}
+              order_price={this.props.home.order_price}
               products={this.props.home.products}
               kits={this.props.home.kits}
               loggedIn={this.state.loggedIn}

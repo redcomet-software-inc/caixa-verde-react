@@ -4,6 +4,7 @@ import { boxAdd } from 'react-icons-kit/icomoon/boxAdd';
 import { minus } from 'react-icons-kit/icomoon/minus';
 import { getProduct } from '../../common/get-products.js';
 import userImage from '../../images/caixaverde-finalizacao-WHITE-BOX.png';
+import { setMoneyFormat } from '../home/local-actions';
 
 export default class CardKits extends Component {
   constructor(props) {
@@ -143,7 +144,7 @@ export default class CardKits extends Component {
         <div className="card-body text-center">
         <div className="row">
           <div className="col">
-            <p className="card-text text-center text-success">{this.props.setMoneyFormat(this.state.kitData.price)}</p>
+            <p className="card-text text-center text-success">{setMoneyFormat(this.state.kitData.price)}</p>
           </div>
         </div>
         <div className="row">

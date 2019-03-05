@@ -43,7 +43,6 @@ class Kits extends Component {
           <CardKits
               key={"cardkit" + kits[kit].id}
               id={kits[kit].id}
-              setMoneyFormat={this.props.setMoneyFormat}
               name={kits[kit].name}
               kind={kits[kit].kind}
               description={kits[kit].description}

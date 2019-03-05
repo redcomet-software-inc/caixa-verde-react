@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import LoaderHOC from '../../HOC/loader-hoc';
 import { getOrders } from '../../common/get-orders.js';
+import { setCheckoutOrderId } from '../../home/local-actions';
+
 
 class MyOrders extends Component {
   static propTypes = {
@@ -43,7 +45,7 @@ class MyOrders extends Component {
   }
 
   handlePayment = (id) => {
-    this.props.setCheckoutOrderId(id);
+    setCheckoutOrderId(id);
     this.props.redirect('pagamento');
   }
 

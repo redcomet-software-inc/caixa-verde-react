@@ -5,7 +5,7 @@ import Loading from '../../common/loading.js';
 import { PersonalDataClient, PersonalAddressDelivery, PersonalAddressBilling } from '../../pages/my-account/personal-data.js';
 import YourBox from './yourbox';
 import Success from '../common/success';
-import { setCheckoutOrderId } from '../../home/set-checkout-order-id.js';
+import { setCheckoutOrderId } from '../../home/local-actions';
 import { NavLink } from 'react-router-dom';
 import { getFreight } from '../../../common/get-extra-charges.js';
 
@@ -36,6 +36,7 @@ class Checkout extends Component {
   }
 
   componentDidUpdate(prevState, prevProps) {
+    
     if(prevProps !== this.props) {
       if(this.props._persist.rehydrated && this.state.rehydrated_once) {
           if(this.state.order_price === 0) {

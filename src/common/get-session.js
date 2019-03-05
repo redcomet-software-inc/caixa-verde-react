@@ -71,6 +71,7 @@ let createCardToken = function(card, brand) {
 }
 
 /* 4. Get Brand from Card Bin */
+// => 411111 (****)
     let getBrand = function(card_number) {
     return new Promise((resolve, reject) => {
         let card_bin = card_number.toString(2).substring(0,6);
@@ -127,6 +128,7 @@ let createCardToken = function(card, brand) {
             }
         }).then(session => 
          {
+            // => 
             resolve(session);
 
         }).catch(err => 
@@ -134,7 +136,7 @@ let createCardToken = function(card, brand) {
            reject("Get Session Failed: " + err);
         });
     });
-}
+} 
 
 /* 4.5 (Optional) Get PaymentMethods
     let getPaymentMethods = function() {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Loading from '../../common/loading.js';
-import { setMoneyFormat } from '../../home/set-money-format.js';
+import Loading from '../../common/loading';
+import { setMoneyFormat, count } from '../../home/local-actions';
 
 export default class YourBox extends Component {
 
@@ -71,7 +71,11 @@ export default class YourBox extends Component {
               <h4 className="d-flex justify-content-between align-products-center mb-3">
                 <span className="text-muted">Sua Caixa</span>
                 <span className="badge badge-secondary badge-pill badge-pill-number">
-                  {this.props.count}
+                  
+                  { count(this.props.products, this.props.kits) && (
+                    count(this.props.products, this.props.kits) 
+                  )}
+
                 </span>
               </h4>
             <ul className="list-group mb-3 card-custom-box">

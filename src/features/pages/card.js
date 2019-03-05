@@ -3,7 +3,7 @@ import { Icon } from 'react-icons-kit';
 import { boxAdd } from 'react-icons-kit/icomoon/boxAdd';
 import { minus } from 'react-icons-kit/icomoon/minus';
 import userImage from '../../images/caixaverde-finalizacao-WHITE-BOX.png';
-import { getProduct } from '../../common/get-products.js';
+import { setMoneyFormat } from '../home/local-actions';
 
 export default class Card extends Component {
   static propTypes = {};
@@ -117,7 +117,7 @@ export default class Card extends Component {
         <div className="card-body text-center pb-0">
           <span className="card-text">{this.state.productData.name}</span>
           <br />
-          <small className="text-success">{this.props.setMoneyFormat(this.state.productData.price)}</small>
+          <small className="text-success">{setMoneyFormat(this.state.productData.price)}</small>
           <br />
           <small className="card-text">{this.props.kind}</small>
         </div>

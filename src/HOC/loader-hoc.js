@@ -27,8 +27,11 @@ const LoaderHOC = (WrappedComponent) => {
         this.props.actions.redirect(url);
       }
     }
+    
 
     componentDidMount() {
+      console.log("HOC COMPONENT MOUNTED");
+      console.log(this.props);
       window.scroll({top: 0, left: 0, behavior: 'smooth' });
         this.props.actions.turnOffError();
         this.props.actions.turnOnLoading();
@@ -44,24 +47,27 @@ const LoaderHOC = (WrappedComponent) => {
         });
 
     }
+
+    componentDidUpdate (prevProps) {
+      if(this.props !== prevProps) {
+        console.log("UPDATE");
+        console.log(this.props);
+      }
+    }
+
     render() {
-      return <WrappedComponent location={this.props.location}  {...this.props} />;
+      return <WrappedComponent location={this.props.location} {...this.props}  />;
     }
   };
 }
 
-/* istanbul ignore next */
-const mapStateToProps = (state, props) => {
-  console.log("Redux Check");
-  console.log(state);
-  console.log(props);
+
+const mapStateToProps = (state) => {
   return {
     ...state,
-    ...props,
-  };
+  }
 }
 
-/* istanbul ignore next */
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators({ ...actions }, dispatch)

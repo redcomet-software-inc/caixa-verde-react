@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { getPagseguroTransaction } from '../../../common/get-pagseguro-transaction.js';
 import { Icon } from 'react-icons-kit';
 import { arrowLeft2 } from 'react-icons-kit/icomoon/arrowLeft2';
-import { NavLink } from 'react-router-dom';
 import { getOrderInfo, getPayment } from '../../../common/get-orders.js';
-
+import { setMoneyFormat, setCheckoutOrderId } from '../../home/local-actions';
 
 export default class Show extends Component {
     constructor (props) {
@@ -24,7 +23,7 @@ export default class Show extends Component {
         this.getTransaction();
         this.getOrder();
         this.getPayment();
-        this.props.setCheckoutOrderId(this.props.match.params.orderId);
+        setCheckoutOrderId(this.props.match.params.orderId);
     }
     handleBack = (e) => {
         e.preventDefault();
@@ -133,7 +132,7 @@ export default class Show extends Component {
                                 {order.orders_products[product].name}
                             </td>
                             <td>
-                                {this.props.setMoneyFormat(order.orders_products[product].price)}
+                                {setMoneyFormat(order.orders_products[product].price)}
                             </td>
                             <td>     
                                 {order.orders_products[product].quantity}
@@ -153,7 +152,7 @@ export default class Show extends Component {
                             {order.orders_kits[kit].name}
                         </td>
                         <td>
-                            {this.props.setMoneyFormat(order.orders_kits[kit].price)}
+                            {setMoneyFormat(order.orders_kits[kit].price)}
                         </td>
                         <td>     
                             {order.orders_kits[kit].quantity}
@@ -207,7 +206,7 @@ export default class Show extends Component {
                             <strong className="info">
                                 {this.state.order_info && this.state.order_info.order_price && (
                                     <React.Fragment>
-                                        {this.props.setMoneyFormat(this.state.order_info.order_price)}
+                                        {setMoneyFormat(this.state.order_info.order_price)}
                                     </React.Fragment>
                                 )}
                                 {!this.state.order_info && (

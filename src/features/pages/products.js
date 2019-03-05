@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Card from '../pages/card.js';
 import Categories from '../components/categories.js';
 import LoaderHOC from '../../HOC/loader-hoc';
+import { setMoneyFormat } from '../home/local-actions';
 
 class Products extends Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class Products extends Component {
   }
 
   getQuantity = (id) => {
-    let products = this.props.products; // this comes from Redux Store
+    let products = this.props.home.products; // this comes from Redux Store
     let quantity = 0;
     if (products["product" + id] !== undefined ) {
       quantity = products["product" + id].quantity;
@@ -62,7 +63,7 @@ class Products extends Component {
               kind={item.kind}
               price={item.price}
               thumb={item.thumb}
-              setMoneyFormat={this.props.setMoneyFormat}
+              setMoneyFormat={setMoneyFormat()}
               quantity={this.getQuantity(item.id)}
               productPlus={this.props.actions.productPlus}
               productMinus={this.props.actions.productMinus}

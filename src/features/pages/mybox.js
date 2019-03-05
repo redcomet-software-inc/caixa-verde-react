@@ -4,6 +4,7 @@ import { getProduct } from '../../common/get-products.js';
 import userImage from '../../images/caixaverde-finalizacao-WHITE-BOX.png';
 import Success from './common/success';
 import { NavLink } from 'react-router-dom';
+import { setMoneyFormat } from '../home/local-actions';
 
 class MyBox extends Component {
 
@@ -97,7 +98,7 @@ class MyBox extends Component {
               <div className="card-footer text-center">
                 <ul className="list-group">
                   <li className="list-group-item">{ product_table }</li>
-                  <li className="list-group-item text-success">{ this.props.setMoneyFormat(myBox[item].price) }</li>
+                  <li className="list-group-item text-success">{ setMoneyFormat(myBox[item].price) }</li>
                   <li className="list-group-item">Quantidade: { myBox[item].quantity }</li>
                 </ul>
               </div>
@@ -133,7 +134,7 @@ class MyBox extends Component {
               <div className="card-footer text-center">
                 <ul className="list-group">
                   <li className="list-group-item">{ myBox[item].kind }</li>
-                  <li className="list-group-item text-success">{ this.props.setMoneyFormat(myBox[item].price) }</li>
+                  <li className="list-group-item text-success">{ setMoneyFormat(myBox[item].price) }</li>
                   <li className="list-group-item">Quantidade: { myBox[item].quantity }</li>
                 </ul>
               </div>
