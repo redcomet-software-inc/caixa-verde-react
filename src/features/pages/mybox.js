@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import LoaderHOC from '../../HOC/loader-hoc';
-import { getProduct } from '../../common/get-products.js';
+//import { getProduct } from '../../common/get-products.js';
 import userImage from '../../images/caixaverde-finalizacao-WHITE-BOX.png';
 import Success from './common/success';
 import { NavLink } from 'react-router-dom';
@@ -111,12 +111,13 @@ class MyBox extends Component {
 
   handleError (e, id) {
     e.persist();
+    /*
     getProduct(id).then(res => {
       e.target.src = res.thumb;
       if(typeof res.thumb === 'undefined') {
         e.target.src = userImage;
       }
-    });
+    }); */
   }
 
   renderProducts ()  {

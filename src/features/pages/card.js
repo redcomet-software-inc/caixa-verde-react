@@ -45,10 +45,6 @@ export default class Card extends Component {
     };
   }
 
-  handleLoad = () => {
-    this.props.cardMounted();
-  };
-
   handleError (e, id) {
     e.persist();
     e.target.src = userImage;
@@ -111,7 +107,6 @@ export default class Card extends Component {
           className="card-img-top mt-5"
           
           src={this.props.thumb && this.props.thumb || userImage}
-          onLoad={this.handleLoad}
           onError={e => this.handleError(e, this.state.productData.id)}
         />
         <div className="card-body text-center pb-0">

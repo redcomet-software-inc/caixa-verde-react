@@ -46,12 +46,7 @@ export class ShoppingCart extends Component {
   clickHandle = (e) => {
     e.preventDefault();
     e.persist();
-
-    if (this.props.loggedIn===false) {
-      this.props.actions.redirect('cadastro');
-    } else {
-      this.props.actions.redirect('checkout');
-    }
+    this.props.actions.redirect('checkout');
   }
 
   clickHandleDetails = (e) => {
@@ -62,9 +57,9 @@ export class ShoppingCart extends Component {
   }
 
   renderProducts = () => {
-    let products = this.props.products;
+    let products = this.props.home.selected_products;
     let table = [];
-    for(let product in this.props.products) {
+    for(let product in products) {
       if(products[product].quantity > 0) {
       table.push(
       <tr key={product + "ShoppingCart"}>
@@ -80,9 +75,9 @@ export class ShoppingCart extends Component {
   }
   
   renderKits = () => {
-    let kits = this.props.kits;
+    let kits = this.props.home.selected_kits;
     let table = [];
-    for(let kit in this.props.kits) {
+    for(let kit in kits) {
       if(kits[kit].quantity > 0) {
       table.push(
       <tr key={kit + "ShoppingCart"}>
@@ -141,7 +136,7 @@ export class ShoppingCart extends Component {
             <div className="modal-footer">
               <div className="row w-100">
                 <div className="col my-auto text-center mx-auto">
-                  Total: {setMoneyFormat( this.props.order_price)}
+                  Total: {setMoneyFormat( this.props.home.order_price)}
                 </div>
                 <div className="col text-right pr-0">
                     <button className="btn btn-primary" data-dismiss="modal" onClick={this.clickHandle} type="button">Finalizar Compra</button>

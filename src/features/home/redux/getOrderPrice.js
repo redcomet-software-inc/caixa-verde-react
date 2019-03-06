@@ -35,8 +35,8 @@ export function reducer(state, action) {
   switch (action.type) {
     case HOME_GET_ORDER_PRICE:
     let order_price = 0;
-    let price_products = order_priceB(state.products);
-    let price_kits = order_priceB(state.kits);
+    let price_products = order_priceB(state.selected_products);
+    let price_kits = order_priceB(state.selected_kits);
     order_price = price_products + price_kits;
       return {
         ...state,

@@ -5,12 +5,14 @@
 import {
   HOME_KIT_MINUS,
 } from './constants';
+import { count } from  '../../../features/home/local-actions';
 
 export function kitMinus(kit, box) {
   let id = kit.kit_id
   return {
     type: HOME_KIT_MINUS,
     kit,
+    count,
     box,
     id,
   };
@@ -20,14 +22,16 @@ export function reducer(state, action) {
 
   switch (action.type) {
     case HOME_KIT_MINUS:
-      let kits = state.kits;
+      let selected_kits = state.selected_kits;
       let myBoxKits = state.myBoxKits;
-      kits["kit" + action.id] =  action.kit;
+      selected_kits["kit" + action.id] =  action.kit;
       myBoxKits["myBoxKit" + action.id] = action.kit;
+      let count = action.count(state.selected_products, selected_kits);
       return {
         ...state,
-        kits,
+        selected_kits,
         myBoxKits,
+        count,
       };
 
     default:

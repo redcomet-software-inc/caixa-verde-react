@@ -5,12 +5,14 @@
 import {
   HOME_PRODUCT_MINUS,
 } from './constants';
+import { count } from  '../../../features/home/local-actions';
 
 export function productMinus(product, box) {
   let id = product.product_id
   return {
     type: HOME_PRODUCT_MINUS,
     product,
+    count,
     box,
     id,
   };
@@ -20,14 +22,16 @@ export function reducer(state, action) {
 
   switch (action.type) {
   case HOME_PRODUCT_MINUS:
-  let products = state.products;
+  let selected_products = state.selected_products;
   let myBoxProducts = state.myBoxProducts
-  products["product" + action.id ] =  action.product;
+  selected_products["product" + action.id ] = action.product;
   myBoxProducts["myBoxProduct" + action.id] = action.box
+  let count = action.count(selected_products, state.selected_kits);
     return {
       ...state,
-      products,
+      selected_products,
       myBoxProducts,
+      count,
     };
     default:
       return state;

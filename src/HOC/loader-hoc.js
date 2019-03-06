@@ -4,55 +4,76 @@ import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { getAuth } from '../common/get-auth.js';
 
+// What pages are public (all the other one gonna be redirected if not logged In)
+const no_private_paths = [
+  "/login", 
+  "/cadastro",
+  "/kits", 
+  "/personalizado",
+  "/minhacaixa"
+];
 // This function takes a component...
 const LoaderHOC = (WrappedComponent) => {
+
   // ...and returns another component...
   return class extends Component {
 
     constructor(props) {
       super(props);
+      this.path = props.location.pathname;
+      this.authorization = this.authorization.bind(this);
       this.state = {
-        client_data:[],
+        rehydrated_once: true,
       }
     }
 
-    redirect = () => {
-      if(!this.props.permit) {
-        let url = "";
-        if(this.props.redirectTo) {
-          url=this.props.redirectTo;
-        } else {
-          url="/"
+    
+
+    authorization () {
+      const path = this.path; // Declared on contructior
+      this.props.actions.getClientData().then(res => {
+        this.props.actions.turnOffLoading();
+        if (!res) {
+          if(path === "/checkout") {
+            this.props.actions.redirect('/login');
+            return;
+          }
+          if(!no_private_paths.includes(path)) {
+            this.props.actions.redirect('/');
+            return;
+          }
         }
-        this.props.actions.redirect(url);
+      }).catch(error => {
+          console.log(error);
+          this.props.actions.turnOffLoading();
+          if(path === "/checkout") {
+            this.props.actions.redirect('/login');
+            return;
+          }
+          if(!no_private_paths.includes(path)) {
+            this.props.actions.redirect('/');
+            return;
+          }
+      });
+    }
+
+    // Check User Data after Rehydrated
+    componentDidUpdate (prevProps) {
+      if(prevProps !== this.props) {
+        console.log("Persist Check");
+        console.log(this.props);
+        if(this.props._persist.rehydrated && this.state.rehydrated_once) {
+          this.setState({rehydrated_once: false});
+          this.authorization();
+          return
+        }
       }
     }
     
-
     componentDidMount() {
-      console.log("HOC COMPONENT MOUNTED");
-      console.log(this.props);
       window.scroll({top: 0, left: 0, behavior: 'smooth' });
-        this.props.actions.turnOffError();
-        this.props.actions.turnOnLoading();
-        getAuth().then(res => {
-          this.props.actions.turnOffLoading();
-          if (!res) {
-            this.redirect();
-          } 
-
-        }).catch(error => {
-          this.props.actions.turnOffLoading();
-          this.redirect();
-        });
-
-    }
-
-    componentDidUpdate (prevProps) {
-      if(this.props !== prevProps) {
-        console.log("UPDATE");
-        console.log(this.props);
-      }
+      this.props.actions.turnOffError();
+      this.props.actions.turnOnLoading();
     }
 
     render() {
@@ -61,7 +82,7 @@ const LoaderHOC = (WrappedComponent) => {
   };
 }
 
-
+// Conect to Redux Storage
 const mapStateToProps = (state) => {
   return {
     ...state,

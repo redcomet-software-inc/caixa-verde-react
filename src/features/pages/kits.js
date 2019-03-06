@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CardKits from '../pages/cardkits.js';
 import LoaderHOC from '../../HOC/loader-hoc';
+import { getKits } from '../../common/get-products.js';
 
 class Kits extends Component {
 
@@ -14,7 +15,14 @@ class Kits extends Component {
 
   componentDidMount () {
     this.props.actions.turnOffLoading();
-    
+    this.getKits();
+  }
+
+  getKits = () => {
+     getKits().then(res => {
+      this.setState({kitData: res});
+      this.props.actions.kits(res);
+    }); 
   }
 
   refKit = (kitData, myBox) => {
@@ -25,7 +33,7 @@ class Kits extends Component {
   }
 
   getQuantity = (id) => {
-    let kits = this.props.kits; // this comes from Redux Store
+    let kits = this.props.home.selected_kits; // this comes from Redux Store
     let quantity = 0;
     if (kits["kit" + id] !== undefined ) {
       quantity = kits["kit" + id].quantity;
@@ -34,10 +42,10 @@ class Kits extends Component {
   }
 
   renderKits = () => {
-    let table = []
-    let kits = this.props.kitsList;
+    let table = [];
+    let kits = this.props.home.kits;
     if(kits !== undefined) {
-      for(let kit in this.props.kitsList) { 
+      for(let kit in this.props.home.kits) { 
         table.push(
           <div className="m-2">
           <CardKits

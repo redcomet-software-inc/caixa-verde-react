@@ -6,66 +6,32 @@ import * as actions from '../../features/home/redux/actions.js';
 import request from '../../common/config-api.js';
 import Loading from '../common/loading.js';
 
-
-  export class Categories extends Component {
-    static propTypes = {
-      components: PropTypes.object.isRequired,
-      actions: PropTypes.object.isRequired,
-    };
-    constructor (props) {
-      super(props);
-      this.state = {
-        categories:[],
-        current_category:'Variedades',
-        products_by_category:[],
-        localLoading:true,
-      }
+export class Categories extends Component {
+  static propTypes = {
+    components: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequired,
+  };
+  constructor (props) {
+    super(props);
+    this.state = {
+      categories:[],
+      current_category:'Variedades',
+      products_by_category:[],
+      localLoading:true,
     }
+  }
 
-    componentDidMount () {
-      this.getCategories();
-    }
+  componentDidMount () {
+    this.getCategories();
+  }
 
-    getCategories = () => {
-      request({
-        method: 'get',
-        url: 'api/v1/categories.json'
-      }).then((res) => {
-        this.setState({categories: res})
-        this.getProducts();
-      })
-    }
-
-    getProducts = (e) => {
-      this.setState({localLoading: true});
-      this.props.resetImgCount();
-      let id = '';
-      if(e === undefined) {
-        id = 'all';
-      }
-
-      if(e !== undefined) {
-        e.preventDefault();
-        e.persist();
-        id = e.target.id;
-        let name = e.target.name;
-        this.setState({ current_category: name});
-      }
-    
-      request({
-        method: 'get',
-        url: 'api/v1/categories/' + id + '.json',
-        }).then((res) => {
-            this.setState({products_by_category: res});
-            /* Pass products to parent component 'Products' */
-            this.props.refProducts(res);
-            this.props.actions.turnOffLoading();
-            this.setState({localLoading: false});
-        }).catch(error =>{
-            this.props.actions.turnOffLoading();
-            this.setState({localLoading: false});
-            console.log("Not Accepted: " + error);
-        });
+  getCategories = () => {
+    request({
+      method: 'get',
+      url: 'api/v1/categories.json'
+    }).then((res) => {
+      this.setState({categories: res})
+    })
   }
 
   renderLoading = () => {

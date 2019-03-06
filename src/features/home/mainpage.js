@@ -6,11 +6,9 @@ import NavBar from '../navbar/navbar.js';
 import Footer from '../footer/footer.js';
 
 /* External Functions */
-import { destroyShoppingCart } from './set-localstorage';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getAuth } from '../../common/get-auth.js';
-import { getProducts, getKits } from '../../common/get-products.js';
 
 /* Pages and render components */
 import Products from '../pages/products.js';
@@ -57,7 +55,6 @@ export class MainPage extends Component {
 
   componentDidMount() {
     this.auth();
-    this.getProducts();
     this.props.actions.getMinQuantityRequest();
     console.log("Main Page");
     console.log(this.props.home);
@@ -79,15 +76,6 @@ export class MainPage extends Component {
         setTimeout(()=>{this.props.turnOffMainLoading()}, 500);
     });
   };
-
-  getProducts = () => {
-      getProducts().then(res=> {
-          this.setState({ productsList: res });   
-      });
-      getKits().then(res=> {
-        this.setState({ kitsList: res });
-      });
-  }
 
   /* Reset all data and states */
   changeToLoggedOut = () => {
@@ -188,14 +176,7 @@ export class MainPage extends Component {
                 <div className="header">
                 <div className="left-margin" />
                 <ShoppingCartButton />
-                <NavBar
-                  loggedIn={this.state.loggedIn}
-                  clientName={this.state.clientName}
-                  warning={this.warning}
-                  changeToLoggedOut={this.changeToLoggedOut}
-                  image={this.state.avatar}
-                  {...this.props}
-                />
+                <NavBar {...this.props} />
                 <div className="row" >
                     <div className="container-fluid pb-3">
                       <div className="mb-5 mx-auto content">
@@ -205,81 +186,18 @@ export class MainPage extends Component {
                           <div className={"col-lg-12 pt-md-5 mx-auto my-auto pl-0 pr-0 "+ this.visible()}>
                             {this.renderRedirect(this.props.home.redirectTo)}
                             <Switch>
-                            <Route path="/" exact component={Option} />
-
-                            <Route path="/personalizado" exact component={Products} />
-                            <Route path="/kits" exact component={Kits} />
-
-                            <Route
-                              path="/login"
-                              exact
-                              render={props => (
-                                <Login
-                                  setSignIn={this.setSignIn}
-                                  loggedIn={this.state.loggedIn}
-                                  permit={true}
-                                />
-                              )}
-                            />
-                            <Route
-                              path="/cadastro"
-                              exact
-                              render={props => (
-                                <Registration 
-                                  register={this.register} 
-                                  component={Registration}
-                                  permit={true} 
-                                />
-                              )}
-                            />
-
-                            <Route path="/checkout" exact component={Checkout} />
-
-                            <Route
-                              exact
-                              path="/minhaconta"
-                              render={props => (
-                                <MyAccount />
-                              )}
-                            />
-                            <Route
-                              path="/pedidos"
-                              render={props => (
-                                <MyOrders
-                                  redirect={this.redirect}
-                                  {...props}
-                                />
-                              )}
-                              />
-                            <Route
-                              path="/minhacaixa"
-                              exact
-                              render={props => (
-                                <MyBox
-                                  myBoxKits={this.props.home.myBoxKits}
-                                  myBoxProducts={this.props.home.myBoxProducts}
-                                  permit={true}
-                                  {...props}
-                                 />
-                              )}
-                            />
-                            <Route
-                              path="/pagamento"
-                              exact
-                              render={props => (
-                                <Payment 
-                                checkout_order_id={this.state.checkout_order_id} 
-                                />
-                              )}
-                            />
-                            <Route
-                              path="/err"
-                              exact
-                              render={props => (
-                                <Err errMessage={this.state.errMessage} />
-                              )}
-                            />
-                            <Route component={NotFound} />
+                              <Route path="/" exact component={Option} />
+                              <Route path="/personalizado" exact component={Products} />
+                              <Route path="/kits" exact component={Kits} />
+                              <Route path="/login" exact component={Login} />
+                              <Route path="/cadastro" exact component={Registration} />
+                              <Route path="/checkout" exact component={Checkout} />
+                              <Route path="/minhaconta" exact component={MyAccount} />
+                              <Route path="/pedidos" exact component={MyOrders} />
+                              <Route path="/minhacaixa" exact component={MyBox} />
+                              <Route path="/pagamento" exact component={Payment} />
+                              <Route path="/err" exact component={Err} />
+                              <Route component={NotFound} />
                             </Switch>
                           </div>
                         </div>

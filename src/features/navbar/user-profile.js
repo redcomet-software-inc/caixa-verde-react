@@ -11,8 +11,7 @@ export default class UserProfile extends Component
       e.preventDefault();
 
       console.log(this.props);
-      this.props.actions.logout();
-      localStorage.removeItem('persist:caixa-verde');
+     
       const email = localStorage.getItem('email');
       const token = localStorage.getItem('token');
       const deleteUrl = "http://localhost:3000/api/v1/sessions.json?client_email="+email+"&client_token="+token;
@@ -20,26 +19,22 @@ export default class UserProfile extends Component
       {
         'Content-Type': 'application/json'
       };
+
       // check the structure here: https://github.com/axios/axios#request-config
       const axiosConfigObject = {headers: httpReqHeaders}; 
       axios.delete(deleteUrl, axiosConfigObject).then(res=> {
          if (res.status === 200) {
-             this.props.changeToLoggedOut();
+             this.props.actions.reset();
+             return;
           } else {
-            throw new Error('Error');
+            this.props.actions.reset();
+            return;
           }
       }).catch(error => {
         console.log(error);
+        this.props.actions.reset();
       })
     };
-
-    image = () => {
-      if(this.props.image) {
-        return (<img alt={"Foto do Usuário"} src={this.props.image} className="image profile-image mr-2 rounded-circle" width={50} />);
-      } else {
-        return (<img alt={"Foto do Usuário (Vazio)"} src={userImage} className="image profile-image mr-2 rounded-circle" width={50} />);
-      } 
-    }
 
     componentDidMount() {
       $('.dropdown').on('show.bs.dropdown', function(e) {
@@ -55,8 +50,21 @@ export default class UserProfile extends Component
         <div>
           <li className="nav-item dropdown">
             <a className="nav-link dropdown-toggle" data-target="navbarDropdown" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            {this.image()}
-            {this.props.clientName}
+              
+              {typeof this.props.home.client_data.length > 0 !== 'undefined' && (
+                this.props.home.client_data.thumb && (
+                  <img alt={"Foto do Usuário"} src={this.props.home.client_data.thumb} className="image profile-image mr-2 rounded-circle" width={50} />
+                ),
+                !this.props.home.client_data.thumb && (
+                  <img alt={"Foto do Usuário"} src={userImage} className="image profile-image mr-2 rounded-circle" width={50} />
+                )
+              )}
+
+              {typeof this.props.home.client_data !== 'undefined' &&typeof this.props.home.client_data.client !== 'undefined' && (
+                  this.props.home.client_data.client.name
+              )}
+              
+
             </a>
             <div className="dropdown-menu dropdown-menu-right m-2 shadow text-center" aria-labelledby="navbarDropdown">
               <NavLink className="dropdown-item" exact to="/minhaconta">Minha Conta</NavLink>

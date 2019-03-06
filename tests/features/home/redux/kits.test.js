@@ -1,22 +1,22 @@
 import {
-  RESET,
+  HOME_KITS,
 } from '../../../../src/features/home/redux/constants';
 
 import {
-  logout,
+  kits,
   reducer,
-} from '../../../../src/features/home/redux/logout';
+} from '../../../../src/features/home/redux/kits';
 
-describe('home/redux/logout', () => {
-  it('returns correct action by logout', () => {
-    expect(logout()).toHaveProperty('type', RESET);
+describe('home/redux/kits', () => {
+  it('returns correct action by kits', () => {
+    expect(kits()).toHaveProperty('type', HOME_KITS);
   });
 
-  it('handles action type RESET correctly', () => {
+  it('handles action type HOME_KITS correctly', () => {
     const prevState = {};
     const state = reducer(
       prevState,
-      { type: RESET }
+      { type: HOME_KITS }
     );
     // Should be immutable
     expect(state).not.toBe(prevState);

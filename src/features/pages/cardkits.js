@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Icon } from 'react-icons-kit';
 import { boxAdd } from 'react-icons-kit/icomoon/boxAdd';
 import { minus } from 'react-icons-kit/icomoon/minus';
-import { getProduct } from '../../common/get-products.js';
+
 import userImage from '../../images/caixaverde-finalizacao-WHITE-BOX.png';
 import { setMoneyFormat } from '../home/local-actions';
 
@@ -123,12 +123,13 @@ export default class CardKits extends Component {
 
   handleError (e, id) {
     e.persist();
+    /*
     getProduct(id).then(res => {
       e.target.src = res.thumb;
       if(typeof res.thumb === 'undefined') {
         e.target.src = userImage;
       }
-    });
+    }); */
   }
   
 

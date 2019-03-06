@@ -10,6 +10,7 @@ import { getAdmRegions } from '../../common/get-adm-regions.js';
 class Registration extends Component {
   constructor(props){
     super(props);
+    this.component = "registration";
     this.state = {
       adm_regions: [],
       street:'',

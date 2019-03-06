@@ -3,20 +3,22 @@
 // https://medium.com/@nate_wang/a-new-approach-for-managing-redux-actions-91c26ce8b5da
 
 import {
-  RESET,
+  HOME_KITS,
 } from './constants';
 
-export function logout() {
+export function kits(kits) {
   return {
-    type: RESET,
+    type: HOME_KITS,
+    kits,
   };
 }
 
 export function reducer(state, action) {
   switch (action.type) {
-    case RESET:
+    case HOME_KITS:
       return {
         ...state,
+        kits: action.kits,
       };
 
     default:

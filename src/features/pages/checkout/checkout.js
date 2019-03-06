@@ -13,8 +13,8 @@ class Checkout extends Component {
   
   constructor(props) {
     super(props);
-    let products = this.props.products;
-    let kits = this.props.kits;
+    let products = this.props.home.selected_products;
+    let kits = this.props.home.selected_products;
     this.state = {
       rehydrated_once: true,
       checkout_order_id:0,
@@ -38,7 +38,7 @@ class Checkout extends Component {
   componentDidUpdate(prevState, prevProps) {
     
     if(prevProps !== this.props) {
-      if(this.props._persist.rehydrated && this.state.rehydrated_once) {
+      if(typeof this.props._persist !== 'undefined' && this.props._persist.rehydrated && this.state.rehydrated_once) {
           if(this.state.order_price === 0) {
             this.setState({rehydrated_once: false});
             this.props.actions.getOrderPrice();
@@ -93,7 +93,7 @@ class Checkout extends Component {
     }
     this.setState({submitLoading: true});
     /* Data structure to Create Order */
-    const products = this.props.home.products;
+    const products = this.props.home.selected_products;
     const order_price = this.props.home.order_price;
 
     var data = {
@@ -145,7 +145,7 @@ class Checkout extends Component {
           <p className="text-muted">Confira seus dados e sua caixa</p>
           <hr className="mb-4 mt-4" />  
           <div className="row">
-            <YourBox products={this.props.home.products} kits={this.props.home.kits} order_price={this.state.order_price} total_price={this.state.total_price} freight={this.state.freight} />
+            <YourBox products={this.props.home.selected_products} kits={this.props.home.selected_kits} order_price={this.state.order_price} total_price={this.state.total_price} freight={this.state.freight} />
             <div className="col-md-8 order-md-1">
       
               <PersonalDataClient {...this.props} noborder /> 

@@ -3,6 +3,8 @@ const initialState = {
   isError: false,
   redirect:false,
   redirectTo:'/',
+  selected_products:{},
+  selected_kits:{},
   products: {},      // Products Info Directive
   kits: {},          // Kits Info Directive
   myBoxProducts: {}, // Detailed Selected Products Info --
@@ -14,6 +16,8 @@ const initialState = {
   getMinQuantityRequestPending: false,
   getMinQuantityRequestError: null,
   order_price:0,
+  count:0, // Number of all products and Kits selected
+  logged_in:false,
 };
 
 export default initialState;

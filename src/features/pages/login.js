@@ -7,15 +7,21 @@ import LoaderHOC from '../../HOC/loader-hoc';
 class Login extends Component {
   static propTypes = {};
 
-  constructor(props) 
-  {
+  constructor(props) {
     super(props);
+    this.component = "login";
     this.state = {
       isLoading: false,
       disabled: false,
       message: '',
     }
   }
+
+  /* Sign In Client and Register new Token */
+  setSignIn = (client_id, client_name, client_email, token) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('email', client_email);
+  };
   
   handleClick = (e) => {
     e.preventDefault();
@@ -27,21 +33,22 @@ class Login extends Component {
       this.setState({ isLoading: true});
       this.setState({ disabled: true});
       signIn(email, password).then(response => {
-        console.log("this here");
         this.setState({ isLoading: false});
         const client_id = response.id;
         const client_name = response.name;
         const client_email = response.email;
         const token = response.authentication_token;
-        this.props.setSignIn(client_id, client_name, client_email, token);
+        this.setSignIn(client_id, client_name, client_email, token);
+        this.props.actions.setSignIn();
         this.props.actions.redirect('/');
-        this.setState({ message: 'Você está logado' });
       }).catch(error => {
         this.setState({ isLoading: false});
         if(error === "Network Error") {
           this.setState({ message: 'Falha na conexão com o servidor.' });
+          return;
         } else {
           this.setState({ message: 'E-mail e/ou Senha não correspondem.' });
+          return;
         }
       });
     }

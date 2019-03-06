@@ -11,9 +11,12 @@ import { reducer as kitPlusReducer } from './kitPlus';
 import { reducer as kitMinusReducer } from './kitMinus';
 import { reducer as getClientDataReducer } from './getClientData';
 import { reducer as getMinQuantityRequestReducer } from './getMinQuantityRequest';
-import { reducer as logoutReducer } from './logout';
+import { reducer as resetReducer } from './reset';
 import { reducer as clearBoxReducer } from './clearBox';
 import { reducer as getOrderPriceReducer } from './getOrderPrice';
+import { reducer as setSignInReducer } from './setSignIn';
+import { reducer as productsReducer } from './products';
+import { reducer as kitsReducer } from './kits';
 
 const reducers = [
   turnOnLoadingReducer,
@@ -28,9 +31,12 @@ const reducers = [
   kitMinusReducer,
   getClientDataReducer,
   getMinQuantityRequestReducer,
-  logoutReducer,
+  resetReducer,
   clearBoxReducer,
   getOrderPriceReducer,
+  setSignInReducer,
+  productsReducer,
+  kitsReducer,
 ];
 
 export default function reducer(state = initialState, action) {
