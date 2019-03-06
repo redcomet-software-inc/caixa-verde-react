@@ -123,6 +123,8 @@ export default class CardKits extends Component {
 
   handleError (e, id) {
     e.persist();
+    e.persist();
+    e.target.src = userImage;
     /*
     getProduct(id).then(res => {
       e.target.src = res.thumb;

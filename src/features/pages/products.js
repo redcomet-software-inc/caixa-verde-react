@@ -35,8 +35,8 @@ class Products extends Component {
     this.setState({ products_length: products.length});
   }
 
-  refProduct = (productData) => {
-    this.setState({productData: productData});
+  refFilter = (filter) => {
+    this.setState({filter});
   }
 
   resetImgCount = () => {
@@ -54,29 +54,31 @@ class Products extends Component {
   }
 
   renderCard = () => {
-    console.log("render card");
-    console.log(this.props);
     let table = [];
+    const filter = this.props.pages.products_category_filter;
+
     let products = this.props.home.products;
     if(products !== undefined) {
-      for(let product in products) { 
-        table.push(
-          <Card
-            key={"card" + products[product].id}
-            id={products[product].id}
-            refProduct={() => this.refProduct}
-            name={products[product].name}
-            description={products[product].description}
-            kind={products[product].kind}
-            price={products[product].price}
-            thumb={products[product].thumb}
-            setMoneyFormat={setMoneyFormat()}
-            quantity={this.getQuantity(products[product].id)}
-            productPlus={this.props.actions.productPlus}
-            productMinus={this.props.actions.productMinus}
-            getOrderPrice={this.props.actions.getOrderPrice}
-          />
-        );
+      for(let product in products) {
+        if(products[product].categories.includes(filter) || this.props.pages.products_category_filter === "Tudo") {
+          table.push(
+            <Card
+              key={"card" + products[product].id}
+              id={products[product].id}
+              refProduct={() => this.refProduct}
+              name={products[product].name}
+              description={products[product].description}
+              kind={products[product].kind}
+              price={products[product].price}
+              thumb={products[product].thumb}
+              setMoneyFormat={setMoneyFormat()}
+              quantity={this.getQuantity(products[product].id)}
+              productPlus={this.props.actions.productPlus}
+              productMinus={this.props.actions.productMinus}
+              getOrderPrice={this.props.actions.getOrderPrice}
+            />
+          );
+        }
       }
     }
     return table;
@@ -87,7 +89,7 @@ class Products extends Component {
       <div>
         <h3 className="text-left title">Personalizado</h3>
           <div className="ml-auto">
-            <Categories refProducts={this.refProducts} 
+            <Categories refFilter={this.refFilter}
             resetImgCount={this.resetImgCount} {...this.props} />
           </div>
           <div className={"card-columns mx-auto pb-5 "} >

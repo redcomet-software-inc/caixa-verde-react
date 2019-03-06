@@ -56,8 +56,6 @@ export class MainPage extends Component {
   componentDidMount() {
     this.auth();
     this.props.actions.getMinQuantityRequest();
-    console.log("Main Page");
-    console.log(this.props.home);
   }
 
   /*Check if user is LoggedIn */
@@ -228,7 +226,7 @@ export class MainPage extends Component {
 /* istanbul ignore next */
 function mapStateToProps(state) {
   return {
-    home: state.home,
+    ...state,
   };
 }
 

@@ -60,8 +60,6 @@ const LoaderHOC = (WrappedComponent) => {
     // Check User Data after Rehydrated
     componentDidUpdate (prevProps) {
       if(prevProps !== this.props) {
-        console.log("Persist Check");
-        console.log(this.props);
         if(this.props._persist.rehydrated && this.state.rehydrated_once) {
           this.setState({rehydrated_once: false});
           this.authorization();

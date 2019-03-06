@@ -21,7 +21,6 @@ class NavBar extends Component {
 
   componentWillUpdate (prevProps) {
     if(this.props !== prevProps) {
-        console.log(this.props);
         this.setState({count: count(this.props.home.kits, this.props.home.products)})
     }
   }
