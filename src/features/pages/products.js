@@ -58,7 +58,7 @@ class Products extends Component {
     const filter = this.props.pages.products_category_filter;
 
     let products = this.props.home.products;
-    if(products !== undefined) {
+    if(typeof products !== "undefined") {
       for(let product in products) {
         if(products[product].categories.includes(filter) || this.props.pages.products_category_filter === "Tudo") {
           table.push(
