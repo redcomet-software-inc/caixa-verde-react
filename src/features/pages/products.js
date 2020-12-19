@@ -25,6 +25,8 @@ class Products extends Component {
 
   getProducts = () => {
     getProducts().then(res => {
+      console.log("PRODUCT DATA**********");
+      console.log(res);
      this.setState({productData: res});
      this.props.actions.products(res);
    }); 
@@ -60,7 +62,8 @@ class Products extends Component {
     let products = this.props.home.products;
     if(typeof products !== "undefined") {
       for(let product in products) {
-        if(products[product].categories.includes(filter) || this.props.pages.products_category_filter === "Tudo") {
+        if((products[product].categories.length > 0 ) && (products[product].categories.includes(filter)) || this.props.pages.products_category_filter === "Tudo") {
+          console.log("Vegetais");
           table.push(
             <Card
               key={"card" + products[product].id}

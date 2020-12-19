@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 
 //import CurrencyInput from 'react-currency-input';
-import NavBar from '../navbar/navbar.js';
+import NavBar from '../navbar/NavBar.js';
 import Footer from '../footer/footer.js';
 
 /* External Functions */
