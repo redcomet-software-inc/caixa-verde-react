@@ -19,16 +19,14 @@ class Products extends Component {
   }
 
   componentDidMount () {
-    this.props.actions.turnOffLoading();
     this.getProducts();
   }
 
   getProducts = () => {
     getProducts().then(res => {
-      console.log("PRODUCT DATA**********");
-      console.log(res);
      this.setState({productData: res});
      this.props.actions.products(res);
+     this.props.actions.turnOffLoading();
    }); 
  }
 
@@ -63,7 +61,6 @@ class Products extends Component {
     if(typeof products !== "undefined") {
       for(let product in products) {
         if((products[product].categories.length > 0 ) && (products[product].categories.includes(filter)) || this.props.pages.products_category_filter === "Tudo") {
-          console.log("Vegetais");
           table.push(
             <Card
               key={"card" + products[product].id}
@@ -79,6 +76,7 @@ class Products extends Component {
               productPlus={this.props.actions.productPlus}
               productMinus={this.props.actions.productMinus}
               getOrderPrice={this.props.actions.getOrderPrice}
+            
             />
           );
         }

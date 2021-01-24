@@ -14,7 +14,7 @@ class Kits extends Component {
   }
 
   componentDidMount () {
-    this.props.actions.turnOffLoading();
+    console.log("Verify why this turn Off Loading does not work");
     this.getKits();
   }
 
@@ -22,6 +22,7 @@ class Kits extends Component {
      getKits().then(res => {
       this.setState({kitData: res});
       this.props.actions.kits(res);
+      this.props.actions.turnOffLoading();
     }); 
   }
 

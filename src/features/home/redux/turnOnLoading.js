@@ -7,6 +7,7 @@ import {
 } from './constants';
 
 export function turnOnLoading() {
+  console.log("LOADING LIGADO")
   return {
     type: HOME_TURN_ON_LOADING,
   };

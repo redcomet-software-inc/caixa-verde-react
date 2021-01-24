@@ -42,6 +42,7 @@ export default class Card extends Component {
       myBoxProduct: myBoxProduct || {},
       card_active: card_active || '',
       hide: hide || 'hide',
+      imageLoaded: "hide",
     };
   }
 
@@ -99,16 +100,22 @@ export default class Card extends Component {
     }
   }
 
+  handleImageLoad = (e) => {
+    console.log("Image Load Completed");
+    this.setState({imageLoaded: "show"});
+  }
+
   render() {
     return (
-      <div key={"div" + this.state.productData.id} className={"card m-2 text-center mx-auto " + this.state.card_active} style={{maxWidth:200}}>
+      <div key={"div" + this.state.productData.id} className={"card m-2 text-center mx-auto " + this.state.card_active + " " + this.state.imageLoaded} style={{maxWidth:200}}>
         <img
           alt={"Imagem" + this.props.name}
           className="card-img-top mt-5"
-          
           src={this.props.thumb && this.props.thumb || userImage}
           onError={e => this.handleError(e, this.state.productData.id)}
+          onLoad={e => this.handleImageLoad(e)}
         />
+
         <div className="card-body text-center pb-0">
           <span className="card-text">{this.state.productData.name}</span>
           <br />

@@ -17,6 +17,10 @@ class Login extends Component {
     }
   }
 
+  componentDidMount () {
+    this.props.actions.turnOffLoading();
+  }
+
   /* Sign In Client and Register new Token */
   setSignIn = (client_id, client_name, client_email, token) => {
     localStorage.setItem('token', token);

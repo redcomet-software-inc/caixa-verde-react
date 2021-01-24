@@ -35,11 +35,11 @@ export default class Show extends Component {
         .then(res => {
             console.log("order");
             console.log(res);
-            this.props.actions.turnOffLoading();
+            //this.props.actions.turnOffLoading();
             this.setState({order_info: res});
         }).catch( error => {
             console.log(error);
-            this.props.actions.turnOffLoading();
+            //this.props.actions.turnOffLoading();
         });
     }
 

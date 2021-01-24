@@ -30,9 +30,9 @@ const LoaderHOC = (WrappedComponent) => {
     
 
     authorization () {
-      const path = this.path; // Declared on contructior
+      const path = this.path; // Declared on contructor
       this.props.actions.getClientData().then(res => {
-        this.props.actions.turnOffLoading();
+        //this.props.actions.turnOffLoading();
         if (!res) {
           if(path === "/checkout") {
             this.props.actions.redirect('/login');
@@ -45,7 +45,7 @@ const LoaderHOC = (WrappedComponent) => {
         }
       }).catch(error => {
           console.log(error);
-          this.props.actions.turnOffLoading();
+          //this.props.actions.turnOffLoading();
           if(path === "/checkout") {
             this.props.actions.redirect('/login');
             return;

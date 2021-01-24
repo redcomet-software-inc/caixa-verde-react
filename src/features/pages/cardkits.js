@@ -41,6 +41,7 @@ export default class CardKits extends Component {
       myBoxKit: myBoxKit || {},
       card_active: card_active || '',
       hide: hide || 'hide',
+      imageLoaded: 'hide',
     };
   }
 
@@ -94,6 +95,12 @@ export default class CardKits extends Component {
     }
   }
 
+  handleImageLoad = () => {
+    /* Once Image is Loaded */
+    //this.props.turnOffLoading();
+    this.setState({imageLoaded: 'show'});
+  }
+
   renderProducts = () => {
     let table = [];
     let products = this.props.products;
@@ -106,7 +113,7 @@ export default class CardKits extends Component {
             <li className="list-group-kit"> 
               <div className="row">
                 <div className="col">
-                  <img onError={e => this.handleError(e, products[product].id)} className="img-fluid" alt={"Imagem Kit " + products[product].name} src={products[product].thumb} />
+                  <img onLoad={e => this.handleImageLoad(e)} onError={e => this.handleError(e, products[product].id)} className="img-fluid" alt={"Imagem Kit " + products[product].name} src={products[product].thumb} />
                 </div>
                 <div className="col my-auto">
                   { products[product].name }
@@ -137,7 +144,7 @@ export default class CardKits extends Component {
 
   render() {
     return (
-      <div id={this.props.id} className={'p-0 mt-2 m-2 mx-auto card cardkits ' + this.state.card_active}>
+      <div id={this.props.id} className={'p-0 mt-2 m-2 mx-auto card cardkits ' + this.state.card_active + ' ' + this.state.imageLoaded}>
         <div className="card-body">
           <h5 className="card-title text-center">{this.props.name}</h5>
         </div>

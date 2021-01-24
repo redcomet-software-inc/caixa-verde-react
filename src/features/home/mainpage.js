@@ -159,6 +159,7 @@ export class MainPage extends Component {
 
   visible = () => {
     if(this.props.home.isLoading===true || this.props.home.isError===true) {
+      console.log("Loading is On, it should run spinner");
       return 'invisible';
     } else {
       return 'visible';

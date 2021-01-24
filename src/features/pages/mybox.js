@@ -57,8 +57,6 @@ class MyBox extends Component {
 
   renderKitProducts = (products) => {
     let table = [];
-    console.log('>>>>>>>>>>>>>>>>>>>>>')
-    console.log(products);
     for (let item in products) {
 
         table.push(

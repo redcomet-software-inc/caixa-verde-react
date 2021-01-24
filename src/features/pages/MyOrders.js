@@ -40,7 +40,7 @@ class MyOrders extends Component {
       }
     }).catch(error =>{
       this.props.actions.turnOffLoading();
-      //this.props.actions.turnOnError();
+      this.props.actions.turnOnError();
     }); 
   }
 
