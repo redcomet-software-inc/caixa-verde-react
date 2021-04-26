@@ -101,7 +101,6 @@ export default class Card extends Component {
   }
 
   handleImageLoad = (e) => {
-    console.log("Image Load Completed");
     this.setState({imageLoaded: "show"});
   }
 

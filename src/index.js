@@ -5,7 +5,7 @@ import configStore from './common/config-store';
 import routeConfig from './common/routeConfig';
 import Root from './Root';
 
-const store = configStore();
+const [store, persistor] = configStore();
 
 function renderApp(app) {
   render(
@@ -16,7 +16,7 @@ function renderApp(app) {
   );
 }
 
-renderApp(<Root store={store} routeConfig={routeConfig} />);
+renderApp(<Root persistor={persistor} store={store} routeConfig={routeConfig} />);
 
 // Hot Module Replacement API
 /* istanbul ignore if  */

@@ -23,17 +23,12 @@ export default class UserProfile extends Component
       // check the structure here: https://github.com/axios/axios#request-config
       const axiosConfigObject = {headers: httpReqHeaders}; 
       axios.delete(deleteUrl, axiosConfigObject).then(res=> {
-         if (res.status === 200) {
-             this.props.actions.reset();
-             return;
-          } else {
-            this.props.actions.reset();
-            return;
-          }
+        console.log(res);
       }).catch(error => {
+        console.log("Delete Error")
         console.log(error);
-        this.props.actions.reset();
-      })
+      });
+      this.props.actions.reset();
     };
 
     componentDidMount() {

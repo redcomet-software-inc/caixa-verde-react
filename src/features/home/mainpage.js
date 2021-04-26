@@ -43,7 +43,6 @@ export class MainPage extends Component {
       clientEmail: clientEmail || '',
       authentication_token: authentication_token || '',
       clientId: '',
-      loggedIn: false,
       changeStateTest:'state1',
       err_message:'',
       avatar:'',
@@ -62,7 +61,8 @@ export class MainPage extends Component {
   auth = () => {
     getAuth().then(res => {
       if(res) {
-        this.setState({loggedIn: true});
+
+        this.props.actions.setSignIn();
         this.setState({avatar: res.thumb});
         this.setState({clientId: res.client.id});
         this.setState({clientName: res.client.name});
@@ -70,7 +70,8 @@ export class MainPage extends Component {
         setTimeout(()=>{this.props.turnOffMainLoading()}, 500);
       }
     }).catch(err=>{
-        this.setState({loggedIn: false});
+        this.props.actions.turnOffSignIn();
+        this.props.actions.reset();
         setTimeout(()=>{this.props.turnOffMainLoading()}, 500);
     });
   };
@@ -87,7 +88,6 @@ export class MainPage extends Component {
     this.setState({authentication_token: ''});
     this.setState({signInMessage: ''});
     this.setState({clientId: ''});
-    this.setState({loggedIn: false});
     this.setState({redirect: false});
     this.setState({redirectTo:''});
     this.setState({err_message:''});
@@ -121,12 +121,13 @@ export class MainPage extends Component {
       this.setState({ signInMessage: 'Você está logado.' });
       this.setState({ clientName: client_name });
       this.setState({ clientId: client_id });
-      this.setState({ loggedIn: true });
+      this.props.actions.setSignIn();
       localStorage.setItem('token', token);
       localStorage.setItem('email', client_email);
   };
 
   warning = (text) => {
+    this.props.actions.turnOffSignin();
     this.setState({warningMessage: text});
   }
 
@@ -212,7 +213,6 @@ export class MainPage extends Component {
               order_price={this.props.home.order_price}
               products={this.props.home.products}
               kits={this.props.home.kits}
-              loggedIn={this.state.loggedIn}
               warning={this.warning}
               onRef={ref => (this.custom = ref)}
               redirect={this.redirect}

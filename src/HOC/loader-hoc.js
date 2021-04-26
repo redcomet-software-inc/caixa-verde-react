@@ -32,7 +32,7 @@ const LoaderHOC = (WrappedComponent) => {
     authorization () {
       const path = this.path; // Declared on contructor
       this.props.actions.getClientData().then(res => {
-        //this.props.actions.turnOffLoading();
+        this.props.actions.turnOffLoading();
         if (!res) {
           if(path === "/checkout") {
             this.props.actions.redirect('/login');
@@ -45,7 +45,7 @@ const LoaderHOC = (WrappedComponent) => {
         }
       }).catch(error => {
           console.log(error);
-          //this.props.actions.turnOffLoading();
+          this.props.actions.turnOffLoading();
           if(path === "/checkout") {
             this.props.actions.redirect('/login');
             return;
@@ -60,7 +60,7 @@ const LoaderHOC = (WrappedComponent) => {
     // Check User Data after Rehydrated
     componentDidUpdate (prevProps) {
       if(prevProps !== this.props) {
-        if(this.props._persist.rehydrated && this.state.rehydrated_once) {
+        if(this.props._persist && this.props._persist.rehydrated && this.state.rehydrated_once) {
           this.setState({rehydrated_once: false});
           this.authorization();
           return
@@ -71,7 +71,7 @@ const LoaderHOC = (WrappedComponent) => {
     componentDidMount() {
       window.scroll({top: 0, left: 0, behavior: 'smooth' });
       this.props.actions.turnOffError();
-      this.props.actions.turnOnLoading();
+      this.props.actions.turnOffLoading();
     }
 
     render() {

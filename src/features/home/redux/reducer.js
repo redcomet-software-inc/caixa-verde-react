@@ -17,6 +17,7 @@ import { reducer as getOrderPriceReducer } from './getOrderPrice';
 import { reducer as setSignInReducer } from './setSignIn';
 import { reducer as productsReducer } from './products';
 import { reducer as kitsReducer } from './kits';
+import { reducer as turnOffSignInReducer } from './turnOffSignIn';
 
 const reducers = [
   turnOnLoadingReducer,
@@ -37,6 +38,7 @@ const reducers = [
   setSignInReducer,
   productsReducer,
   kitsReducer,
+  turnOffSignInReducer,
 ];
 
 export default function reducer(state = initialState, action) {

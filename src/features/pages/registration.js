@@ -227,7 +227,7 @@ class Registration extends Component {
 
               <div class="d-flex pb-3 pt-3">
                 <div class="p-2 my-auto">
-                  <div className="scaled text-center mx-auto align-middle align-center">
+                  <div className="scaled scale text-center mx-auto align-middle align-center">
                     <div class="switch_box box_4">
                       <div class="input_wrapper">
                         <input type="checkbox" class="switch_4" required/>
@@ -241,7 +241,7 @@ class Registration extends Component {
                     </div>
                   </div>
                 </div>
-                <div class="p-2 flex-grow-1 align-middle my-auto">
+                <div class="p-2 align-middle my-auto">
                   <span>
                     Ao me cadastrar, concordo com os termos de serviço e políticas de privacidade desta página.
                   </span>

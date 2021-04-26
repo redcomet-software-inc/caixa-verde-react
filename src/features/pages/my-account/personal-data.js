@@ -228,7 +228,7 @@ export class PersonalDataClient extends Component {
         }
     }
     componentDidMount () {
-        this.props.actions.getClientData();
+        //this.props.actions.getClientData();
     }
 
     render() {

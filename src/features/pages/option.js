@@ -54,7 +54,7 @@ export default class Option extends Component {
                 <div className="col pl-lg-2">
                   <h4 className="text-info">Kits</h4>
                     <NavLink className="mx-auto" to="/kits">
-                      <img alt={"Ir para Lista de Kits"} onMouseOver={this.addColorKit} onMouseOut={this.removeColorKit} className={"img-fluid rounded option "+this.kitsColor()} src={kits} width={200} />
+                      <img alt={"Ir para Lista de Kits"} onMouseOver={()=>this.addColorKit()} onMouseOut={()=>this.removeColorKit()} className={"img-fluid rounded option "+ this.kitsColor()} src={kits} width={200} />
                     </NavLink><br />
                     <h5 className="warning-muted text-danger" style={{textAlign:"center"}}>10% de desconto</h5>
                 </div>

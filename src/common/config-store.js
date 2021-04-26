@@ -3,9 +3,15 @@ import thunk from 'redux-thunk';
 import { routerMiddleware } from 'react-router-redux';
 import history from './history';
 import rootReducer from './rootReducer';
-import { persistStore, persistReducer } from 'redux-persist';
+
+import { persistStore, persistReducer, createMigrate } from 'redux-persist';
+
 import storage from 'redux-persist/lib/storage';
-import reduxReset from 'redux-reset'
+import reduxReset from 'redux-reset';
+
+
+const MIGRATION_DEBUG = false;
+
 
 const router = routerMiddleware(history);
 
@@ -29,8 +35,21 @@ if (process.env.NODE_ENV === 'development') {
 
 export default function configureStore(initialState) {
 
+  const migrations = {
+    0: (state) => initialState,
+    1: previousVersionState => ({
+      number: {
+        change: previousVersionState.number,
+        lastUpdate: new Date()
+      }
+    })   
+      // migration clear out device state
+  }
+
   const persistConfig = {
     key: 'caixa-verde',
+    version: 0,
+    migrate: createMigrate(migrations, {debug: MIGRATION_DEBUG }),
     storage,
   };
 
@@ -41,8 +60,9 @@ export default function configureStore(initialState) {
     reduxReset(),  // Will use 'RESET' as default action.type to trigger reset
     devToolsExtension ? devToolsExtension && devToolsExtension : f => f
   ));
+
   /* Create Persistor */
-  persistStore(store); 
+  const persistor = persistStore(store);
 
     /* istanbul ignore if  */
   if (module.hot) {
@@ -52,8 +72,9 @@ export default function configureStore(initialState) {
       store.replaceReducer(nextRootReducer);
     });
   }
-  return store;
+  return [ store, persistor ];
 }
+
 
 
 

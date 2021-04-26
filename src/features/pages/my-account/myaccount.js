@@ -20,7 +20,6 @@ class MyAccount extends Component {
         email: email || '',
         image: '',
         selectedFile: null,
-        loadedData:false,
         loadedImage:false
     };
   }
@@ -33,18 +32,8 @@ class MyAccount extends Component {
    
   }
 
-   loadedData = () => {
-    this.setState({loadedData:true});
-    if(this.state.loadedImage === true) {
-      this.props.actions.turnOffLoading();
-    }
-  }
-
   loadedImage = () => {
     this.setState({loadedImage:true});
-    if(this.state.loadedData === true) {
-      this.props.actions.turnOffLoading();
-    }
   }
 
   submitAdmRegion = (e) => {

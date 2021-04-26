@@ -3,25 +3,24 @@
 // https://medium.com/@nate_wang/a-new-approach-for-managing-redux-actions-91c26ce8b5da
 
 import {
-  RESET,
+  HOME_TURN_OFF_SIGN_IN,
 } from './constants';
 
-import initialState from './initialState.js';
-
-export function reset() {
+export function turnOffSignIn() {
   return {
-    type: 'RESET',
+    type: HOME_TURN_OFF_SIGN_IN,
   };
 }
 
 export function reducer(state, action) {
   switch (action.type) {
-    case RESET:
+    case HOME_TURN_OFF_SIGN_IN:
       localStorage.removeItem('email');
       localStorage.removeItem('token');
       localStorage.removeItem('checkout_order_id');
       return {
-        ...initialState
+        ...state,
+        logged_in: false
       };
 
     default:

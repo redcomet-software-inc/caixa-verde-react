@@ -22,3 +22,4 @@ export const HOME_GET_ORDER_PRICE = 'HOME_GET_ORDER_PRICE';
 export const HOME_SET_SIGN_IN = 'HOME_SET_SIGN_IN';
 export const HOME_PRODUCTS = 'HOME_PRODUCTS';
 export const HOME_KITS = 'HOME_KITS';
+export const HOME_TURN_OFF_SIGN_IN = 'HOME_TURN_OFF_SIGN_IN';

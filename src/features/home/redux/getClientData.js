@@ -2,7 +2,7 @@ import {
   HOME_GET_CLIENT_DATA_BEGIN,
   HOME_GET_CLIENT_DATA_SUCCESS,
   HOME_GET_CLIENT_DATA_FAILURE,
-  HOME_GET_CLIENT_DATA_DISMISS_ERROR,
+  HOME_GET_CLIENT_DATA_DISMISS_ERROR
 } from './constants';
 import { getClientInfo } from  '../../../common/get-clientinfo.js';
 
