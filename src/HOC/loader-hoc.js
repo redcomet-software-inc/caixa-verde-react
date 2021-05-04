@@ -27,33 +27,28 @@ const LoaderHOC = (WrappedComponent) => {
       }
     }
 
-    
+    /* Redirect if Client is not Logged In */
+    security_redirect() {
+      const path = this.path; // Declared on contructor
+      if(path === "/checkout") {
+        this.props.actions.redirect('/login');
+        return;
+      }
+      if(!no_private_paths.includes(path)) {
+        this.props.actions.redirect('/');
+        return;
+      }
+    }
 
     authorization () {
-      const path = this.path; // Declared on contructor
       this.props.actions.getClientData().then(res => {
-        this.props.actions.turnOffLoading();
         if (!res) {
-          if(path === "/checkout") {
-            this.props.actions.redirect('/login');
-            return;
-          }
-          if(!no_private_paths.includes(path)) {
-            this.props.actions.redirect('/');
-            return;
-          }
+          this.security_redirect();
         }
       }).catch(error => {
+          console.log("Promise Rejected");
           console.log(error);
-          this.props.actions.turnOffLoading();
-          if(path === "/checkout") {
-            this.props.actions.redirect('/login');
-            return;
-          }
-          if(!no_private_paths.includes(path)) {
-            this.props.actions.redirect('/');
-            return;
-          }
+          this.security_redirect();
       });
     }
 

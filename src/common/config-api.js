@@ -26,7 +26,7 @@ const request = function(options) {
       // triggered the error
       console.error('Error Message:', error.message);
     }
-    return Promise.reject(error.response || error.message);
+    //return Promise.reject(error.response || error.message);
   }
   return client(options)
             .then(onSuccess)

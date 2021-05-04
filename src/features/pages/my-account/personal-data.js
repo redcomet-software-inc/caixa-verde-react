@@ -290,6 +290,7 @@ export class PersonalAddressBilling extends Component {
     }
 
     render() {
+        console.log(this.props);
         return(
             <div className={"mb-2" + this.state.noborder}>
                 <div className="mb-3 pb-2">

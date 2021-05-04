@@ -14,7 +14,7 @@ export default class UserProfile extends Component
      
       const email = localStorage.getItem('email');
       const token = localStorage.getItem('token');
-      const deleteUrl = "http://localhost:3000/api/v1/sessions.json?client_email="+email+"&client_token="+token;
+      const deleteUrl = process.env.REACT_APP_SERVER_ADDRESS + "/api/v1/sessions.json?client_email="+email+"&client_token="+token;
       const httpReqHeaders = 
       {
         'Content-Type': 'application/json'

@@ -96,7 +96,7 @@ export default class CreditCardForm extends Component {
         let year = (new Date().getFullYear());
         let method = [];
         for(let i=0; i<=11; i++) { 
-          method.push(<option key={year+i} value={year +i}>{ year + i }</option>);
+            method.push(<option key={year+i} value={year +i}>{ year + i }</option>);
         }
         return method;
     }
@@ -123,7 +123,7 @@ export default class CreditCardForm extends Component {
             <div className="form-row">
                 <div className="col mb-3">
                 <label htmlFor="inp" className="inp mb-2">
-                    <input type="text" maxLength="16" id="card_number" onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_number" placeholder="&nbsp;" autoComplete="off" required/>
+                    <input defaultValue="4111111111111111" type="text" maxLength="16" id="card_number" onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_number" placeholder="&nbsp;" autoComplete="off" required/>
                     <span className="label">Número do Cartão</span>
                 </label>
                 </div>
@@ -131,8 +131,8 @@ export default class CreditCardForm extends Component {
             <div className="form-row">
                 <div className="col-3 mb-3">
                 <label htmlFor="inp" className="inp mb-3">
-                    <select type="text" onChange={e => this.handleChangeExpiry(e)} id="expiry_month" name="expiry_month" placeholder="&nbsp;" required>
-                    <option disabled value="12"> - Mês - </option>
+                    <select defaultValue="12" type="text" onChange={e => this.handleChangeExpiry(e)} id="expiry_month" name="expiry_month" placeholder="&nbsp;" required>
+                    <option disabled> - Mês - </option>
                     <option value="01">01</option>
                     <option value="02">02</option>  
                     <option value="03">03</option>  
@@ -144,14 +144,14 @@ export default class CreditCardForm extends Component {
                     <option value="09">09</option>  
                     <option value="10">10</option>  
                     <option value="11">11</option>  
-                    <option value="12" selected>12</option>                
+                    <option value="12">12</option>                
                     </select> 
                     <span className="label">Data de Vencimento</span>
                 </label>
                 </div>
                 <div className="col-3 mb-3">
                 <label htmlFor="inp" className="inp mb-3">
-                    <select type="text"  onChange={e => this.handleChangeExpiry(e)} id="expiry_year" name="expiry_year" placeholder="&nbsp;" required>
+                    <select defaultValue="2030" type="text"  onChange={e => this.handleChangeExpiry(e)} id="expiry_year" name="expiry_year" placeholder="&nbsp;" required>
                     <option disabled value="" > - Ano - </option>
                     { this.renderYearSelect() }       
                     </select> 
@@ -160,7 +160,7 @@ export default class CreditCardForm extends Component {
                 </div>
                 <div className="col-6 mb-3">
                 <label htmlFor="inp" className="inp mb-2">
-                    <input type="text"  maxLength="3" id="cvc" onClick={e => this.handleClick_card(e)}  onChange={e => this.handleChange(e)}  name="cvc" placeholder="&nbsp;" required/>
+                    <input defaultValue="123" type="text"  maxLength="3" id="cvc" onClick={e => this.handleClick_card(e)}  onChange={e => this.handleChange(e)}  name="cvc" placeholder="&nbsp;" required/>
                     <span className="label">Código</span>
                 </label>
                 </div>
@@ -168,7 +168,7 @@ export default class CreditCardForm extends Component {
             <div className="form-row">
                 <div className="col mb-3">
                 <label htmlFor="inp" className="inp mb-2">
-                    <input type="text" id="card_name" onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_name" placeholder="&nbsp;" required/>
+                    <input defaultValue="Guilherme da Silva" type="text" id="card_name" onClick={e => this.handleClick_card(e)} onChange={e => this.handleChange(e)} name="card_name" placeholder="&nbsp;" required/>
                     <span className="label">Nome do Proprietário</span>
                 </label>
                 </div>

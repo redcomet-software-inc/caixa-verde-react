@@ -5,7 +5,7 @@ export let getSession = function() {
     return new Promise((resolve, reject) => {
 
         const pagseguro_email = 'guilhermewnunes@gmail.com' ;
-        const pagseguro_token = '3774B1301F034CDAA8900429ACCB394B';
+        const pagseguro_token = process.env.REACT_PAGSEGURO_TOKEN;
         const client_email = localStorage.getItem("email");
         const client_token  = localStorage.getItem("token");
 
@@ -19,9 +19,13 @@ export let getSession = function() {
                 pagseguro_token: pagseguro_token,
             }
         }).then(res => {
+            console.log("ACEITOU TOKEN");
             resolve(res);
+            return
         }).catch(err => {
+            console.log("NEGOU TOKEN");
             reject("Get Session Failed: " + err);
+            return
         });
     });
 }

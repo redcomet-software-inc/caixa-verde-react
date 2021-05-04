@@ -108,7 +108,7 @@ export class MainPage extends Component {
   }
 
   renderRedirect = () => {
-      if(this.props.home.redirect === true) {
+      if(this.props.home.redirect) {
         this.props.actions.resetRedirect();
         return <Redirect exact to={this.props.home.redirectTo} />;
       }

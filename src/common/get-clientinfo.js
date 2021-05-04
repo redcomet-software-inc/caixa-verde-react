@@ -23,7 +23,7 @@ export let getClientInfo = function() {
     request(data).then( success => {
       resolve(success);
     }).catch( err => {
-      reject( err )
+      reject( err );
     });
 
   });

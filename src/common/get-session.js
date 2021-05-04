@@ -104,6 +104,10 @@ let createCardToken = function(card, brand) {
     let setSession = function(session_id){
     return new Promise((resolve, reject) => {
         let session = PagSeguroDirectPayment.setSessionId(session_id);
+        console.log("************************");
+        console.log("Set Session");
+        console.log(session);
+        
         resolve(session);
         reject("Set Session Failed: " + session);
 
@@ -114,9 +118,10 @@ let createCardToken = function(card, brand) {
     let getSession = function() {
     return new Promise((resolve, reject) => {
         const pagseguro_email = 'guilhermewnunes@gmail.com' ;
-        const pagseguro_token = '3774B1301F034CDAA8900429ACCB394B';
+        const pagseguro_token = process.env.REACT_APP_PAGSEGURO_TOKEN;
         const client_email = localStorage.getItem("email");
         const client_token  = localStorage.getItem("token");
+        console.log("*****************************************");
         request({
             url:'api/v1/pagseguro/session.json',
             method:'get',
@@ -129,6 +134,8 @@ let createCardToken = function(card, brand) {
         }).then(session => 
          {
             // => 
+            console.log("Session here");
+            console.log(session);
             resolve(session);
 
         }).catch(err => 

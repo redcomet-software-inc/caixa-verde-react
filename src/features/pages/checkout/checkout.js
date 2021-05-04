@@ -47,6 +47,8 @@ class Checkout extends Component {
               return;
             }
             this.setState({order_price});
+            
+            /*
             getFreight().then(res => {
               if(this.state.freight === 5) {
                 this.setState({freight: res.freight});
@@ -57,7 +59,7 @@ class Checkout extends Component {
               }
             }).catch(error => {
               console.log(error);
-            });   
+            });*/   
           }
       }
       if(parseFloat(this.props.home.min_quantity) > parseFloat(this.props.order_price)) {
@@ -92,14 +94,16 @@ class Checkout extends Component {
       return false;
     }
     this.setState({submitLoading: true});
+
     /* Data structure to Create Order */
     const products = this.props.home.selected_products;
+    const kits = this.props.home.selected_kits;
     const order_price = this.props.home.order_price;
 
     var data = {
       order: {
           order_price: order_price,
-          orders_kits_attributes:[],
+          orders_kits_attributes: kits,
           orders_products_attributes: products,
         },
     }
@@ -111,7 +115,7 @@ class Checkout extends Component {
       /* Good bye Cart */
       this.props.actions.clearBox();
       this.props.actions.redirect('pagamento');
-      this.getPermission();
+
     }).catch(error => {
       console.log(error);
       //throw new Error("Impossible to Create Order: ");

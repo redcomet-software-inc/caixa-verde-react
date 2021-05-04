@@ -46,6 +46,7 @@ class Payment extends Component {
     }
     this.props.actions.turnOffLoading();
   }
+  
   cardCallback = (callback) => {
     this.setState({card_brand: callback.issuer});
   }
